@@ -5,10 +5,11 @@ import { SignatureDish } from "@/components/signature-dish"
 import { MenuFooter } from "@/components/menu-footer"
 import { getMenu } from "@/lib/get-menu"
 
+export const dynamic = "force-dynamic"
+
 export default async function Page() {
   const menu = await getMenu()
 
-  // Ítem especial: el primero marcado como especial en toda la carta
   const specialItem = menu
     .flatMap((c) => c.items)
     .find((i) => i.especial)

@@ -1,4 +1,3 @@
-// lib/get-menu.ts
 import "server-only"
 import { fallbackMenu } from "./menu-data.fallback"
 
@@ -13,6 +12,21 @@ export type SheetMenuItem = {
   disponible: boolean
   tags: string[]
   especial: boolean
+}
+
+export type MenuCategory = {
+  id: string
+  label: string
+  title: string
+  description: string
+  orden: number
+  items: {
+    name: string
+    description: string
+    price: string
+    tags?: string[]
+    especial: boolean
+  }[]
 }
 
 type GvizCell = { v: string | number | boolean | null }
@@ -39,7 +53,8 @@ function rowToItem(cols: string[], row: GvizRow): SheetMenuItem | null {
 
   const categoria = get("categoria")
   const platillo = get("platillo")
-  if (typeof categoria !== "string" || typeof platillo !== "string") return null
+  if (typeof categoria !== "string" || !categoria.trim()) return null
+  if (typeof platillo !== "string" || !platillo.trim()) return null
 
   const precio = get("precio")
   const priceNumber =
@@ -72,12 +87,12 @@ function rowToItem(cols: string[], row: GvizRow): SheetMenuItem | null {
   const orden = typeof ordenRaw === "number" ? ordenRaw : Number(ordenRaw) || 99
 
   return {
-    categoria,
-    titulo_seccion: String(get("titulo_seccion") ?? categoria),
-    descripcion_seccion: String(get("descripcion_seccion") ?? ""),
+    categoria: categoria.trim(),
+    titulo_seccion: String(get("titulo_seccion") ?? categoria).trim(),
+    descripcion_seccion: String(get("descripcion_seccion") ?? "").trim(),
     orden,
-    platillo,
-    descripcion: String(get("descripcion") ?? ""),
+    platillo: platillo.trim(),
+    descripcion: String(get("descripcion") ?? "").trim(),
     precio: priceNumber,
     disponible,
     tags,
@@ -85,52 +100,13 @@ function rowToItem(cols: string[], row: GvizRow): SheetMenuItem | null {
   }
 }
 
-export type MenuCategory = {
-  id: string
-  label: string
-  title: string
-  description: string
-  orden: number
-  items: {
-    name: string
-    description: string
-    price: string
-    tags?: string[]
-    especial: boolean
-  }[]
-}
-
-export async function getMenu(): Promise<MenuCategory[]> {
-  const sheetId = process.env.MENU_SHEET_ID
-  const sheetName = process.env.MENU_SHEET_NAME ?? "MenuMiches"
-
-  let items: SheetMenuItem[] = []
-
-  if (!sheetId) {
-    // fallback tipado antiguo → convertir
-    items = (fallbackMenu as unknown as SheetMenuItem[])
-  } else {
-    try {
-      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`
-      const res = await fetch(url, { cache: "no-store" })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const table = parseGviz(await res.text())
-      const cols = table.cols.map((c) => c.label.toLowerCase().trim())
-      for (const row of table.rows) {
-        const item = rowToItem(cols, row)
-        if (item && item.disponible) items.push(item)
-      }
-      if (!items.length) items = (fallbackMenu as unknown as SheetMenuItem[])
-    } catch (err) {
-      console.error("getMenu() falló, usando fallback", err)
-      items = (fallbackMenu as unknown as SheetMenuItem[])
-    }
-  }
-
-  // Agrupar por categoría
+function buildCategories(items: SheetMenuItem[]): MenuCategory[] {
   const map = new Map<string, MenuCategory>()
   for (const item of items) {
-    const id = item.categoria.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
+    const id = item.categoria
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "")
     if (!map.has(id)) {
       map.set(id, {
         id,
@@ -149,6 +125,30 @@ export async function getMenu(): Promise<MenuCategory[]> {
       especial: item.especial,
     })
   }
-
   return Array.from(map.values()).sort((a, b) => a.orden - b.orden)
+}
+
+export async function getMenu(): Promise<MenuCategory[]> {
+  const sheetId = process.env.MENU_SHEET_ID
+  const sheetName = process.env.MENU_SHEET_NAME ?? "MenuMiches"
+
+  if (!sheetId) return buildCategories(fallbackMenu)
+
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`
+    const res = await fetch(url, { cache: "no-store" })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const table = parseGviz(await res.text())
+    const cols = table.cols.map((c) => c.label.toLowerCase().trim())
+    const items: SheetMenuItem[] = []
+    for (const row of table.rows) {
+      const item = rowToItem(cols, row)
+      if (item && item.disponible) items.push(item)
+    }
+    if (!items.length) return buildCategories(fallbackMenu)
+    return buildCategories(items)
+  } catch (err) {
+    console.error("getMenu() falló, usando fallback", err)
+    return buildCategories(fallbackMenu)
+  }
 }
