@@ -8,6 +8,20 @@ import { getConfig } from "@/lib/get-config"
 
 export const dynamic = "force-dynamic"
 
+// Convierte un color hex a oklch aproximado vía inline style
+// Para colores simples usamos el hex directamente en la variable CSS
+function buildCssVars(config: Awaited<ReturnType<typeof getConfig>>): React.CSSProperties {
+  const vars: Record<string, string> = {}
+  if (config.color_primario) {
+    vars["--primary"] = config.color_primario
+    vars["--ring"] = config.color_primario
+  }
+  if (config.color_acento) {
+    vars["--accent"] = config.color_acento
+  }
+  return vars as React.CSSProperties
+}
+
 export default async function Page() {
   const [menu, config] = await Promise.all([getMenu(), getConfig()])
 
@@ -16,9 +30,10 @@ export default async function Page() {
     .find((i) => i.especial)
 
   const half = Math.ceil(menu.length / 2)
+  const cssVars = buildCssVars(config)
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background" style={cssVars}>
       <MenuHero config={config} />
       <MenuNav categories={menu} />
       <div className="mx-auto max-w-4xl px-6">
