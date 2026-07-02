@@ -5,7 +5,8 @@ interface MenuHeroProps {
 }
 
 export function MenuHero({ config }: MenuHeroProps) {
-  const firstCategory = "entrada"
+  const mostrarPertenencia = config.mostrar_pertenencia !== "false" && config.hosteria_nombre
+
   return (
     <section className="relative isolate overflow-hidden bg-foreground">
       {config.hero_imagen_url && (
@@ -30,7 +31,7 @@ export function MenuHero({ config }: MenuHeroProps) {
             {config.restaurante_descripcion}
           </p>
         )}
-        {config.hosteria_nombre && (
+        {mostrarPertenencia && (
           <p className="text-xs text-background/50">
             Parte de{" "}
             {config.hosteria_url ? (
@@ -49,7 +50,7 @@ export function MenuHero({ config }: MenuHeroProps) {
           </p>
         )}
         <a
-          href={`#${firstCategory}`}
+          href="#entrada"
           className="mt-2 rounded-full bg-background px-8 py-3 text-sm font-medium uppercase tracking-wide text-foreground transition-colors hover:bg-background/90"
         >
           {config.restaurante_boton_hero}

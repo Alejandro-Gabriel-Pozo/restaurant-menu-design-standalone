@@ -5,6 +5,7 @@ interface MenuFooterProps {
 }
 
 export function MenuFooter({ config }: MenuFooterProps) {
+  const mostrarPertenencia = config.mostrar_pertenencia !== "false" && config.hosteria_nombre
   const horarios = config.restaurante_footer_horarios
     ? config.restaurante_footer_horarios.split("|").map((h) => h.trim())
     : []
@@ -23,7 +24,7 @@ export function MenuFooter({ config }: MenuFooterProps) {
               {config.restaurante_descripcion}
             </p>
           )}
-          {config.hosteria_nombre && (
+          {mostrarPertenencia && (
             <p className="mt-3 text-xs text-muted-foreground">
               Parte de{" "}
               {config.hosteria_url ? (
