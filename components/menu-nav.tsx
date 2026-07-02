@@ -10,17 +10,17 @@ export function MenuNav({ categories }: MenuNavProps) {
   return (
     <nav
       aria-label="Categorías del menú"
-      className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur"
+      className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur"
     >
-      <div className="mx-auto flex max-w-4xl items-center gap-1 overflow-x-auto px-4 py-3">
-        <span className="mr-2 shrink-0 font-serif text-lg font-medium text-primary">
+      <div className="mx-auto flex max-w-4xl items-center gap-0.5 overflow-x-auto px-4 py-3">
+        <span className="mr-3 shrink-0 font-sans text-xs font-light uppercase tracking-[0.3em] text-primary">
           Menú
         </span>
         {categories.map((category) => (
           <a
             key={category.id}
             href={`#${category.id}`}
-            className="shrink-0 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            className="shrink-0 rounded-none px-3 py-2 font-sans text-xs font-light uppercase tracking-wider text-muted-foreground transition-colors hover:bg-accent/30 hover:text-foreground"
           >
             {category.label}
           </a>

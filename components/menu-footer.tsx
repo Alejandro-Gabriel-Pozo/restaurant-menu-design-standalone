@@ -5,18 +5,48 @@ interface MenuFooterProps {
 }
 
 export function MenuFooter({ config }: MenuFooterProps) {
-  const mostrarPertenencia = config.mostrar_pertenencia !== "false" && config.hosteria_nombre
+  const mostrarPertenencia =
+    config.mostrar_pertenencia !== "false" && config.hosteria_nombre
   const horarios = config.restaurante_footer_horarios
     ? config.restaurante_footer_horarios.split("|").map((h) => h.trim())
     : []
 
   return (
-    <footer className="border-t border-border bg-card">
-      <div className="mx-auto grid max-w-4xl gap-10 px-6 py-14 sm:grid-cols-3">
+    <footer className="border-t border-border bg-background">
 
-        {/* Columna 1: marca */}
+      {/* Banda superior: logo hostería centrado con nombres a los costados */}
+      {mostrarPertenencia && (
+        <div className="border-b border-border">
+          <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-8 py-6">
+            <span className="font-sans text-xs font-light uppercase tracking-[0.3em] text-muted-foreground">
+              {config.restaurante_nombre} Restaurante
+            </span>
+            {config.empresa_logo_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={config.empresa_logo_url}
+                alt={config.empresa_nombre || config.hosteria_nombre}
+                className="h-12 w-auto object-contain"
+              />
+            ) : (
+              <div
+                className="h-10 w-10 rounded-full border-2 flex items-center justify-center text-xs font-bold"
+                style={{ borderColor: "#E8B84B", color: "#E8B84B" }}
+              >
+                {config.hosteria_nombre?.charAt(0) ?? "H"}
+              </div>
+            )}
+            <span className="font-sans text-xs font-light uppercase tracking-[0.3em] text-muted-foreground">
+              {config.hosteria_nombre}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Grid de info */}
+      <div className="mx-auto grid max-w-4xl gap-10 px-8 py-14 sm:grid-cols-3">
         <div>
-          <h2 className="font-serif text-2xl font-medium text-card-foreground">
+          <h2 className="font-serif text-2xl font-medium text-foreground">
             {config.restaurante_nombre}
           </h2>
           {config.restaurante_descripcion && (
@@ -24,66 +54,41 @@ export function MenuFooter({ config }: MenuFooterProps) {
               {config.restaurante_descripcion}
             </p>
           )}
-          {mostrarPertenencia && (
-            <p className="mt-3 text-xs text-muted-foreground">
-              Parte de{" "}
-              {config.hosteria_url ? (
-                <a
-                  href={config.hosteria_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-2 hover:text-foreground"
-                >
-                  {config.hosteria_nombre}
-                </a>
-              ) : (
-                config.hosteria_nombre
-              )}
-            </p>
-          )}
         </div>
 
-        {/* Columna 2: horarios */}
         <div>
-          <h3 className="font-mono text-xs uppercase tracking-[0.3em] text-primary">
+          <h3 className="font-sans text-xs font-light uppercase tracking-[0.3em] text-primary">
             Horarios
           </h3>
           {horarios.length > 0 ? (
-            <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
+            <ul className="mt-4 space-y-1 text-sm text-muted-foreground">
               {horarios.map((h, i) => (
                 <li key={i}>{h}</li>
               ))}
             </ul>
           ) : (
-            <p className="mt-3 text-sm text-muted-foreground">Consultar horarios</p>
+            <p className="mt-4 text-sm text-muted-foreground">Consultar horarios</p>
           )}
         </div>
 
-        {/* Columna 3: contacto */}
         <div>
-          <h3 className="font-mono text-xs uppercase tracking-[0.3em] text-primary">
+          <h3 className="font-sans text-xs font-light uppercase tracking-[0.3em] text-primary">
             Contacto
           </h3>
-          <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
+          <ul className="mt-4 space-y-1 text-sm text-muted-foreground">
             {config.restaurante_footer_direccion && (
               <li>{config.restaurante_footer_direccion}</li>
             )}
             {config.restaurante_footer_telefono && (
               <li>
-                <a
-                  href={`tel:${config.restaurante_footer_telefono.replace(/\s/g, "")}`}
-                  className="hover:text-foreground"
-                >
+                <a href={`tel:${config.restaurante_footer_telefono.replace(/\s/g, "")}`} className="hover:text-foreground">
                   {config.restaurante_footer_telefono}
                 </a>
               </li>
             )}
             {config.restaurante_footer_email && (
               <li>
-                <a
-                  href={`mailto:${config.restaurante_footer_email}`}
-                  className="hover:text-foreground"
-                >
+                <a href={`mailto:${config.restaurante_footer_email}`} className="hover:text-foreground">
                   {config.restaurante_footer_email}
                 </a>
               </li>
@@ -92,23 +97,17 @@ export function MenuFooter({ config }: MenuFooterProps) {
         </div>
       </div>
 
+      {/* Copyright */}
       <div className="border-t border-border py-5 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} {config.restaurante_nombre}
         {config.empresa_nombre && (
           <span>
             {" · "}
             {config.empresa_url ? (
-              <a
-                href={config.empresa_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2 hover:text-foreground"
-              >
+              <a href={config.empresa_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground">
                 {config.empresa_nombre}
               </a>
-            ) : (
-              config.empresa_nombre
-            )}
+            ) : config.empresa_nombre}
           </span>
         )}
         . Todos los derechos reservados.
