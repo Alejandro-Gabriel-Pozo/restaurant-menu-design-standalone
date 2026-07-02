@@ -10,9 +10,8 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: 'Casa Almendra · Menú',
-  description: 'Cocina de autor con producto de temporada. Descubre nuestro menú.',
-  generator: 'v0.app',
+  title: 'Río Lileo · Menú',
+  description: 'Cocina regional neuquina, pastas caseras y vinos de las mejores bodegas del norte. Los Miches, Neuquén.',
   icons: {
     icon: [
       {
