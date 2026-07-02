@@ -4,11 +4,12 @@ import { MenuSection } from "@/components/menu-section"
 import { SignatureDish } from "@/components/signature-dish"
 import { MenuFooter } from "@/components/menu-footer"
 import { getMenu } from "@/lib/get-menu"
+import { getConfig } from "@/lib/get-config"
 
 export const dynamic = "force-dynamic"
 
 export default async function Page() {
-  const menu = await getMenu()
+  const [menu, config] = await Promise.all([getMenu(), getConfig()])
 
   const specialItem = menu
     .flatMap((c) => c.items)
@@ -18,7 +19,7 @@ export default async function Page() {
 
   return (
     <main className="min-h-screen bg-background">
-      <MenuHero />
+      <MenuHero config={config} />
       <MenuNav categories={menu} />
       <div className="mx-auto max-w-4xl px-6">
         {menu.slice(0, half).map((category) => (
@@ -31,7 +32,7 @@ export default async function Page() {
           <MenuSection key={category.id} category={category} />
         ))}
       </div>
-      <MenuFooter />
+      <MenuFooter config={config} />
     </main>
   )
 }
