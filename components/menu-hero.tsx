@@ -5,8 +5,8 @@ interface MenuHeroProps {
 }
 
 export function MenuHero({ config }: MenuHeroProps) {
-  const mostrarPertenencia =
-    config.mostrar_pertenencia !== "false" && config.hosteria_nombre
+  const mostrarParteDe = config.mostrar_pertenencia !== "false"
+  const tienePertenencia = config.hosteria_nombre || config.empresa_nombre
 
   return (
     <section
@@ -87,24 +87,25 @@ export function MenuHero({ config }: MenuHeroProps) {
           </p>
         )}
 
-        {mostrarPertenencia && (
+        {tienePertenencia && (
           <p
             className="font-sans text-xs uppercase tracking-[0.25em]"
             style={{ color: "oklch(0.18 0.02 40 / 0.55)" }}
           >
-            Parte de{" "}
-            {config.hosteria_url ? (
-              <a
-                href={config.hosteria_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2"
-              >
-                {config.hosteria_nombre}
-              </a>
-            ) : (
-              config.hosteria_nombre
-            )}
+            {mostrarParteDe && "Parte de "}{
+              config.hosteria_url ? (
+                <a
+                  href={config.hosteria_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2"
+                >
+                  {config.hosteria_nombre}
+                </a>
+              ) : (
+                config.hosteria_nombre
+              )
+            }
             {config.empresa_nombre && ` · ${config.empresa_nombre}`}
           </p>
         )}

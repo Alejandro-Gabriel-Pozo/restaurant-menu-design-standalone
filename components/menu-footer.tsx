@@ -5,8 +5,8 @@ interface MenuFooterProps {
 }
 
 export function MenuFooter({ config }: MenuFooterProps) {
-  const mostrarPertenencia =
-    config.mostrar_pertenencia !== "false" && config.hosteria_nombre
+  const mostrarParteDe = config.mostrar_pertenencia !== "false"
+  const tienePertenencia = config.hosteria_nombre || config.empresa_nombre
   const horarios = config.restaurante_footer_horarios
     ? config.restaurante_footer_horarios.split("|").map((h) => h.trim())
     : []
@@ -14,8 +14,8 @@ export function MenuFooter({ config }: MenuFooterProps) {
   return (
     <footer className="border-t border-border bg-background">
 
-      {/* Banda superior: logo hostería centrado con nombres a los costados */}
-      {mostrarPertenencia && (
+      {/* Banda superior: siempre visible si hay hostería o empresa */}
+      {tienePertenencia && (
         <div className="border-b border-border">
           <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-8 py-6">
             <span className="font-sans text-xs font-light uppercase tracking-[0.3em] text-muted-foreground">
@@ -37,7 +37,7 @@ export function MenuFooter({ config }: MenuFooterProps) {
               </div>
             )}
             <span className="font-sans text-xs font-light uppercase tracking-[0.3em] text-muted-foreground">
-              {config.hosteria_nombre}
+              {mostrarParteDe && "Parte de "}{config.hosteria_nombre}
             </span>
           </div>
         </div>
