@@ -1,8 +1,12 @@
 "use client"
 
-import { menu } from "@/lib/menu-data"
+import type { MenuCategory } from "@/lib/get-menu"
 
-export function MenuNav() {
+interface MenuNavProps {
+  categories: Pick<MenuCategory, "id" | "label">[]
+}
+
+export function MenuNav({ categories }: MenuNavProps) {
   return (
     <nav
       aria-label="Categorías del menú"
@@ -12,7 +16,7 @@ export function MenuNav() {
         <span className="mr-2 shrink-0 font-serif text-lg font-medium text-primary">
           Menú
         </span>
-        {menu.map((category) => (
+        {categories.map((category) => (
           <a
             key={category.id}
             href={`#${category.id}`}
