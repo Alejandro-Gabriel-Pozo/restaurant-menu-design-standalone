@@ -17,7 +17,7 @@ export type SiteConfig = {
   empresa_logo_url: string
   color_acento: string
   hero_imagen_url: string
-  mostrar_pertenencia: string // "true" | "false"
+  mostrar_pertenencia: string
 }
 
 const defaults: SiteConfig = {
@@ -30,10 +30,10 @@ const defaults: SiteConfig = {
   restaurante_footer_telefono: "",
   restaurante_footer_email: "",
   restaurante_footer_horarios: "",
-  hosteria_nombre: "Hostería Los Miches",
+  hosteria_nombre: "",
   hosteria_url: "",
   hosteria_descripcion: "",
-  empresa_nombre: "Hoteles del Neuquén",
+  empresa_nombre: "",
   empresa_url: "",
   empresa_logo_url: "",
   color_acento: "",
