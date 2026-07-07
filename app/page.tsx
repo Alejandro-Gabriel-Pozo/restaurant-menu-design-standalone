@@ -8,16 +8,12 @@ import { getConfig } from "@/lib/get-config"
 
 export const dynamic = "force-dynamic"
 
-// Convierte un color hex a oklch aproximado vía inline style
-// Para colores simples usamos el hex directamente en la variable CSS
+// Aplica el color de marca como variable CSS --primary si está definido en la hoja
 function buildCssVars(config: Awaited<ReturnType<typeof getConfig>>): React.CSSProperties {
   const vars: Record<string, string> = {}
-  if (config.color_primario) {
-    vars["--primary"] = config.color_primario
-    vars["--ring"] = config.color_primario
-  }
-  if (config.color_acento) {
-    vars["--accent"] = config.color_acento
+  if (config.color_marca) {
+    vars["--primary"] = config.color_marca
+    vars["--ring"] = config.color_marca
   }
   return vars as React.CSSProperties
 }

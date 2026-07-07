@@ -15,9 +15,9 @@ export type SiteConfig = {
   empresa_nombre: string
   empresa_url: string
   empresa_logo_url: string
-  color_primario: string   // hex — afecta precios, labels, tags, bordes en todo el sitio
-  color_acento: string     // hex — fondo del hero
-  hero_imagen_url: string
+  color_marca: string      // hex — color de marca: precios, labels, tags, bordes en todo el sitio
+  hero_color_fondo: string // hex — color de fondo de la sección hero
+  hero_imagen_url: string  // URL de la imagen principal del hero
   mostrar_pertenencia: string
 }
 
@@ -37,8 +37,8 @@ const defaults: SiteConfig = {
   empresa_nombre: "",
   empresa_url: "",
   empresa_logo_url: "",
-  color_primario: "",
-  color_acento: "",
+  color_marca: "",
+  hero_color_fondo: "",
   hero_imagen_url: "",
   mostrar_pertenencia: "true",
 }
