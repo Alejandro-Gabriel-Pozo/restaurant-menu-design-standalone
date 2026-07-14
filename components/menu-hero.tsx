@@ -7,12 +7,33 @@ interface MenuHeroProps {
 export function MenuHero({ config }: MenuHeroProps) {
   const mostrarParteDe = config.mostrar_pertenencia !== "false"
   const tienePertenencia = config.hosteria_nombre || config.empresa_nombre
+  const acento = config.hero_color_fondo || "#E8B84B"
+
+  // ── Fondo del hero ───────────────────────────────────────────────────────
+  // Si hay imagen de fondo → full-bleed con overlay de color para legibilidad
+  // Si no               → color sólido
+  const heroStyle = config.hero_imagen_fondo_url
+    ? {
+        backgroundImage: `url(${config.hero_imagen_fondo_url})`,
+        backgroundSize: "cover" as const,
+        backgroundPosition: "center" as const,
+      }
+    : { backgroundColor: acento }
 
   return (
     <section
       className="relative isolate overflow-hidden"
-      style={{ backgroundColor: config.hero_color_fondo || "#E8B84B" }}
+      style={heroStyle}
     >
+      {/* Overlay de color — solo cuando hay imagen de fondo */}
+      {config.hero_imagen_fondo_url && (
+        <div
+          className="absolute inset-0"
+          style={{ backgroundColor: `${acento}BF` }}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Textura de papel sutil */}
       <div
         className="absolute inset-0 opacity-[0.06]"
@@ -22,7 +43,7 @@ export function MenuHero({ config }: MenuHeroProps) {
         aria-hidden="true"
       />
 
-      {/* Imagen del hero — esquina superior derecha, recortada en círculo */}
+      {/* Imagen decorativa — esquina superior derecha, recortada en círculo */}
       {config.hero_imagen_url ? (
         <div
           className="absolute right-0 top-0 h-56 w-56 overflow-hidden"
@@ -39,7 +60,7 @@ export function MenuHero({ config }: MenuHeroProps) {
           />
         </div>
       ) : (
-        /* Arco decorativo de fallback — solo se muestra si no hay imagen */
+        /* Arco decorativo de fallback */
         <div className="absolute right-0 top-0 h-56 w-56 overflow-hidden" aria-hidden="true">
           <div
             className="absolute -right-10 -top-10 h-52 w-52 rounded-full border-[28px]"
@@ -57,11 +78,11 @@ export function MenuHero({ config }: MenuHeroProps) {
           Menú
         </p>
 
-        {/* Logo si existe, sino iniciales */}
-        {config.empresa_logo_url ? (
+        {/* Logo del restaurante — restaurante_logo_url → fallback inicial */}
+        {config.restaurante_logo_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={config.empresa_logo_url}
+            src={config.restaurante_logo_url}
             alt={config.restaurante_nombre}
             className="h-16 w-16 object-contain"
           />
@@ -70,7 +91,7 @@ export function MenuHero({ config }: MenuHeroProps) {
             className="flex h-16 w-16 items-center justify-center rounded-2xl text-xl font-bold"
             style={{
               backgroundColor: "oklch(0.18 0.02 40)",
-              color: config.hero_color_fondo || "#E8B84B",
+              color: acento,
               fontFamily: "var(--font-playfair)",
             }}
           >

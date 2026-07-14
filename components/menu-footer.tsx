@@ -10,11 +10,12 @@ export function MenuFooter({ config }: MenuFooterProps) {
   const horarios = config.restaurante_footer_horarios
     ? config.restaurante_footer_horarios.split("|").map((h) => h.trim())
     : []
+  const acento = config.color_marca || "#E8B84B"
 
   return (
     <footer className="border-t border-border bg-background">
 
-      {/* Banda superior: siempre visible si hay hostería o empresa */}
+      {/* Banda superior: visible si hay hostería o empresa */}
       {tienePertenencia && (
         <div className="border-b border-border">
           <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-8 py-6">
@@ -31,7 +32,7 @@ export function MenuFooter({ config }: MenuFooterProps) {
             ) : (
               <div
                 className="h-10 w-10 rounded-full border-2 flex items-center justify-center text-xs font-bold"
-                style={{ borderColor: "#E8B84B", color: "#E8B84B" }}
+                style={{ borderColor: acento, color: acento }}
               >
                 {config.hosteria_nombre?.charAt(0) ?? "H"}
               </div>
