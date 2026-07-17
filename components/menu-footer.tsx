@@ -1,44 +1,52 @@
 import type { SiteConfig } from "@/lib/get-config"
+import { LogoWithFallback } from "@/components/logo-with-fallback"
 
 interface MenuFooterProps {
   config: SiteConfig
 }
 
 export function MenuFooter({ config }: MenuFooterProps) {
-  const mostrarParteDe = config.mostrar_pertenencia !== "false"
+  // Pertenencia: solo se muestra si la celda vale explícitamente "true"
+  const mostrarParteDe   = config.mostrar_pertenencia === "true"
   const tienePertenencia = config.hosteria_nombre || config.empresa_nombre
   const horarios = config.restaurante_footer_horarios
     ? config.restaurante_footer_horarios.split("|").map((h) => h.trim())
     : []
   const acento = config.color_marca || "#E8B84B"
 
+  const empresaLogoFallback = (
+    <div
+      className="h-10 w-10 rounded-full border-2 flex items-center justify-center text-xs font-bold"
+      style={{ borderColor: acento, color: acento }}
+    >
+      {config.hosteria_nombre?.charAt(0) ?? "H"}
+    </div>
+  )
+
   return (
     <footer className="border-t border-border bg-background">
 
-      {/* Banda superior: visible si hay hostería o empresa */}
-      {tienePertenencia && (
+      {/* Banda superior: visible si hay hostería o empresa Y mostrar_pertenencia=true */}
+      {mostrarParteDe && tienePertenencia && (
         <div className="border-b border-border">
           <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-8 py-6">
             <span className="font-sans text-xs font-light uppercase tracking-[0.3em] text-muted-foreground">
               {config.restaurante_nombre} Restaurante
             </span>
+
             {config.empresa_logo_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <LogoWithFallback
                 src={config.empresa_logo_url}
                 alt={config.empresa_nombre || config.hosteria_nombre}
                 className="h-12 w-auto object-contain"
+                fallback={empresaLogoFallback}
               />
             ) : (
-              <div
-                className="h-10 w-10 rounded-full border-2 flex items-center justify-center text-xs font-bold"
-                style={{ borderColor: acento, color: acento }}
-              >
-                {config.hosteria_nombre?.charAt(0) ?? "H"}
-              </div>
+              empresaLogoFallback
             )}
+
             <span className="font-sans text-xs font-light uppercase tracking-[0.3em] text-muted-foreground">
-              {mostrarParteDe && "Parte de "}{config.hosteria_nombre}
+              Parte de {config.hosteria_nombre}
             </span>
           </div>
         </div>

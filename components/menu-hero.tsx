@@ -1,13 +1,15 @@
 import type { SiteConfig } from "@/lib/get-config"
+import { LogoWithFallback } from "@/components/logo-with-fallback"
 
 interface MenuHeroProps {
   config: SiteConfig
 }
 
 export function MenuHero({ config }: MenuHeroProps) {
-  const mostrarParteDe = config.mostrar_pertenencia !== "false"
-  const tienePertenencia = config.hosteria_nombre || config.empresa_nombre
-  const acento = config.hero_color_fondo || "#E8B84B"
+  // Pertenencia: solo se muestra si la celda vale explícitamente "true"
+  const mostrarParteDe    = config.mostrar_pertenencia === "true"
+  const tienePertenencia  = config.hosteria_nombre || config.empresa_nombre
+  const acento            = config.hero_color_fondo || "#E8B84B"
 
   const heroStyle = config.hero_imagen_fondo_url
     ? {
@@ -16,6 +18,19 @@ export function MenuHero({ config }: MenuHeroProps) {
         backgroundPosition: "center" as const,
       }
     : { backgroundColor: acento }
+
+  const logoFallback = (
+    <div
+      className="flex h-16 w-16 items-center justify-center rounded-2xl text-xl font-bold"
+      style={{
+        backgroundColor: "oklch(0.18 0.02 40)",
+        color: acento,
+        fontFamily: "var(--font-playfair)",
+      }}
+    >
+      {config.restaurante_nombre?.charAt(0) ?? "R"}
+    </div>
+  )
 
   return (
     <section
@@ -40,7 +55,7 @@ export function MenuHero({ config }: MenuHeroProps) {
         aria-hidden="true"
       />
 
-      {/* Contenido — z-10 para quedar sobre overlay y textura */}
+      {/* Contenido */}
       <div className="relative z-10 mx-auto flex min-h-[85vh] max-w-sm flex-col items-center justify-center gap-8 px-6 py-24 text-center">
         <p
           className="font-sans text-sm font-light tracking-[0.5em] uppercase"
@@ -50,23 +65,14 @@ export function MenuHero({ config }: MenuHeroProps) {
         </p>
 
         {config.restaurante_logo_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <LogoWithFallback
             src={config.restaurante_logo_url}
             alt={config.restaurante_nombre}
             className="h-16 w-16 object-contain"
+            fallback={logoFallback}
           />
         ) : (
-          <div
-            className="flex h-16 w-16 items-center justify-center rounded-2xl text-xl font-bold"
-            style={{
-              backgroundColor: "oklch(0.18 0.02 40)",
-              color: acento,
-              fontFamily: "var(--font-playfair)",
-            }}
-          >
-            {config.restaurante_nombre?.charAt(0) ?? "R"}
-          </div>
+          logoFallback
         )}
 
         <div>
@@ -95,25 +101,24 @@ export function MenuHero({ config }: MenuHeroProps) {
           </p>
         )}
 
-        {tienePertenencia && (
+        {mostrarParteDe && tienePertenencia && (
           <p
             className="font-sans text-xs uppercase tracking-[0.25em]"
             style={{ color: "oklch(0.18 0.02 40 / 0.55)" }}
           >
-            {mostrarParteDe && "Parte de "}{
-              config.hosteria_url ? (
-                <a
-                  href={config.hosteria_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-2"
-                >
-                  {config.hosteria_nombre}
-                </a>
-              ) : (
-                config.hosteria_nombre
-              )
-            }
+            Parte de{" "}
+            {config.hosteria_url ? (
+              <a
+                href={config.hosteria_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2"
+              >
+                {config.hosteria_nombre}
+              </a>
+            ) : (
+              config.hosteria_nombre
+            )}
             {config.empresa_nombre && ` · ${config.empresa_nombre}`}
           </p>
         )}
