@@ -4,6 +4,7 @@ import { MenuSection }  from "@/components/menu-section"
 import { SignatureDish } from "@/components/signature-dish"
 import { MenuFooter }   from "@/components/menu-footer"
 import { TagFilter }    from "@/components/tag-filter"
+import { DarkToggle }   from "@/components/dark-toggle"
 import { getMenu }      from "@/lib/get-menu"
 import { getConfig }    from "@/lib/get-config"
 
@@ -25,17 +26,18 @@ export default async function Page() {
   const half        = Math.ceil(menu.length / 2)
   const cssVars     = buildCssVars(config)
 
-  // Extrae todos los tags únicos del menú completo, ordenados alfabéticamente
   const allTags = [...new Set(
     menu.flatMap((c) => c.items.flatMap((i) => i.tags ?? []))
   )].sort()
 
   return (
     <main className="min-h-screen bg-background" style={cssVars}>
+      {/* Toggle dark mode — fixed arriba a la derecha, siempre visible */}
+      <DarkToggle />
+
       <MenuHero config={config} />
       <MenuNav categories={menu} />
 
-      {/* Filtro por tags — solo se renderiza si hay al menos un tag en el menú */}
       {allTags.length > 0 && (
         <TagFilter tags={allTags} categories={menu} />
       )}
