@@ -40,14 +40,6 @@ export function MenuHero({ config }: MenuHeroProps) {
         aria-hidden="true"
       />
 
-      {/* Arco decorativo — esquina superior derecha */}
-      <div className="absolute right-0 top-0 z-0 h-56 w-56 overflow-hidden" aria-hidden="true">
-        <div
-          className="absolute -right-10 -top-10 h-52 w-52 rounded-full border-[28px]"
-          style={{ borderColor: "oklch(0.97 0.015 88 / 0.55)" }}
-        />
-      </div>
-
       {/* Contenido — z-10 para quedar sobre overlay y textura */}
       <div className="relative z-10 mx-auto flex min-h-[85vh] max-w-sm flex-col items-center justify-center gap-8 px-6 py-24 text-center">
         <p
