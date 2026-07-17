@@ -1,47 +1,25 @@
 import "server-only"
 
 export type SiteConfig = {
-  // ── IDENTIDAD ────────────────────────────────────────────────────────────
   restaurante_nombre:           string
   restaurante_subtitulo:        string
   restaurante_descripcion:      string
   restaurante_boton_hero:       string
-
-  // ── SEO / METADATA ───────────────────────────────────────────────────────
-  /** Texto del <title> del tab del browser. Fallback: "[nombre] · Menú" */
   meta_title:                   string
-  /** Meta description. Fallback: restaurante_descripcion */
   meta_descripcion:             string
-
-  // ── VISUAL — MARCA ───────────────────────────────────────────────────────
-  /** Hex/CSS — acento global: precios, tags, bordes */
   color_marca:                  string
-  /** Hex/CSS — color de la barra del navegador en móvil (theme-color) */
   theme_color:                  string
-  /** URL — favicon SVG editable. Vacío = usa los estáticos de /public */
   favicon_url:                  string
-  /** URL — logo del restaurante en el hero (64×64px, PNG/SVG transparente) */
   restaurante_logo_url:         string
-
-  // ── VISUAL — HERO ────────────────────────────────────────────────────────
-  /** Hex/CSS — color de fondo del hero. También actúa de overlay si hay imagen */
   hero_color_fondo:             string
-  /** URL — imagen full-bleed de fondo del hero (mín. 1200×900px, JPG/WebP) */
   hero_imagen_fondo_url:        string
-  /** URL — imagen decorativa esquina superior derecha del hero */
-  hero_imagen_url:              string
-
-  // ── PERTENENCIA ──────────────────────────────────────────────────────────
   mostrar_pertenencia:          string
   hosteria_nombre:              string
   hosteria_url:                 string
   hosteria_descripcion:         string
   empresa_nombre:               string
   empresa_url:                  string
-  /** URL — logo de la hostería/empresa en el footer */
   empresa_logo_url:             string
-
-  // ── FOOTER ───────────────────────────────────────────────────────────────
   restaurante_footer_direccion: string
   restaurante_footer_telefono:  string
   restaurante_footer_email:     string
@@ -49,32 +27,25 @@ export type SiteConfig = {
 }
 
 const defaults: SiteConfig = {
-  // identidad
   restaurante_nombre:           "Río Lileo",
   restaurante_subtitulo:        "Restaurante · Los Miches, Neuquén",
   restaurante_descripcion:      "Cocina regional neuquina, pastas caseras y vinos de las mejores bodegas del norte.",
   restaurante_boton_hero:       "Ver el menú",
-  // seo
   meta_title:                   "",
   meta_descripcion:             "",
-  // visual — marca
   color_marca:                  "",
   theme_color:                  "",
   favicon_url:                  "",
   restaurante_logo_url:         "",
-  // visual — hero
   hero_color_fondo:             "",
   hero_imagen_fondo_url:        "",
-  hero_imagen_url:              "",
-  // pertenencia
-  mostrar_pertenencia:          "true",
+  mostrar_pertenencia:          "",
   hosteria_nombre:              "",
   hosteria_url:                 "",
   hosteria_descripcion:         "",
   empresa_nombre:               "",
   empresa_url:                  "",
   empresa_logo_url:             "",
-  // footer
   restaurante_footer_direccion: "Ruta 43, Los Miches, Neuquén",
   restaurante_footer_telefono:  "",
   restaurante_footer_email:     "",
@@ -101,7 +72,8 @@ export async function getConfig(): Promise<SiteConfig> {
 
   try {
     const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=Config`
-    const res = await fetch(url, { cache: "no-store" })
+    // ISR: revalida cada hora; el deploy hook de Sheets invalida el caché al instante
+    const res = await fetch(url, { next: { revalidate: 3600 } })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const table = parseGviz(await res.text())
 

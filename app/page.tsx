@@ -6,14 +6,15 @@ import { MenuFooter } from "@/components/menu-footer"
 import { getMenu } from "@/lib/get-menu"
 import { getConfig } from "@/lib/get-config"
 
-export const dynamic = "force-dynamic"
+// ISR: la página se sirve desde caché de Vercel y se regenera
+// cuando llega el deploy hook desde Google Sheets
+export const revalidate = 3600
 
-// Aplica el color de marca como variable CSS --primary si está definido en la hoja
 function buildCssVars(config: Awaited<ReturnType<typeof getConfig>>): React.CSSProperties {
   const vars: Record<string, string> = {}
   if (config.color_marca) {
     vars["--primary"] = config.color_marca
-    vars["--ring"] = config.color_marca
+    vars["--ring"]    = config.color_marca
   }
   return vars as React.CSSProperties
 }
@@ -25,7 +26,7 @@ export default async function Page() {
     .flatMap((c) => c.items)
     .find((i) => i.especial)
 
-  const half = Math.ceil(menu.length / 2)
+  const half    = Math.ceil(menu.length / 2)
   const cssVars = buildCssVars(config)
 
   return (
