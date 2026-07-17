@@ -1,13 +1,12 @@
-import { MenuHero } from "@/components/menu-hero"
-import { MenuNav } from "@/components/menu-nav"
-import { MenuSection } from "@/components/menu-section"
+import { MenuHero }     from "@/components/menu-hero"
+import { MenuNav }      from "@/components/menu-nav"
+import { MenuSection }  from "@/components/menu-section"
 import { SignatureDish } from "@/components/signature-dish"
-import { MenuFooter } from "@/components/menu-footer"
-import { getMenu } from "@/lib/get-menu"
-import { getConfig } from "@/lib/get-config"
+import { MenuFooter }   from "@/components/menu-footer"
+import { TagFilter }    from "@/components/tag-filter"
+import { getMenu }      from "@/lib/get-menu"
+import { getConfig }    from "@/lib/get-config"
 
-// ISR: la página se sirve desde caché de Vercel y se regenera
-// cuando llega el deploy hook desde Google Sheets
 export const revalidate = 3600
 
 function buildCssVars(config: Awaited<ReturnType<typeof getConfig>>): React.CSSProperties {
@@ -22,17 +21,25 @@ function buildCssVars(config: Awaited<ReturnType<typeof getConfig>>): React.CSSP
 export default async function Page() {
   const [menu, config] = await Promise.all([getMenu(), getConfig()])
 
-  const specialItem = menu
-    .flatMap((c) => c.items)
-    .find((i) => i.especial)
+  const specialItem = menu.flatMap((c) => c.items).find((i) => i.especial)
+  const half        = Math.ceil(menu.length / 2)
+  const cssVars     = buildCssVars(config)
 
-  const half    = Math.ceil(menu.length / 2)
-  const cssVars = buildCssVars(config)
+  // Extrae todos los tags únicos del menú completo, ordenados alfabéticamente
+  const allTags = [...new Set(
+    menu.flatMap((c) => c.items.flatMap((i) => i.tags ?? []))
+  )].sort()
 
   return (
     <main className="min-h-screen bg-background" style={cssVars}>
       <MenuHero config={config} />
       <MenuNav categories={menu} />
+
+      {/* Filtro por tags — solo se renderiza si hay al menos un tag en el menú */}
+      {allTags.length > 0 && (
+        <TagFilter tags={allTags} categories={menu} />
+      )}
+
       <div className="mx-auto max-w-4xl px-6">
         {menu.slice(0, half).map((category) => (
           <MenuSection key={category.id} category={category} />
@@ -44,6 +51,7 @@ export default async function Page() {
           <MenuSection key={category.id} category={category} />
         ))}
       </div>
+
       <MenuFooter config={config} />
     </main>
   )
