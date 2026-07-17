@@ -5,6 +5,7 @@ export type SheetMenuItem = {
   categoria: string
   titulo_seccion: string
   descripcion_seccion: string
+  imagen_seccion_url: string
   orden: number
   platillo: string
   descripcion: string
@@ -19,6 +20,8 @@ export type MenuCategory = {
   label: string
   title: string
   description: string
+  /** URL opcional — imagen de portada de la sección (banner sutil en el encabezado) */
+  imagen_url: string
   orden: number
   items: {
     name: string
@@ -52,9 +55,9 @@ function rowToItem(cols: string[], row: GvizRow): SheetMenuItem | null {
   }
 
   const categoria = get("categoria")
-  const platillo = get("platillo")
+  const platillo  = get("platillo")
   if (typeof categoria !== "string" || !categoria.trim()) return null
-  if (typeof platillo !== "string" || !platillo.trim()) return null
+  if (typeof platillo  !== "string" || !platillo.trim())  return null
 
   const precio = get("precio")
   const priceNumber =
@@ -86,10 +89,13 @@ function rowToItem(cols: string[], row: GvizRow): SheetMenuItem | null {
   const ordenRaw = get("orden")
   const orden = typeof ordenRaw === "number" ? ordenRaw : Number(ordenRaw) || 99
 
+  const imagen_seccion_url = String(get("imagen_seccion_url") ?? "").trim()
+
   return {
     categoria: categoria.trim(),
     titulo_seccion: String(get("titulo_seccion") ?? categoria).trim(),
     descripcion_seccion: String(get("descripcion_seccion") ?? "").trim(),
+    imagen_seccion_url,
     orden,
     platillo: platillo.trim(),
     descripcion: String(get("descripcion") ?? "").trim(),
@@ -113,6 +119,7 @@ function buildCategories(items: SheetMenuItem[]): MenuCategory[] {
         label: item.categoria,
         title: item.titulo_seccion,
         description: item.descripcion_seccion,
+        imagen_url: item.imagen_seccion_url,
         orden: item.orden,
         items: [],
       })
@@ -129,7 +136,7 @@ function buildCategories(items: SheetMenuItem[]): MenuCategory[] {
 }
 
 export async function getMenu(): Promise<MenuCategory[]> {
-  const sheetId = process.env.MENU_SHEET_ID
+  const sheetId   = process.env.MENU_SHEET_ID
   const sheetName = process.env.MENU_SHEET_NAME ?? "MenuMiches"
 
   if (!sheetId) return buildCategories(fallbackMenu)
@@ -139,7 +146,7 @@ export async function getMenu(): Promise<MenuCategory[]> {
     const res = await fetch(url, { cache: "no-store" })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const table = parseGviz(await res.text())
-    const cols = table.cols.map((c) => c.label.toLowerCase().trim())
+    const cols  = table.cols.map((c) => c.label.toLowerCase().trim())
     const items: SheetMenuItem[] = []
     for (const row of table.rows) {
       const item = rowToItem(cols, row)
