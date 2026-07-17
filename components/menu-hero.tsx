@@ -40,32 +40,15 @@ export function MenuHero({ config }: MenuHeroProps) {
         aria-hidden="true"
       />
 
-      {/* Imagen decorativa — esquina superior derecha */}
-      {config.hero_imagen_url ? (
+      {/* Arco decorativo — esquina superior derecha */}
+      <div className="absolute right-0 top-0 z-0 h-56 w-56 overflow-hidden" aria-hidden="true">
         <div
-          className="absolute right-0 top-0 z-0 h-56 w-56 overflow-hidden"
-          aria-hidden="true"
-        >
-          <img
-            src={config.hero_imagen_url}
-            alt=""
-            className="h-full w-full object-cover"
-            style={{
-              maskImage: "radial-gradient(circle at 75% 25%, black 55%, transparent 75%)",
-              WebkitMaskImage: "radial-gradient(circle at 75% 25%, black 55%, transparent 75%)",
-            }}
-          />
-        </div>
-      ) : (
-        <div className="absolute right-0 top-0 z-0 h-56 w-56 overflow-hidden" aria-hidden="true">
-          <div
-            className="absolute -right-10 -top-10 h-52 w-52 rounded-full border-[28px]"
-            style={{ borderColor: "oklch(0.97 0.015 88 / 0.55)" }}
-          />
-        </div>
-      )}
+          className="absolute -right-10 -top-10 h-52 w-52 rounded-full border-[28px]"
+          style={{ borderColor: "oklch(0.97 0.015 88 / 0.55)" }}
+        />
+      </div>
 
-      {/* ── Contenido — z-10 para quedar sobre overlay y textura ── */}
+      {/* Contenido — z-10 para quedar sobre overlay y textura */}
       <div className="relative z-10 mx-auto flex min-h-[85vh] max-w-sm flex-col items-center justify-center gap-8 px-6 py-24 text-center">
         <p
           className="font-sans text-sm font-light tracking-[0.5em] uppercase"
