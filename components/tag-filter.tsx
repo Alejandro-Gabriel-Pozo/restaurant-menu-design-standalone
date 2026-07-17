@@ -8,32 +8,31 @@ interface TagFilterProps {
   categories: MenuCategory[]
 }
 
-/**
- * Barra de filtro por tag. Cuando se selecciona un tag:
- * - Muestra solo los items que lo tienen
- * - Oculta secciones que quedan sin items visibles
- * Opera sobre el DOM para no re-renderizar el árbol completo.
- */
 export function TagFilter({ tags, categories }: TagFilterProps) {
   const [active, setActive] = useState<string | null>(null)
 
   useEffect(() => {
-    // Aplica visibilidad sobre los <li> y <section> del DOM
     for (const cat of categories) {
       const section = document.getElementById(cat.id)
       if (!section) continue
 
+      // Los <li> son hijos directos del <ul> — sin wrapper intermedio
+      const items = section.querySelectorAll<HTMLLIElement>("li[data-tags]")
       let visibleCount = 0
-      const items = section.querySelectorAll<HTMLLIElement>("ul > li[data-tags]")
 
       for (const li of items) {
-        const itemTags = (li.dataset.tags ?? "").split(",").map((t) => t.trim())
-        const show = !active || itemTags.includes(active)
+        const itemTags = (li.dataset.tags ?? "")
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean)
+
+        // Sin tag activo ("Todos") → mostrar siempre
+        // Con tag activo → mostrar solo si el item lo tiene
+        const show = active === null || itemTags.includes(active)
         li.style.display = show ? "" : "none"
         if (show) visibleCount++
       }
 
-      // Oculta la section entera si no tiene items visibles
       section.style.display = visibleCount === 0 ? "none" : ""
     }
   }, [active, categories])
