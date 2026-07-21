@@ -21,9 +21,13 @@ export type SiteConfig = {
   empresa_url:                  string
   empresa_logo_url:             string
   restaurante_footer_direccion: string
+  restaurante_footer_maps_url:  string
   restaurante_footer_telefono:  string
   restaurante_footer_email:     string
   restaurante_footer_horarios:  string
+  restaurante_instagram:        string
+  restaurante_facebook:         string
+  restaurante_whatsapp:         string
 }
 
 const defaults: SiteConfig = {
@@ -47,9 +51,13 @@ const defaults: SiteConfig = {
   empresa_url:                  "",
   empresa_logo_url:             "",
   restaurante_footer_direccion: "Ruta 43, Los Miches, Neuquén",
+  restaurante_footer_maps_url:  "",
   restaurante_footer_telefono:  "",
   restaurante_footer_email:     "",
   restaurante_footer_horarios:  "",
+  restaurante_instagram:        "",
+  restaurante_facebook:         "",
+  restaurante_whatsapp:         "",
 }
 
 type GvizCell = { v: string | null }
@@ -72,7 +80,6 @@ export async function getConfig(): Promise<SiteConfig> {
 
   try {
     const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=Config`
-    // ISR: revalida cada hora; el deploy hook de Sheets invalida el caché al instante
     const res = await fetch(url, { next: { revalidate: 3600 } })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const table = parseGviz(await res.text())
