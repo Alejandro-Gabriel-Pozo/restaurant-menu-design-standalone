@@ -1,5 +1,6 @@
 import type { MenuCategory } from "@/lib/get-menu"
 import { Reveal } from "@/components/reveal"
+import { TagIcon } from "@/lib/tag-icons"
 
 export function MenuSection({ category }: { category: MenuCategory }) {
   const tieneImagen = Boolean(category.imagen_url)
@@ -14,7 +15,7 @@ export function MenuSection({ category }: { category: MenuCategory }) {
       }}
     >
 
-      {/* ── Encabezado de sección ─────────────────────────────────────────── */}
+      {/* ── Encabezado de sección ───────────────────────────────────────────── */}
       <Reveal>
         <div
           className={[
@@ -52,12 +53,7 @@ export function MenuSection({ category }: { category: MenuCategory }) {
         </div>
       </Reveal>
 
-      {/* ── Lista de platos ───────────────────────────────────────────────── */}
-      {/*
-        <Reveal> envuelve cada <li> en un <div> — el TagFilter usa
-        querySelectorAll("li[data-tags]") sin el ">" estricto, así
-        que encuentra los <li> aunque estén dentro del wrapper.
-      */}
+      {/* ── Lista de platos ────────────────────────────────────────────────── */}
       <ul className="grid gap-x-12 gap-y-8 md:grid-cols-2">
         {category.items.map((item, idx) => (
           <Reveal key={item.name} delay={idx * 40}>
@@ -99,8 +95,9 @@ export function MenuSection({ category }: { category: MenuCategory }) {
                   {item.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-none border border-primary/30 px-2 py-0.5 text-xs font-light uppercase tracking-wider text-primary"
+                      className="inline-flex items-center gap-1.5 rounded-none border border-primary/30 px-2 py-0.5 text-xs font-light uppercase tracking-wider text-primary"
                     >
+                      <TagIcon tag={tag} />
                       {tag}
                     </span>
                   ))}
