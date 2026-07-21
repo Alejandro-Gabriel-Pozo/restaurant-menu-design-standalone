@@ -22,9 +22,10 @@ function buildCssVars(config: Awaited<ReturnType<typeof getConfig>>): React.CSSP
 export default async function Page() {
   const [menu, config] = await Promise.all([getMenu(), getConfig()])
 
-  const specialItem = menu.flatMap((c) => c.items).find((i) => i.especial)
-  const half        = Math.ceil(menu.length / 2)
-  const cssVars     = buildCssVars(config)
+  const specialItem     = menu.flatMap((c) => c.items).find((i) => i.especial)
+  const half            = Math.ceil(menu.length / 2)
+  const cssVars         = buildCssVars(config)
+  const firstCategoryId = menu[0]?.id
 
   const allTags = [...new Set(
     menu.flatMap((c) => c.items.flatMap((i) => i.tags ?? []))
@@ -35,7 +36,7 @@ export default async function Page() {
       {/* Toggle dark mode — fixed arriba a la derecha, siempre visible */}
       <DarkToggle />
 
-      <MenuHero config={config} />
+      <MenuHero config={config} firstCategoryId={firstCategoryId} />
       <MenuNav categories={menu} />
 
       {allTags.length > 0 && (
