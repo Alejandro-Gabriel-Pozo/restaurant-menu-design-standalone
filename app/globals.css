@@ -88,9 +88,17 @@
   --sidebar-accent-foreground: oklch(0.28 0.02 40);
   --sidebar-border:     oklch(0.88 0.018 78);
   --sidebar-ring:       oklch(0.76 0.14 80);
+
+  /*
+    --hero-ink: color del texto dentro del Hero.
+    El hero tiene siempre fondo claro (color de marca/imagen con overlay),
+    así que el texto debe ser oscuro — independientemente del dark mode del sitio.
+    En dark mode cambia levemente para ser crema en lugar de carbón puro,
+    mejorando el contraste sobre el overlay semi-transparente del acento.
+  */
+  --hero-ink: oklch(0.18 0.02 40);
 }
 
-/* Dark mode — no se usa actualmente pero lo dejamos limpio */
 .dark {
   color-scheme: dark;
   --background:         oklch(0.14 0.01 40);
@@ -119,6 +127,13 @@
   --sidebar-accent-foreground: oklch(0.96 0.005 80);
   --sidebar-border:     oklch(1 0 0 / 10%);
   --sidebar-ring:       oklch(0.76 0.14 80);
+
+  /*
+    En dark mode el overlay del hero se vuelve más opaco y oscuro,
+    haciendo que el fondo de acento sea más profundo. El texto
+    crema contrasta mejor que el carbón puro en ese contexto.
+  */
+  --hero-ink: oklch(0.96 0.005 80);
 }
 
 @layer base {
