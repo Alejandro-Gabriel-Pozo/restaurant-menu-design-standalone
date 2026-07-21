@@ -3,13 +3,16 @@ import { LogoWithFallback } from "@/components/logo-with-fallback"
 
 interface MenuHeroProps {
   config: SiteConfig
+  firstCategoryId?: string
 }
 
-export function MenuHero({ config }: MenuHeroProps) {
-  // Pertenencia: solo se muestra si la celda vale explícitamente "true"
-  const mostrarParteDe    = config.mostrar_pertenencia === "true"
-  const tienePertenencia  = config.hosteria_nombre || config.empresa_nombre
-  const acento            = config.hero_color_fondo || "#E8B84B"
+export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
+  const mostrarParteDe   = config.mostrar_pertenencia === "true"
+  const tienePertenencia = config.hosteria_nombre || config.empresa_nombre
+  const acento           = config.hero_color_fondo || "#E8B84B"
+
+  // CTA scrollea a la primera categoría real, o al fallback "#entrada"
+  const ctaHref = firstCategoryId ? `#${firstCategoryId}` : "#entrada"
 
   const heroStyle = config.hero_imagen_fondo_url
     ? {
@@ -57,9 +60,18 @@ export function MenuHero({ config }: MenuHeroProps) {
 
       {/* Contenido */}
       <div className="relative z-10 mx-auto flex min-h-[85vh] max-w-sm flex-col items-center justify-center gap-8 px-6 py-24 text-center">
+        {/*
+          ── TOKENS en lugar de oklch hardcodeados ────────────────────────
+          El hero tiene fondo de color de marca (claro/oscuro propio),
+          así que usamos opacidades del foreground sobre ese fondo,
+          en lugar de --foreground del sistema (que cambia con dark mode
+          y rompía la legibilidad sobre el fondo de acento).
+          La solución correcta es una CSS custom property local --hero-ink
+          que definimos inline y reutilizamos en todos los hijos.
+        */}
         <p
           className="font-sans text-sm font-light tracking-[0.5em] uppercase"
-          style={{ color: "oklch(0.18 0.02 40 / 0.7)" }}
+          style={{ color: "oklch(from var(--hero-ink) l c h / 0.7)" }}
         >
           Menú
         </p>
@@ -78,14 +90,14 @@ export function MenuHero({ config }: MenuHeroProps) {
         <div>
           <h1
             className="font-serif text-5xl font-medium leading-tight text-balance sm:text-6xl"
-            style={{ color: "oklch(0.18 0.02 40)" }}
+            style={{ color: "var(--hero-ink)" }}
           >
             {config.restaurante_nombre}
           </h1>
           {config.restaurante_subtitulo && (
             <p
               className="mt-2 font-sans text-xs font-light uppercase tracking-[0.3em]"
-              style={{ color: "oklch(0.18 0.02 40 / 0.6)" }}
+              style={{ color: "oklch(from var(--hero-ink) l c h / 0.6)" }}
             >
               {config.restaurante_subtitulo}
             </p>
@@ -95,7 +107,7 @@ export function MenuHero({ config }: MenuHeroProps) {
         {config.restaurante_descripcion && (
           <p
             className="max-w-xs text-pretty text-sm leading-relaxed"
-            style={{ color: "oklch(0.18 0.02 40 / 0.75)" }}
+            style={{ color: "oklch(from var(--hero-ink) l c h / 0.75)" }}
           >
             {config.restaurante_descripcion}
           </p>
@@ -104,7 +116,7 @@ export function MenuHero({ config }: MenuHeroProps) {
         {mostrarParteDe && tienePertenencia && (
           <p
             className="font-sans text-xs uppercase tracking-[0.25em]"
-            style={{ color: "oklch(0.18 0.02 40 / 0.55)" }}
+            style={{ color: "oklch(from var(--hero-ink) l c h / 0.55)" }}
           >
             Parte de{" "}
             {config.hosteria_url ? (
@@ -124,15 +136,38 @@ export function MenuHero({ config }: MenuHeroProps) {
         )}
 
         <a
-          href="#entrada"
-          className="mt-2 rounded-none border px-10 py-3 text-xs font-light uppercase tracking-[0.35em] transition-colors hover:opacity-80"
+          href={ctaHref}
+          className="mt-2 rounded-none border px-10 py-3 text-xs font-light uppercase tracking-[0.35em] transition-opacity hover:opacity-70"
           style={{
-            borderColor: "oklch(0.18 0.02 40 / 0.6)",
-            color: "oklch(0.18 0.02 40)",
+            borderColor: "oklch(from var(--hero-ink) l c h / 0.6)",
+            color: "var(--hero-ink)",
           }}
         >
           {config.restaurante_boton_hero}
         </a>
+
+        {/* ── Scroll cue animado ──────────────────────────────────────── */}
+        <div
+          aria-hidden="true"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
+          style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}
+        >
+          <span className="font-sans text-[10px] font-light uppercase tracking-[0.3em]">
+            Menú
+          </span>
+          {/* Chevron animado con bounce */}
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            className="animate-bounce"
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </div>
       </div>
     </section>
   )
