@@ -8,7 +8,7 @@ export function MenuSection({ category }: { category: MenuCategory }) {
   return (
     <section
       id={category.id}
-      className="scroll-mt-20 py-14 md:py-20"
+      className="scroll-mt-28 py-14 md:py-20"
       style={{
         contentVisibility: "auto",
         containIntrinsicSize: "0 600px",
