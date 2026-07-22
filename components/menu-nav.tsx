@@ -20,43 +20,41 @@ export function MenuNav({
 }: MenuNavProps) {
   const [activeId, setActiveId] = useState(categories[0]?.id ?? "")
   const itemRefs = useRef<Map<string, HTMLAnchorElement>>(new Map())
+  const rafRef   = useRef<number | null>(null)
 
-  // ── Observer: ratioMap persiste entre callbacks ─────────────────────────────
+  // ── Scroll listener con rAF — sólido, no depende del layout del observer ──
   useEffect(() => {
-    const sections = categories
-      .map((c) => document.getElementById(c.id))
-      .filter(Boolean) as HTMLElement[]
-    if (!sections.length) return
+    const getActiveId = () => {
+      const offset = 112 // scroll-mt-28 = 112px
 
-    const ratioMap = new Map<string, number>(sections.map((s) => [s.id, 0]))
-
-    const pick = () => {
-      // Topmost section con ratio > 0
-      const visible = sections.filter((s) => (ratioMap.get(s.id) ?? 0) > 0)
-      if (visible.length) { setActiveId(visible[0].id); return }
-      // Fallback: sección más alta en el documento según getBoundingClientRect
-      const closest = sections.reduce((best, s) => {
-        const r = s.getBoundingClientRect()
-        const br = best.getBoundingClientRect()
-        // La que está más cerca del top del viewport (desde arriba)
-        return Math.abs(r.top) < Math.abs(br.top) ? s : best
-      })
-      setActiveId(closest.id)
+      // Última sección cuyo top esté en o por encima del offset
+      let current = categories[0]?.id ?? ""
+      for (const cat of categories) {
+        const el = document.getElementById(cat.id)
+        if (!el) continue
+        if (el.getBoundingClientRect().top <= offset) current = cat.id
+      }
+      return current
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => ratioMap.set(e.target.id, e.intersectionRatio))
-        pick()
-      },
-      // -20% bottom: dispara cuando la sección ocupa al menos el 80% superior del viewport
-      { rootMargin: "0px 0px -20% 0px", threshold: Array.from({ length: 21 }, (_, i) => i / 20) }
-    )
-    sections.forEach((s) => observer.observe(s))
-    return () => observer.disconnect()
+    const onScroll = () => {
+      if (rafRef.current !== null) return
+      rafRef.current = requestAnimationFrame(() => {
+        setActiveId(getActiveId())
+        rafRef.current = null
+      })
+    }
+
+    // Estado inicial al montar
+    setActiveId(getActiveId())
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
+    }
   }, [categories])
 
-  // ── Scroll automático del tab activo ─────────────────────────────────
+  // ── Centra el tab activo en la barra horizontal ──────────────────────────
   useEffect(() => {
     itemRefs.current.get(activeId)?.scrollIntoView({
       behavior: "smooth", block: "nearest", inline: "center",
@@ -70,7 +68,7 @@ export function MenuNav({
       aria-label="Navegación del menú"
       className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur"
     >
-      {/* ── Fila 1: Categorías ─────────────────────────────────────────── */}
+      {/* ── Fila 1: Categorías ────────────────────────────────────────── */}
       <div className="relative">
         <div className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-background to-transparent z-10" aria-hidden="true" />
         <div className="pointer-events-none absolute left-0 top-0 h-full w-8 bg-gradient-to-r from-background to-transparent z-10" aria-hidden="true" />
@@ -99,12 +97,11 @@ export function MenuNav({
         </div>
       </div>
 
-      {/* ── Fila 2: Filtros ───────────────────────────────────────────── */}
+      {/* ── Fila 2: Filtros ─────────────────────────────────────────── */}
       {hasTags && (
         <div className="border-t border-border/50">
           <div className="mx-auto flex max-w-4xl items-center gap-1.5 overflow-x-auto px-4 py-2 scrollbar-none">
             <span className="mr-2 shrink-0 font-sans text-xs font-light uppercase tracking-[0.3em] text-muted-foreground">Filtrar</span>
-
             {activeTags.length > 0 && (
               <button
                 onClick={onClearTags}
@@ -113,7 +110,6 @@ export function MenuNav({
                 × Limpiar
               </button>
             )}
-
             {tags.map((tag) => {
               const isActive = activeTags.includes(tag)
               return (
