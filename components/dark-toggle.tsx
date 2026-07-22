@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react"
 
-/** Botón flotante arriba a la derecha — inicializa y persiste el dark mode */
-export function DarkToggle() {
+/** Inicializa el dark mode antes del primer render — sin botón propio */
+export function useDarkMode() {
   const [dark, setDark] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -23,27 +23,35 @@ export function DarkToggle() {
     localStorage.setItem("theme", next ? "dark" : "light")
   }
 
-  // Evita hydration mismatch: no renderiza hasta que el cliente haya leído el tema
-  if (!mounted) return null
+  return { dark, toggle, mounted }
+}
+
+/** Botón inline — para usar dentro del nav */
+export function DarkToggleButton() {
+  const { dark, toggle, mounted } = useDarkMode()
+  if (!mounted) return <div className="h-8 w-8" />
 
   return (
     <button
       onClick={toggle}
       aria-label={dark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-      className="fixed right-4 top-4 z-50 flex h-9 w-9 items-center justify-center rounded-full border border-black/20 bg-white/30 text-[oklch(0.18_0.02_40)] shadow-sm backdrop-blur-sm transition-all hover:bg-white/50 active:scale-90 dark:border-white/20 dark:bg-black/30 dark:text-white dark:hover:bg-black/50"
+      className="ml-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-background/60 text-muted-foreground transition-all hover:bg-accent/40 hover:text-foreground active:scale-90"
     >
       {dark ? (
-        // Sol
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <circle cx="12" cy="12" r="5"/>
           <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
         </svg>
       ) : (
-        // Luna
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
       )}
     </button>
   )
+}
+
+/** @deprecated Usar DarkToggleButton dentro del nav */
+export function DarkToggle() {
+  return null
 }
