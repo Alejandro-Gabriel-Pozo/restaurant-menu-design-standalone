@@ -8,87 +8,58 @@ export function MenuSection({ category }: { category: MenuCategory }) {
   return (
     <section
       id={category.id}
+      // Sin contentVisibility: el observer necesita altura real en el DOM
       className="scroll-mt-28 py-14 md:py-20"
-      style={{
-        contentVisibility: "auto",
-        containIntrinsicSize: "0 600px",
-      }}
     >
-
-      {/* ── Encabezado de sección ───────────────────────────────────────────── */}
+      {/* ── Encabezado ──────────────────────────────────────────────────── */}
       <Reveal>
         <div
           className={[
             "mb-10 max-w-2xl",
-            tieneImagen
-              ? "relative overflow-hidden rounded-sm -mx-6 px-6 py-8 sm:-mx-8 sm:px-8"
-              : "",
+            tieneImagen ? "relative overflow-hidden rounded-sm -mx-6 px-6 py-8 sm:-mx-8 sm:px-8" : "",
           ].join(" ")}
           style={
             tieneImagen
-              ? {
-                  backgroundImage: `url(${category.imagen_url})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }
+              ? { backgroundImage: `url(${category.imagen_url})`, backgroundSize: "cover", backgroundPosition: "center" }
               : undefined
           }
         >
-          {tieneImagen && (
-            <div className="absolute inset-0 bg-background/82" aria-hidden="true" />
-          )}
+          {tieneImagen && <div className="absolute inset-0 bg-background/82" aria-hidden="true" />}
           <div className={tieneImagen ? "relative" : undefined}>
-            <p className="font-sans text-xs font-light uppercase tracking-[0.4em] text-primary">
-              {category.label}
-            </p>
-            <h2 className="mt-3 font-serif text-4xl font-medium text-foreground text-balance md:text-5xl">
-              {category.title}
-            </h2>
+            <p className="font-sans text-xs font-light uppercase tracking-[0.4em] text-primary">{category.label}</p>
+            <h2 className="mt-3 font-serif text-4xl font-medium text-foreground text-balance md:text-5xl">{category.title}</h2>
             {category.description && (
-              <p className="mt-3 text-pretty leading-relaxed text-muted-foreground">
-                {category.description}
-              </p>
+              <p className="mt-3 text-pretty leading-relaxed text-muted-foreground">{category.description}</p>
             )}
           </div>
         </div>
       </Reveal>
 
-      {/* ── Lista de platos ────────────────────────────────────────────────── */}
+      {/* ── Lista de platos ───────────────────────────────────────────────── */}
       <ul className="grid gap-x-12 gap-y-8 md:grid-cols-2">
         {category.items.map((item, idx) => (
           <Reveal key={item.name} delay={idx * 40}>
             <li
               data-tags={item.tags?.join(",") ?? ""}
               className={`border-b pb-6 ${
-                item.especial
-                  ? "border-primary/40 border-dashed"
-                  : "border-dashed border-border"
+                item.especial ? "border-primary/40 border-dashed" : "border-dashed border-border"
               }`}
             >
               <div className="flex items-baseline justify-between gap-3">
-                <h3
-                  className={`font-serif text-xl font-medium ${
-                    item.especial ? "text-primary" : "text-foreground"
-                  }`}
-                >
+                <h3 className={`font-serif text-xl font-medium ${
+                  item.especial ? "text-primary" : "text-foreground"
+                }`}>
                   {item.name}
                   {item.especial && (
-                    <span className="ml-2 font-sans text-xs font-light uppercase tracking-widest text-primary">
-                      ★
-                    </span>
+                    <span className="ml-2 font-sans text-xs font-light uppercase tracking-widest text-primary">★</span>
                   )}
                 </h3>
-                <span
-                  className="shrink-0 font-serif text-lg font-medium text-primary"
-                  aria-label={`Precio ${item.price}`}
-                >
+                <span className="shrink-0 font-serif text-lg font-medium text-primary" aria-label={`Precio ${item.price}`}>
                   {item.price}
                 </span>
               </div>
               {item.description && (
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {item.description}
-                </p>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
               )}
               {item.tags && item.tags.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-2">

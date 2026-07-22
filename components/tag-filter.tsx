@@ -4,23 +4,21 @@ import type { MenuCategory } from "@/lib/get-menu"
 
 interface TagFilterProps {
   categories: MenuCategory[]
-  activeTags: Set<string>
+  activeTags: string[]
 }
 
 export function TagFilter({ categories, activeTags }: TagFilterProps) {
-  if (activeTags.size === 0) return null
+  if (activeTags.length === 0) return null
 
   const matchingItems = categories.flatMap((cat) =>
     cat.items
       .filter((item) => {
         const itemTags = item.tags ?? []
-        // Mostrar plato si tiene TODOS los tags activos (AND lógico)
-        return [...activeTags].every((t) => itemTags.includes(t))
+        // AND: el plato debe tener TODOS los tags activos
+        return activeTags.every((t) => itemTags.includes(t))
       })
       .map((item) => ({ ...item, categoryLabel: cat.label }))
   )
-
-  const activeTagsList = [...activeTags]
 
   return (
     <div className="mx-auto max-w-4xl px-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -29,23 +27,22 @@ export function TagFilter({ categories, activeTags }: TagFilterProps) {
           <p className="font-serif text-xl text-foreground">Sin platos con ese filtro</p>
           <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
             No encontramos platos con{" "}
-            {activeTagsList.length === 1 ? "la etiqueta" : "las etiquetas"}{" "}
-            {activeTagsList.map((t, i) => (
+            {activeTags.length === 1 ? "la etiqueta" : "las etiquetas"}{" "}
+            {activeTags.map((t, i) => (
               <span key={t}>
                 <strong className="font-medium text-primary uppercase tracking-wider">{t}</strong>
-                {i < activeTagsList.length - 1 ? " + " : ""}
+                {i < activeTags.length - 1 ? " + " : ""}
               </span>
-            ))}.
-            Probá con otro filtro o explorá todo el menú.
+            ))}. Probá con otro filtro.
           </p>
         </div>
       ) : (
         <>
           <p className="mt-8 mb-6 font-sans text-xs font-light uppercase tracking-[0.3em] text-muted-foreground">
             {matchingItems.length} plato{matchingItems.length !== 1 ? "s" : ""}{" · "}
-            {activeTagsList.map((t, i) => (
+            {activeTags.map((t, i) => (
               <span key={t} className="text-primary">
-                {t}{i < activeTagsList.length - 1 ? " + " : ""}
+                {t}{i < activeTags.length - 1 ? " + " : ""}
               </span>
             ))}
           </p>
@@ -67,9 +64,7 @@ export function TagFilter({ categories, activeTags }: TagFilterProps) {
                       <span className="ml-2 font-sans text-xs font-light uppercase tracking-widest text-primary">★</span>
                     )}
                   </h3>
-                  <span className="shrink-0 font-serif text-lg font-medium text-primary" aria-label={`Precio ${item.price}`}>
-                    {item.price}
-                  </span>
+                  <span className="shrink-0 font-serif text-lg font-medium text-primary">{item.price}</span>
                 </div>
                 {item.description && (
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
@@ -83,7 +78,7 @@ export function TagFilter({ categories, activeTags }: TagFilterProps) {
                       key={tag}
                       className={[
                         "rounded-none border px-2 py-0.5 text-xs font-light uppercase tracking-wider",
-                        activeTags.has(tag)
+                        activeTags.includes(tag)
                           ? "border-primary bg-primary/10 text-primary"
                           : "border-primary/30 text-primary",
                       ].join(" ")}
