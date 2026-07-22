@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 
-/** Botón flotante fijo arriba a la derecha — z-30 sobre el nav (z-20) */
+/** Botón inline — se coloca dentro del hero, no fixed */
 export function DarkToggle() {
   const [dark, setDark] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -23,13 +23,14 @@ export function DarkToggle() {
     localStorage.setItem("theme", next ? "dark" : "light")
   }
 
-  if (!mounted) return null
+  if (!mounted) return <div className="h-9 w-9" />
 
   return (
     <button
       onClick={toggle}
       aria-label={dark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-      className="fixed right-4 top-4 z-30 flex h-9 w-9 items-center justify-center rounded-full border border-black/20 bg-white/30 text-[oklch(0.18_0.02_40)] shadow-sm backdrop-blur-sm transition-all hover:bg-white/50 active:scale-90 dark:border-white/20 dark:bg-black/30 dark:text-white dark:hover:bg-black/50"
+      className="flex h-9 w-9 items-center justify-center rounded-full border border-black/20 bg-white/20 backdrop-blur-sm transition-all hover:bg-white/40 active:scale-90 dark:border-white/20 dark:bg-black/20 dark:hover:bg-black/40"
+      style={{ color: "var(--hero-ink)" }}
     >
       {dark ? (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">

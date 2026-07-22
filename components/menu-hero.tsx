@@ -1,5 +1,6 @@
 import type { SiteConfig } from "@/lib/get-config"
 import { LogoWithFallback } from "@/components/logo-with-fallback"
+import { DarkToggle } from "@/components/dark-toggle"
 
 interface MenuHeroProps {
   config: SiteConfig
@@ -11,7 +12,6 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
   const tienePertenencia = config.hosteria_nombre || config.empresa_nombre
   const acento           = config.hero_color_fondo || "#E8B84B"
 
-  // CTA scrollea a la primera categoría real, o al fallback "#entrada"
   const ctaHref = firstCategoryId ? `#${firstCategoryId}` : "#entrada"
 
   const heroStyle = config.hero_imagen_fondo_url
@@ -40,7 +40,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
       className="relative isolate overflow-hidden"
       style={heroStyle}
     >
-      {/* Overlay de color — solo cuando hay imagen de fondo */}
+      {/* Overlay de color */}
       {config.hero_imagen_fondo_url && (
         <div
           className="absolute inset-0 z-0"
@@ -49,7 +49,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         />
       )}
 
-      {/* Textura de papel sutil */}
+      {/* Textura sutil */}
       <div
         className="absolute inset-0 z-0 opacity-[0.06]"
         style={{
@@ -58,17 +58,13 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         aria-hidden="true"
       />
 
+      {/* Toggle arriba a la derecha — dentro del hero, desaparece al scrollear */}
+      <div className="absolute right-4 top-4 z-20">
+        <DarkToggle />
+      </div>
+
       {/* Contenido */}
       <div className="relative z-10 mx-auto flex min-h-[85vh] max-w-sm flex-col items-center justify-center gap-8 px-6 py-24 text-center">
-        {/*
-          ── TOKENS en lugar de oklch hardcodeados ────────────────────────
-          El hero tiene fondo de color de marca (claro/oscuro propio),
-          así que usamos opacidades del foreground sobre ese fondo,
-          en lugar de --foreground del sistema (que cambia con dark mode
-          y rompía la legibilidad sobre el fondo de acento).
-          La solución correcta es una CSS custom property local --hero-ink
-          que definimos inline y reutilizamos en todos los hijos.
-        */}
         <p
           className="font-sans text-sm font-light tracking-[0.5em] uppercase"
           style={{ color: "oklch(from var(--hero-ink) l c h / 0.7)" }}
@@ -146,25 +142,13 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
           {config.restaurante_boton_hero}
         </a>
 
-        {/* ── Scroll cue animado ──────────────────────────────────────── */}
         <div
           aria-hidden="true"
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
           style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}
         >
-          <span className="font-sans text-[10px] font-light uppercase tracking-[0.3em]">
-            Menú
-          </span>
-          {/* Chevron animado con bounce */}
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            className="animate-bounce"
-          >
+          <span className="font-sans text-[10px] font-light uppercase tracking-[0.3em]">Menú</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-bounce">
             <path d="M6 9l6 6 6-6" />
           </svg>
         </div>

@@ -1,18 +1,16 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import { MenuHero }      from "@/components/menu-hero"
-import { MenuNav }       from "@/components/menu-nav"
-import { MenuSection }   from "@/components/menu-section"
-import { SignatureDish }  from "@/components/signature-dish"
-import { MenuFooter }    from "@/components/menu-footer"
-import { TagFilter }     from "@/components/tag-filter"
-import { DarkToggle }    from "@/components/dark-toggle"
+import { MenuHero }     from "@/components/menu-hero"
+import { MenuNav }      from "@/components/menu-nav"
+import { MenuSection }  from "@/components/menu-section"
+import { SignatureDish } from "@/components/signature-dish"
+import { MenuFooter }   from "@/components/menu-footer"
+import { TagFilter }    from "@/components/tag-filter"
 import type { MenuCategory } from "@/lib/get-menu"
 import type { SiteConfig }   from "@/lib/get-config"
 
 export function MenuClient({ menu, config }: { menu: MenuCategory[]; config: SiteConfig }) {
-  // Array en lugar de Set — React detecta cambios por valor, no por referencia
   const [activeTags, setActiveTags] = useState<string[]>([])
 
   const toggleTag = useCallback((tag: string) => {
@@ -33,7 +31,7 @@ export function MenuClient({ menu, config }: { menu: MenuCategory[]; config: Sit
 
   return (
     <>
-      <DarkToggle />
+      {/* DarkToggle vive dentro de MenuHero */}
       <MenuHero config={config} firstCategoryId={firstCategoryId} />
 
       <MenuNav
