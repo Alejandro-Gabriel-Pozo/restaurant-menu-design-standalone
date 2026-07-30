@@ -14,22 +14,6 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
   const acento           = config.hero_color_fondo || "#E8B84B"
   const ctaHref          = firstCategoryId ? `#${firstCategoryId}` : "#entrada"
 
-  const heroStyleMobile = config.hero_imagen_fondo_url
-    ? {
-        backgroundImage: `url(${config.hero_imagen_fondo_url})`,
-        backgroundSize: "cover" as const,
-        backgroundPosition: "center 45%" as const,
-      }
-    : { backgroundColor: acento }
-
-  const heroStyleDesktop = config.hero_imagen_fondo_url
-    ? {
-        backgroundImage: `url(${config.hero_imagen_fondo_url})`,
-        backgroundSize: "cover" as const,
-        backgroundPosition: "center" as const,
-      }
-    : { backgroundColor: acento }
-
   const posContenido = resolvePosClasses(config.hero_pos_contenido)
   const posLogo      = resolvePosClasses(config.hero_pos_logo)
 
@@ -104,7 +88,6 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
     </div>
   )
 
-  // Mobile: texto de pertenencia en font-[10px] para que entre completo sin truncar
   const grupoLogoMobile = (
     <div className="flex flex-col items-center gap-1.5">
       {config.restaurante_logo_url
@@ -129,30 +112,45 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
   const overlayYTextura = (
     <>
       {config.hero_imagen_fondo_url && (
-        <div className="absolute inset-0 z-0" style={{ backgroundColor: `${acento}BF` }} aria-hidden="true" />
+        <div className="absolute inset-0 z-[1]" style={{ backgroundColor: `${acento}BF` }} aria-hidden="true" />
       )}
       <div
-        className="absolute inset-0 z-0 opacity-[0.06]"
+        className="absolute inset-0 z-[1] opacity-[0.06]"
         style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")` }}
         aria-hidden="true"
       />
     </>
   )
 
+  const bgSolido = !config.hero_imagen_fondo_url
+    ? { backgroundColor: acento } as React.CSSProperties
+    : undefined
+
   return (
     <>
-      {/* ─── MOBILE (< sm) ──────────────────────────────────────────────── */}
-      <section className="relative isolate overflow-hidden min-h-svh sm:hidden" style={heroStyleMobile}>
+      {/* ─── MOBILE (< sm) ──────────────────────────────────────────────────── */}
+      <section
+        className="relative isolate overflow-hidden min-h-svh sm:hidden"
+        style={bgSolido}
+      >
+        {/* Imagen con object-position preciso — z-0 debajo de todo */}
+        {config.hero_imagen_fondo_url && (
+          <img
+            src={config.hero_imagen_fondo_url}
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+            className="absolute inset-0 z-0 h-full w-full object-cover"
+            style={{ objectPosition: "center 45%" }}
+          />
+        )}
+
         {overlayYTextura}
         <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
 
         <div className="relative z-10 flex flex-col justify-between min-h-svh px-6 pt-16 pb-8">
-          {/* Grupo A: texto arriba */}
           <div>{grupoTexto}</div>
-
-          {/* Grupo B + flecha scroll: abajo a la derecha, sin solapamiento */}
           <div className="flex flex-col items-end gap-3 mt-6">
-            {/* Flecha scroll encima del logo, centrada respecto al bloque */}
             {config.hero_etiqueta_scroll && (
               <div className="flex flex-col items-center gap-1 w-full" style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>
                 <span className="font-sans font-light uppercase tracking-[0.3em]" style={{ fontSize: "9px" }}>
@@ -163,14 +161,27 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
                 </svg>
               </div>
             )}
-            {/* Logo + pertenencia alineados a la derecha */}
             <div className="flex justify-end">{grupoLogoMobile}</div>
           </div>
         </div>
       </section>
 
-      {/* ─── DESKTOP (≥ sm) ────────────────────────────────────────────── */}
-      <section className="relative isolate overflow-hidden min-h-[85vh] hidden sm:block" style={heroStyleDesktop}>
+      {/* ─── DESKTOP (≥ sm) ─────────────────────────────────────────────────── */}
+      <section
+        className="relative isolate overflow-hidden min-h-[85vh] hidden sm:block"
+        style={bgSolido}
+      >
+        {config.hero_imagen_fondo_url && (
+          <img
+            src={config.hero_imagen_fondo_url}
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+            className="absolute inset-0 z-0 h-full w-full object-cover"
+            style={{ objectPosition: "center" }}
+          />
+        )}
+
         {overlayYTextura}
         <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
 
