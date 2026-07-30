@@ -1,4 +1,5 @@
 import type { SiteConfig } from "@/lib/get-config"
+import { resolvePosClasses } from "@/lib/get-config"
 import { LogoWithFallback } from "@/components/logo-with-fallback"
 import { DarkToggle } from "@/components/dark-toggle"
 
@@ -22,6 +23,10 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
       }
     : { backgroundColor: acento }
 
+  // Clases de posición para cada grupo
+  const posContenido = resolvePosClasses(config.hero_pos_contenido)
+  const posLogo      = resolvePosClasses(config.hero_pos_logo)
+
   const logoFallback = (
     <div
       className="flex h-16 w-16 items-center justify-center rounded-2xl text-xl font-bold"
@@ -37,7 +42,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
 
   return (
     <section
-      className="relative isolate overflow-hidden"
+      className="relative isolate overflow-hidden min-h-[85vh]"
       style={heroStyle}
     >
       {/* Overlay de color */}
@@ -63,105 +68,112 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         <DarkToggle />
       </div>
 
-      {/* Contenido */}
-      <div className="relative z-10 mx-auto flex min-h-[85vh] max-w-sm flex-col items-center justify-center gap-8 px-6 py-24 text-center">
+      {/* ─── GRUPO A: texto principal ────────────────────────────────────── */}
+      <div className={`absolute inset-0 z-10 flex px-8 py-16 ${posContenido}`}>
+        <div className="flex max-w-sm flex-col gap-6">
 
-        {/* Etiqueta superior configurable */}
-        {config.hero_etiqueta_superior && (
-          <p
-            className="font-sans text-sm font-light tracking-[0.5em] uppercase"
-            style={{ color: "oklch(from var(--hero-ink) l c h / 0.7)" }}
-          >
-            {config.hero_etiqueta_superior}
-          </p>
-        )}
-
-        {config.restaurante_logo_url ? (
-          <LogoWithFallback
-            src={config.restaurante_logo_url}
-            alt={config.restaurante_nombre}
-            className="h-16 w-16 object-contain"
-            fallback={logoFallback}
-          />
-        ) : (
-          logoFallback
-        )}
-
-        <div>
-          <h1
-            className="font-serif text-5xl font-medium leading-tight text-balance sm:text-6xl"
-            style={{ color: "var(--hero-ink)" }}
-          >
-            {config.restaurante_nombre}
-          </h1>
-          {config.restaurante_subtitulo && (
+          {config.hero_etiqueta_superior && (
             <p
-              className="mt-2 font-sans text-xs font-light uppercase tracking-[0.3em]"
-              style={{ color: "oklch(from var(--hero-ink) l c h / 0.6)" }}
+              className="font-sans text-sm font-light tracking-[0.5em] uppercase"
+              style={{ color: "oklch(from var(--hero-ink) l c h / 0.7)" }}
             >
-              {config.restaurante_subtitulo}
+              {config.hero_etiqueta_superior}
+            </p>
+          )}
+
+          <div>
+            <h1
+              className="font-serif text-5xl font-medium leading-tight text-balance sm:text-6xl"
+              style={{ color: "var(--hero-ink)" }}
+            >
+              {config.restaurante_nombre}
+            </h1>
+            {config.restaurante_subtitulo && (
+              <p
+                className="mt-2 font-sans text-xs font-light uppercase tracking-[0.3em]"
+                style={{ color: "oklch(from var(--hero-ink) l c h / 0.6)" }}
+              >
+                {config.restaurante_subtitulo}
+              </p>
+            )}
+          </div>
+
+          {config.restaurante_descripcion && (
+            <p
+              className="max-w-xs text-pretty text-sm leading-relaxed"
+              style={{ color: "oklch(from var(--hero-ink) l c h / 0.75)" }}
+            >
+              {config.restaurante_descripcion}
+            </p>
+          )}
+
+          <a
+            href={ctaHref}
+            className="w-fit rounded-none border px-10 py-3 text-xs font-light uppercase tracking-[0.35em] transition-opacity hover:opacity-70"
+            style={{
+              borderColor: "oklch(from var(--hero-ink) l c h / 0.6)",
+              color: "var(--hero-ink)",
+            }}
+          >
+            {config.restaurante_boton_hero}
+          </a>
+        </div>
+      </div>
+
+      {/* ─── GRUPO B: logo + pertenencia ───────────────────────────────── */}
+      <div className={`absolute inset-0 z-10 flex px-8 py-16 ${posLogo}`}>
+        <div className="flex flex-col items-end gap-3">
+
+          {config.restaurante_logo_url ? (
+            <LogoWithFallback
+              src={config.restaurante_logo_url}
+              alt={config.restaurante_nombre}
+              className="h-16 w-16 object-contain"
+              fallback={logoFallback}
+            />
+          ) : (
+            logoFallback
+          )}
+
+          {mostrarParteDe && tienePertenencia && (
+            <p
+              className="font-sans text-xs uppercase tracking-[0.25em] text-right"
+              style={{ color: "oklch(from var(--hero-ink) l c h / 0.55)" }}
+            >
+              Parte de{" "}
+              {config.hosteria_url ? (
+                <a
+                  href={config.hosteria_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2"
+                >
+                  {config.hosteria_nombre}
+                </a>
+              ) : (
+                config.hosteria_nombre
+              )}
+              {config.empresa_nombre && ` · ${config.empresa_nombre}`}
             </p>
           )}
         </div>
-
-        {config.restaurante_descripcion && (
-          <p
-            className="max-w-xs text-pretty text-sm leading-relaxed"
-            style={{ color: "oklch(from var(--hero-ink) l c h / 0.75)" }}
-          >
-            {config.restaurante_descripcion}
-          </p>
-        )}
-
-        {mostrarParteDe && tienePertenencia && (
-          <p
-            className="font-sans text-xs uppercase tracking-[0.25em]"
-            style={{ color: "oklch(from var(--hero-ink) l c h / 0.55)" }}
-          >
-            Parte de{" "}
-            {config.hosteria_url ? (
-              <a
-                href={config.hosteria_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2"
-              >
-                {config.hosteria_nombre}
-              </a>
-            ) : (
-              config.hosteria_nombre
-            )}
-            {config.empresa_nombre && ` · ${config.empresa_nombre}`}
-          </p>
-        )}
-
-        <a
-          href={ctaHref}
-          className="mt-2 rounded-none border px-10 py-3 text-xs font-light uppercase tracking-[0.35em] transition-opacity hover:opacity-70"
-          style={{
-            borderColor: "oklch(from var(--hero-ink) l c h / 0.6)",
-            color: "var(--hero-ink)",
-          }}
-        >
-          {config.restaurante_boton_hero}
-        </a>
-
-        {/* Flecha scroll: se muestra solo si hero_etiqueta_scroll tiene valor */}
-        {config.hero_etiqueta_scroll && (
-          <div
-            aria-hidden="true"
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
-            style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}
-          >
-            <span className="font-sans text-[10px] font-light uppercase tracking-[0.3em]">
-              {config.hero_etiqueta_scroll}
-            </span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-bounce">
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </div>
-        )}
       </div>
+
+      {/* ─── Flecha scroll: fija abajo al centro ──────────────────────────── */}
+      {config.hero_etiqueta_scroll && (
+        <div
+          aria-hidden="true"
+          className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2 flex flex-col items-center gap-1"
+          style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}
+        >
+          <span className="font-sans text-[10px] font-light uppercase tracking-[0.3em]">
+            {config.hero_etiqueta_scroll}
+          </span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-bounce">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </div>
+      )}
     </section>
   )
 }

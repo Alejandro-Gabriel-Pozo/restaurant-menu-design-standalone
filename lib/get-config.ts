@@ -17,6 +17,8 @@ export type SiteConfig = {
   hero_etiqueta_scroll:         string
   hero_ink:                     string
   hero_ink_noche:               string
+  hero_pos_contenido:           string
+  hero_pos_logo:                string
   color_fondo_dia:              string
   color_fondo_noche:            string
   mostrar_pertenencia:          string
@@ -53,6 +55,8 @@ const defaults: SiteConfig = {
   hero_etiqueta_scroll:         "Menú",
   hero_ink:                     "",
   hero_ink_noche:               "",
+  hero_pos_contenido:           "center",
+  hero_pos_logo:                "bottom-right",
   color_fondo_dia:              "",
   color_fondo_noche:            "",
   mostrar_pertenencia:          "",
@@ -93,6 +97,27 @@ export function resolveHeroInk(value: string): string | null {
   if (v === "claro")  return "oklch(0.96 0.005 80)"
   if (v === "oscuro") return "oklch(0.18 0.02 40)"
   return value.trim()
+}
+
+/**
+ * Convierte 'top-left' | 'top-center' | 'top-right'
+ *           'center-left' | 'center' | 'center-right'
+ *           'bottom-left' | 'bottom-center' | 'bottom-right'
+ * en clases Tailwind de justify + items para un flex absolute-fill container.
+ */
+export function resolvePosClasses(pos: string): string {
+  const map: Record<string, string> = {
+    "top-left":      "items-start justify-start   text-left",
+    "top-center":    "items-start justify-center  text-center",
+    "top-right":     "items-start justify-end     text-right",
+    "center-left":   "items-center justify-start  text-left",
+    "center":        "items-center justify-center text-center",
+    "center-right":  "items-center justify-end    text-right",
+    "bottom-left":   "items-end   justify-start   text-left",
+    "bottom-center": "items-end   justify-center  text-center",
+    "bottom-right":  "items-end   justify-end     text-right",
+  }
+  return map[pos.trim().toLowerCase()] ?? map["center"]
 }
 
 export async function getConfig(): Promise<SiteConfig> {
