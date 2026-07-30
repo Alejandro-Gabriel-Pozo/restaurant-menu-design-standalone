@@ -55,7 +55,7 @@ const defaults: SiteConfig = {
   hero_etiqueta_scroll:         "Menú",
   hero_ink:                     "",
   hero_ink_noche:               "",
-  hero_pos_contenido:           "middle-right",
+  hero_pos_contenido:           "center-right",
   hero_pos_logo:                "bottom-right",
   color_fondo_dia:              "",
   color_fondo_noche:            "",
@@ -96,7 +96,6 @@ export async function getConfig(): Promise<SiteConfig> {
 
   try {
     const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=Config`
-    // cache: "no-store" para que cada build del deploy hook lea el Sheet fresco
     const res = await fetch(url, { cache: "no-store" })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const table = parseGviz(await res.text())

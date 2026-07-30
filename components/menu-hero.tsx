@@ -17,15 +17,6 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
   const posContenido = resolvePosClasses(config.hero_pos_contenido)
   const posLogo      = resolvePosClasses(config.hero_pos_logo)
 
-  const sectionStyleMobile: React.CSSProperties = {
-    minHeight: "100svh",
-    height: "100svh",
-  }
-
-  // scale(1.4) agranda la imagen 40% más allá del contenedor.
-  // transform-origin: center 70% ancla el zoom desde abajo,
-  // lo que empuja la parte inferior a ser visible en el recorte.
-  // Cambiá "center 70%" por "center 30%" para ver más la parte superior.
   const imgStyleMobile: React.CSSProperties = {
     position: "absolute",
     inset: 0,
@@ -127,7 +118,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
       }
       {mostrarParteDe && tienePertenencia && (
         <p
-          className="uppercase tracking-[0.2em] text-right leading-snug"
+          className="uppercase tracking-[0.2em] leading-snug"
           style={{ fontSize: "10px", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}
         >
           Parte de{" "}
@@ -162,7 +153,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
       {/* ─── MOBILE (< sm) */}
       <section
         className="relative isolate overflow-hidden sm:hidden"
-        style={{ ...bgSolido, ...sectionStyleMobile }}
+        style={{ ...bgSolido, minHeight: "100svh", height: "100svh" }}
       >
         {config.hero_imagen_fondo_url && (
           <img
@@ -175,22 +166,26 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         )}
         {overlayYTextura}
         <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
-        <div className="relative z-10 flex flex-col justify-between min-h-svh px-6 pt-16 pb-8">
-          <div>{grupoTexto}</div>
-          <div className="flex flex-col items-end gap-3 mt-6">
-            {config.hero_etiqueta_scroll && (
-              <div className="flex flex-col items-center gap-1 w-full" style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>
-                <span className="font-sans font-light uppercase tracking-[0.3em]" style={{ fontSize: "9px" }}>
-                  {config.hero_etiqueta_scroll}
-                </span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-bounce">
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
-              </div>
-            )}
-            <div className="flex justify-end">{grupoLogoMobile}</div>
-          </div>
+        <div className={`absolute inset-0 z-10 flex px-6 pt-16 pb-8 pointer-events-none ${posContenido}`}>
+          <div className="pointer-events-auto">{grupoTexto}</div>
         </div>
+        <div className={`absolute inset-0 z-10 flex px-6 pt-16 pb-8 pointer-events-none ${posLogo}`}>
+          <div className="pointer-events-auto">{grupoLogoMobile}</div>
+        </div>
+        {config.hero_etiqueta_scroll && (
+          <div
+            aria-hidden="true"
+            className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2 flex flex-col items-center gap-1"
+            style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}
+          >
+            <span className="font-sans font-light uppercase tracking-[0.3em]" style={{ fontSize: "9px" }}>
+              {config.hero_etiqueta_scroll}
+            </span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-bounce">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </div>
+        )}
       </section>
 
       {/* ─── DESKTOP (≥ sm) */}
