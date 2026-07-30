@@ -1,7 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Viewport } from 'next'
 import { Geist, Playfair_Display } from 'next/font/google'
-import { getConfig } from '@/lib/get-config'
+import { getConfig, resolveHeroInk } from '@/lib/get-config'
 import './globals.css'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
@@ -48,6 +48,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   const config = await getConfig()
+  const heroInkResuelto = resolveHeroInk(config.hero_ink)
 
   const estilosDinamicos = [
     config.color_fondo_dia
@@ -55,6 +56,10 @@ export default async function RootLayout({
       : "",
     config.color_fondo_noche
       ? `.dark { --background: ${config.color_fondo_noche} !important; --card: ${config.color_fondo_noche} !important; }`
+      : "",
+    // hero_ink sobreescribe en ambos modos si está seteado
+    heroInkResuelto
+      ? `:root { --hero-ink: ${heroInkResuelto} !important; }`
       : "",
   ].filter(Boolean).join("\n")
 

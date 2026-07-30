@@ -15,6 +15,7 @@ export type SiteConfig = {
   hero_imagen_fondo_url:        string
   hero_etiqueta_superior:       string
   hero_etiqueta_scroll:         string
+  hero_ink:                     string
   color_fondo_dia:              string
   color_fondo_noche:            string
   mostrar_pertenencia:          string
@@ -49,6 +50,7 @@ const defaults: SiteConfig = {
   hero_imagen_fondo_url:        "",
   hero_etiqueta_superior:       "Menú",
   hero_etiqueta_scroll:         "Menú",
+  hero_ink:                     "",
   color_fondo_dia:              "",
   color_fondo_noche:            "",
   mostrar_pertenencia:          "",
@@ -80,6 +82,16 @@ function parseGviz(text: string): GvizTable {
     .slice(0, -2)
   const json: GvizResponse = JSON.parse(cleaned)
   return json.table
+}
+
+/** Resuelve el valor final de --hero-ink a partir del campo hero_ink del config */
+export function resolveHeroInk(heroInk: string): string | null {
+  if (!heroInk) return null
+  const val = heroInk.trim().toLowerCase()
+  if (val === "claro")  return "oklch(0.96 0.005 80)"
+  if (val === "oscuro") return "oklch(0.18 0.02 40)"
+  // Cualquier otro valor se usa como color CSS directo
+  return heroInk.trim()
 }
 
 export async function getConfig(): Promise<SiteConfig> {
