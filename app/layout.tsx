@@ -49,12 +49,18 @@ export default async function RootLayout({
 }>) {
   const config = await getConfig()
 
+  const estilosDinamicos = [
+    config.color_fondo_dia
+      ? `:root:not(.dark) { --background: ${config.color_fondo_dia} !important; --card: ${config.color_fondo_dia} !important; }`
+      : "",
+    config.color_fondo_noche
+      ? `.dark { --background: ${config.color_fondo_noche} !important; --card: ${config.color_fondo_noche} !important; }`
+      : "",
+  ].filter(Boolean).join("\n")
+
   return (
     <html lang="es" className={`${geistSans.variable} ${playfair.variable} bg-background`}>
-      {/* Solo aplica en modo día (:not(.dark)), no toca el dark mode */}
-      {config.color_fondo_dia && (
-        <style>{`:root:not(.dark) { --background: ${config.color_fondo_dia} !important; --card: ${config.color_fondo_dia} !important; }`}</style>
-      )}
+      {estilosDinamicos && <style>{estilosDinamicos}</style>}
       <body className="font-sans antialiased">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}

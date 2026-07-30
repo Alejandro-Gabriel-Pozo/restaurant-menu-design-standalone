@@ -14,6 +14,7 @@ export type SiteConfig = {
   hero_color_fondo:             string
   hero_imagen_fondo_url:        string
   color_fondo_dia:              string
+  color_fondo_noche:            string
   mostrar_pertenencia:          string
   hosteria_nombre:              string
   hosteria_url:                 string
@@ -45,6 +46,7 @@ const defaults: SiteConfig = {
   hero_color_fondo:             "",
   hero_imagen_fondo_url:        "",
   color_fondo_dia:              "",
+  color_fondo_noche:            "",
   mostrar_pertenencia:          "",
   hosteria_nombre:              "",
   hosteria_url:                 "",
