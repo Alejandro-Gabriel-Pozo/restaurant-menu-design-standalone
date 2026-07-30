@@ -3,33 +3,35 @@ import { Reveal } from "@/components/reveal"
 import { TagIcon } from "@/lib/tag-icons"
 
 export function MenuSection({ category }: { category: MenuCategory }) {
+  const tieneImagen = Boolean(category.imagen_url)
+
   return (
     <section
       id={category.id}
+      // Sin contentVisibility: el observer necesita altura real en el DOM
       className="scroll-mt-28 py-14 md:py-20"
     >
       {/* ── Encabezado ──────────────────────────────────────────────────── */}
       <Reveal>
-        <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-10">
-          {/* Texto: categoría + título + descripción */}
-          <div className="flex-1 min-w-0">
+        <div
+          className={[
+            "mb-10 max-w-2xl",
+            tieneImagen ? "relative overflow-hidden rounded-sm -mx-6 px-6 py-8 sm:-mx-8 sm:px-8" : "",
+          ].join(" ")}
+          style={
+            tieneImagen
+              ? { backgroundImage: `url(${category.imagen_url})`, backgroundSize: "cover", backgroundPosition: "center" }
+              : undefined
+          }
+        >
+          {tieneImagen && <div className="absolute inset-0 bg-background/82" aria-hidden="true" />}
+          <div className={tieneImagen ? "relative" : undefined}>
             <p className="font-sans text-xs font-light uppercase tracking-[0.4em] text-primary">{category.label}</p>
             <h2 className="mt-3 font-serif text-4xl font-medium text-foreground text-balance md:text-5xl">{category.title}</h2>
             {category.description && (
               <p className="mt-3 text-pretty leading-relaxed text-muted-foreground">{category.description}</p>
             )}
           </div>
-
-          {/* Imagen a la derecha (solo si existe) */}
-          {category.imagen_url && (
-            <div className="w-full sm:w-48 md:w-64 shrink-0">
-              <img
-                src={category.imagen_url}
-                alt={category.title}
-                className="w-full h-40 sm:h-48 md:h-56 object-cover rounded-sm"
-              />
-            </div>
-          )}
         </div>
       </Reveal>
 
