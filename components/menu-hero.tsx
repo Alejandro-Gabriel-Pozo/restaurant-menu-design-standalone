@@ -14,12 +14,11 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
   const acento           = config.hero_color_fondo || "#E8B84B"
   const ctaHref          = firstCategoryId ? `#${firstCategoryId}` : "#entrada"
 
-  const heroStyle = config.hero_imagen_fondo_url
+  const heroStyleMobile = config.hero_imagen_fondo_url
     ? {
         backgroundImage: `url(${config.hero_imagen_fondo_url})`,
         backgroundSize: "cover" as const,
-        // En mobile la imagen baja un poco para mostrar más del centro/inferior
-        backgroundPosition: "center 30%" as const,
+        backgroundPosition: "center 45%" as const,
       }
     : { backgroundColor: acento }
 
@@ -43,7 +42,6 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
     </div>
   )
 
-  /** Bloque de texto */
   const grupoTexto = (
     <div className="flex max-w-[85vw] sm:max-w-sm flex-col gap-4 sm:gap-6">
       {config.hero_etiqueta_superior && (
@@ -88,83 +86,47 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
     </div>
   )
 
-  /** Bloque de logo + pertenencia para desktop (igual que antes) */
   const grupoLogoDesktop = (
     <div className="flex flex-col items-center gap-2">
       {config.restaurante_logo_url
-        ? <LogoWithFallback
-            src={config.restaurante_logo_url}
-            alt={config.restaurante_nombre}
-            className="h-16 w-16 object-contain"
-            fallback={logoFallback}
-          />
+        ? <LogoWithFallback src={config.restaurante_logo_url} alt={config.restaurante_nombre} className="h-16 w-16 object-contain" fallback={logoFallback} />
         : logoFallback
       }
       {mostrarParteDe && tienePertenencia && (
-        <p
-          className="font-sans text-xs uppercase tracking-[0.25em] text-center"
-          style={{ color: "oklch(from var(--hero-ink) l c h / 0.55)" }}
-        >
+        <p className="font-sans text-xs uppercase tracking-[0.25em] text-center" style={{ color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
           Parte de{" "}
-          {config.hosteria_url
-            ? <a href={config.hosteria_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.hosteria_nombre}</a>
-            : config.hosteria_nombre
-          }
+          {config.hosteria_url ? <a href={config.hosteria_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.hosteria_nombre}</a> : config.hosteria_nombre}
           {config.empresa_nombre && (
-            <>
-              {" · "}
-              {config.empresa_url
-                ? <a href={config.empresa_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.empresa_nombre}</a>
-                : config.empresa_nombre
-              }
-            </>
+            <>{" · "}{config.empresa_url ? <a href={config.empresa_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.empresa_nombre}</a> : config.empresa_nombre}</>
           )}
         </p>
       )}
     </div>
   )
 
-  /** Bloque de logo + pertenencia para mobile:
-   *  - Logo centrado respecto al texto de pertenencia
-   *  - Texto de pertenencia sin max-w fijo, alineado a la derecha
-   *  - Todo el bloque alineado a la derecha del contenedor
-   */
+  // Mobile: texto de pertenencia en font-[10px] para que entre completo sin truncar
   const grupoLogoMobile = (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col items-center gap-1.5">
       {config.restaurante_logo_url
-        ? <LogoWithFallback
-            src={config.restaurante_logo_url}
-            alt={config.restaurante_nombre}
-            className="h-14 w-14 object-contain"
-            fallback={logoFallback}
-          />
+        ? <LogoWithFallback src={config.restaurante_logo_url} alt={config.restaurante_nombre} className="h-14 w-14 object-contain" fallback={logoFallback} />
         : logoFallback
       }
       {mostrarParteDe && tienePertenencia && (
         <p
-          className="font-sans text-xs uppercase tracking-[0.25em] text-right"
-          style={{ color: "oklch(from var(--hero-ink) l c h / 0.55)" }}
+          className="uppercase tracking-[0.2em] text-right leading-snug"
+          style={{ fontSize: "10px", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}
         >
           Parte de{" "}
-          {config.hosteria_url
-            ? <a href={config.hosteria_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.hosteria_nombre}</a>
-            : config.hosteria_nombre
-          }
+          {config.hosteria_url ? <a href={config.hosteria_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.hosteria_nombre}</a> : config.hosteria_nombre}
           {config.empresa_nombre && (
-            <>
-              {" · "}
-              {config.empresa_url
-                ? <a href={config.empresa_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.empresa_nombre}</a>
-                : config.empresa_nombre
-              }
-            </>
+            <>{" · "}{config.empresa_url ? <a href={config.empresa_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.empresa_nombre}</a> : config.empresa_nombre}</>
           )}
         </p>
       )}
     </div>
   )
 
-  const overlayYTextura = (style: React.CSSProperties) => (
+  const overlayYTextura = (
     <>
       {config.hero_imagen_fondo_url && (
         <div className="absolute inset-0 z-0" style={{ backgroundColor: `${acento}BF` }} aria-hidden="true" />
@@ -179,46 +141,49 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
 
   return (
     <>
-      {/* ─── MOBILE (< sm) ───────────────────────────────────────────────────────── */}
-      <section
-        className="relative isolate overflow-hidden min-h-svh sm:hidden"
-        style={heroStyle}
-      >
-        {overlayYTextura(heroStyle)}
+      {/* ─── MOBILE (< sm) ──────────────────────────────────────────────── */}
+      <section className="relative isolate overflow-hidden min-h-svh sm:hidden" style={heroStyleMobile}>
+        {overlayYTextura}
         <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
 
-        {/* flex-col justify-between: texto arriba, logo abajo — se adapta a cualquier largo */}
-        <div className="relative z-10 flex flex-col justify-between min-h-svh px-6 pt-16 pb-10">
-          {/* Grupo A arriba */}
+        <div className="relative z-10 flex flex-col justify-between min-h-svh px-6 pt-16 pb-8">
+          {/* Grupo A: texto arriba */}
           <div>{grupoTexto}</div>
-          {/* Grupo B abajo a la derecha — respeta bottom-right como en desktop */}
-          <div className="flex justify-end mt-6">{grupoLogoMobile}</div>
+
+          {/* Grupo B + flecha scroll: abajo a la derecha, sin solapamiento */}
+          <div className="flex flex-col items-end gap-3 mt-6">
+            {/* Flecha scroll encima del logo, centrada respecto al bloque */}
+            {config.hero_etiqueta_scroll && (
+              <div className="flex flex-col items-center gap-1 w-full" style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>
+                <span className="font-sans font-light uppercase tracking-[0.3em]" style={{ fontSize: "9px" }}>
+                  {config.hero_etiqueta_scroll}
+                </span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-bounce">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </div>
+            )}
+            {/* Logo + pertenencia alineados a la derecha */}
+            <div className="flex justify-end">{grupoLogoMobile}</div>
+          </div>
         </div>
       </section>
 
-      {/* ─── DESKTOP (≥ sm) ───────────────────────────────────────────────────── */}
-      <section
-        className="relative isolate overflow-hidden min-h-[85vh] hidden sm:block"
-        style={heroStyleDesktop}
-      >
-        {overlayYTextura(heroStyleDesktop)}
+      {/* ─── DESKTOP (≥ sm) ────────────────────────────────────────────── */}
+      <section className="relative isolate overflow-hidden min-h-[85vh] hidden sm:block" style={heroStyleDesktop}>
+        {overlayYTextura}
         <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
 
-        {/* GRUPO A */}
         <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posContenido}`}>
           <div className="flex max-w-sm flex-col gap-6 pointer-events-auto">
             {grupoTexto}
           </div>
         </div>
 
-        {/* GRUPO B */}
         <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posLogo}`}>
-          <div className="pointer-events-auto">
-            {grupoLogoDesktop}
-          </div>
+          <div className="pointer-events-auto">{grupoLogoDesktop}</div>
         </div>
 
-        {/* Flecha scroll */}
         {config.hero_etiqueta_scroll && (
           <div
             aria-hidden="true"
