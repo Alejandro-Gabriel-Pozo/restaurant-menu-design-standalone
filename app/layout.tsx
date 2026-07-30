@@ -48,7 +48,9 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   const config = await getConfig()
-  const heroInkResuelto = resolveHeroInk(config.hero_ink)
+
+  const inkDia   = resolveHeroInk(config.hero_ink)
+  const inkNoche = resolveHeroInk(config.hero_ink_noche)
 
   const estilosDinamicos = [
     config.color_fondo_dia
@@ -57,9 +59,13 @@ export default async function RootLayout({
     config.color_fondo_noche
       ? `.dark { --background: ${config.color_fondo_noche} !important; --card: ${config.color_fondo_noche} !important; }`
       : "",
-    // hero_ink sobreescribe en ambos modos si está seteado
-    heroInkResuelto
-      ? `:root { --hero-ink: ${heroInkResuelto} !important; }`
+    // hero_ink → solo modo día
+    inkDia
+      ? `:root:not(.dark) { --hero-ink: ${inkDia} !important; }`
+      : "",
+    // hero_ink_noche → solo modo noche
+    inkNoche
+      ? `.dark { --hero-ink: ${inkNoche} !important; }`
       : "",
   ].filter(Boolean).join("\n")
 
