@@ -18,6 +18,15 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
     ? {
         backgroundImage: `url(${config.hero_imagen_fondo_url})`,
         backgroundSize: "cover" as const,
+        // En mobile la imagen baja un poco para mostrar más del centro/inferior
+        backgroundPosition: "center 30%" as const,
+      }
+    : { backgroundColor: acento }
+
+  const heroStyleDesktop = config.hero_imagen_fondo_url
+    ? {
+        backgroundImage: `url(${config.hero_imagen_fondo_url})`,
+        backgroundSize: "cover" as const,
         backgroundPosition: "center" as const,
       }
     : { backgroundColor: acento }
@@ -34,7 +43,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
     </div>
   )
 
-  /** Bloque de texto — reutilizado en mobile y desktop */
+  /** Bloque de texto */
   const grupoTexto = (
     <div className="flex max-w-[85vw] sm:max-w-sm flex-col gap-4 sm:gap-6">
       {config.hero_etiqueta_superior && (
@@ -79,21 +88,21 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
     </div>
   )
 
-  /** Bloque de logo + pertenencia — reutilizado en mobile y desktop */
-  const grupoLogo = (
+  /** Bloque de logo + pertenencia para desktop (igual que antes) */
+  const grupoLogoDesktop = (
     <div className="flex flex-col items-center gap-2">
       {config.restaurante_logo_url
         ? <LogoWithFallback
             src={config.restaurante_logo_url}
             alt={config.restaurante_nombre}
-            className="h-14 w-14 sm:h-16 sm:w-16 object-contain"
+            className="h-16 w-16 object-contain"
             fallback={logoFallback}
           />
         : logoFallback
       }
       {mostrarParteDe && tienePertenencia && (
         <p
-          className="font-sans text-xs uppercase tracking-[0.25em] text-center max-w-[160px] sm:max-w-none"
+          className="font-sans text-xs uppercase tracking-[0.25em] text-center"
           style={{ color: "oklch(from var(--hero-ink) l c h / 0.55)" }}
         >
           Parte de{" "}
@@ -115,7 +124,47 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
     </div>
   )
 
-  const overlayYTextura = (
+  /** Bloque de logo + pertenencia para mobile:
+   *  - Logo centrado respecto al texto de pertenencia
+   *  - Texto de pertenencia sin max-w fijo, alineado a la derecha
+   *  - Todo el bloque alineado a la derecha del contenedor
+   */
+  const grupoLogoMobile = (
+    <div className="flex flex-col items-center gap-2">
+      {config.restaurante_logo_url
+        ? <LogoWithFallback
+            src={config.restaurante_logo_url}
+            alt={config.restaurante_nombre}
+            className="h-14 w-14 object-contain"
+            fallback={logoFallback}
+          />
+        : logoFallback
+      }
+      {mostrarParteDe && tienePertenencia && (
+        <p
+          className="font-sans text-xs uppercase tracking-[0.25em] text-right"
+          style={{ color: "oklch(from var(--hero-ink) l c h / 0.55)" }}
+        >
+          Parte de{" "}
+          {config.hosteria_url
+            ? <a href={config.hosteria_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.hosteria_nombre}</a>
+            : config.hosteria_nombre
+          }
+          {config.empresa_nombre && (
+            <>
+              {" · "}
+              {config.empresa_url
+                ? <a href={config.empresa_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.empresa_nombre}</a>
+                : config.empresa_nombre
+              }
+            </>
+          )}
+        </p>
+      )}
+    </div>
+  )
+
+  const overlayYTextura = (style: React.CSSProperties) => (
     <>
       {config.hero_imagen_fondo_url && (
         <div className="absolute inset-0 z-0" style={{ backgroundColor: `${acento}BF` }} aria-hidden="true" />
@@ -130,47 +179,42 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
 
   return (
     <>
-      {/* ──────────────────────────────────────────────────────────────────
-           MOBILE (< sm): flex-col justify-between, se auto-ajusta con cualquier largo de texto
-           ────────────────────────────────────────────────────────────────── */}
+      {/* ─── MOBILE (< sm) ───────────────────────────────────────────────────────── */}
       <section
         className="relative isolate overflow-hidden min-h-svh sm:hidden"
         style={heroStyle}
-        aria-hidden="false"
       >
-        {overlayYTextura}
+        {overlayYTextura(heroStyle)}
         <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
 
-        {/* Un solo flex-col que ocupa toda la altura y separa texto (arriba) de logo (abajo) */}
-        <div className="relative z-10 flex flex-col justify-between h-full min-h-svh px-6 pt-16 pb-10">
-          {/* Grupo A: siempre arriba */}
+        {/* flex-col justify-between: texto arriba, logo abajo — se adapta a cualquier largo */}
+        <div className="relative z-10 flex flex-col justify-between min-h-svh px-6 pt-16 pb-10">
+          {/* Grupo A arriba */}
           <div>{grupoTexto}</div>
-          {/* Grupo B: siempre abajo, centrado */}
-          <div className="flex justify-center mt-6">{grupoLogo}</div>
+          {/* Grupo B abajo a la derecha — respeta bottom-right como en desktop */}
+          <div className="flex justify-end mt-6">{grupoLogoMobile}</div>
         </div>
       </section>
 
-      {/* ──────────────────────────────────────────────────────────────────
-           DESKTOP (≥ sm): idéntico al original — dos grupos absolute inset-0
-           ────────────────────────────────────────────────────────────────── */}
+      {/* ─── DESKTOP (≥ sm) ───────────────────────────────────────────────────── */}
       <section
         className="relative isolate overflow-hidden min-h-[85vh] hidden sm:block"
-        style={heroStyle}
+        style={heroStyleDesktop}
       >
-        {overlayYTextura}
+        {overlayYTextura(heroStyleDesktop)}
         <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
 
-        {/* GRUPO A: texto principal */}
+        {/* GRUPO A */}
         <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posContenido}`}>
           <div className="flex max-w-sm flex-col gap-6 pointer-events-auto">
             {grupoTexto}
           </div>
         </div>
 
-        {/* GRUPO B: logo + pertenencia */}
+        {/* GRUPO B */}
         <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posLogo}`}>
           <div className="pointer-events-auto">
-            {grupoLogo}
+            {grupoLogoDesktop}
           </div>
         </div>
 
