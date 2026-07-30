@@ -51,9 +51,9 @@ export default async function RootLayout({
 
   return (
     <html lang="es" className={`${geistSans.variable} ${playfair.variable} bg-background`}>
-      {/* Sobreescribe --background en modo día si se configuró desde el Sheet */}
+      {/* Solo aplica en modo día (:not(.dark)), no toca el dark mode */}
       {config.color_fondo_dia && (
-        <style>{`:root { --background: ${config.color_fondo_dia} !important; --card: ${config.color_fondo_dia} !important; }`}</style>
+        <style>{`:root:not(.dark) { --background: ${config.color_fondo_dia} !important; --card: ${config.color_fondo_dia} !important; }`}</style>
       )}
       <body className="font-sans antialiased">
         {children}
