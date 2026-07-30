@@ -13,6 +13,8 @@ export type SiteConfig = {
   restaurante_logo_url:         string
   hero_color_fondo:             string
   hero_imagen_fondo_url:        string
+  hero_etiqueta_superior:       string
+  hero_etiqueta_scroll:         string
   color_fondo_dia:              string
   color_fondo_noche:            string
   mostrar_pertenencia:          string
@@ -45,6 +47,8 @@ const defaults: SiteConfig = {
   restaurante_logo_url:         "",
   hero_color_fondo:             "",
   hero_imagen_fondo_url:        "",
+  hero_etiqueta_superior:       "Menú",
+  hero_etiqueta_scroll:         "Menú",
   color_fondo_dia:              "",
   color_fondo_noche:            "",
   mostrar_pertenencia:          "",

@@ -58,19 +58,23 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         aria-hidden="true"
       />
 
-      {/* Toggle arriba a la derecha — dentro del hero, desaparece al scrollear */}
+      {/* Toggle arriba a la derecha */}
       <div className="absolute right-4 top-4 z-20">
         <DarkToggle />
       </div>
 
       {/* Contenido */}
       <div className="relative z-10 mx-auto flex min-h-[85vh] max-w-sm flex-col items-center justify-center gap-8 px-6 py-24 text-center">
-        <p
-          className="font-sans text-sm font-light tracking-[0.5em] uppercase"
-          style={{ color: "oklch(from var(--hero-ink) l c h / 0.7)" }}
-        >
-          Menú
-        </p>
+
+        {/* Etiqueta superior configurable */}
+        {config.hero_etiqueta_superior && (
+          <p
+            className="font-sans text-sm font-light tracking-[0.5em] uppercase"
+            style={{ color: "oklch(from var(--hero-ink) l c h / 0.7)" }}
+          >
+            {config.hero_etiqueta_superior}
+          </p>
+        )}
 
         {config.restaurante_logo_url ? (
           <LogoWithFallback
@@ -142,16 +146,21 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
           {config.restaurante_boton_hero}
         </a>
 
-        <div
-          aria-hidden="true"
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
-          style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}
-        >
-          <span className="font-sans text-[10px] font-light uppercase tracking-[0.3em]">Menú</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-bounce">
-            <path d="M6 9l6 6 6-6" />
-          </svg>
-        </div>
+        {/* Flecha scroll: se muestra solo si hero_etiqueta_scroll tiene valor */}
+        {config.hero_etiqueta_scroll && (
+          <div
+            aria-hidden="true"
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
+            style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}
+          >
+            <span className="font-sans text-[10px] font-light uppercase tracking-[0.3em]">
+              {config.hero_etiqueta_scroll}
+            </span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-bounce">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </div>
+        )}
       </div>
     </section>
   )
