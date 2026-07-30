@@ -76,7 +76,7 @@ const defaults: SiteConfig = {
   restaurante_whatsapp:         "",
 }
 
-type GvizCell = { v: string | null }
+type GvizCell = { v: string | number | boolean | null }
 type GvizRow = { c: (GvizCell | null)[] }
 type GvizTable = { cols: { label: string }[]; rows: GvizRow[] }
 type GvizResponse = { table: GvizTable }
@@ -103,8 +103,10 @@ export async function getConfig(): Promise<SiteConfig> {
     const config: SiteConfig = { ...defaults }
     for (const row of table.rows) {
       if (!row.c) continue
-      const key = row.c[0]?.v?.trim() as keyof SiteConfig | undefined
-      const val = row.c[1]?.v?.trim() ?? ""
+      const key   = row.c[0]?.v != null ? String(row.c[0].v).trim() as keyof SiteConfig : undefined
+      // Castear a string para manejar booleanos (true/false) y números que Sheets devuelve sin comillas
+      const raw   = row.c[1]?.v
+      const val   = raw != null ? String(raw).trim() : ""
       if (key && key in defaults && val) {
         config[key] = val
       }
