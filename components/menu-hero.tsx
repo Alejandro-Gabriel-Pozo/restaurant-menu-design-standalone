@@ -84,19 +84,28 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
 
       {/* GRUPO B: logo + pertenencia */}
       <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posLogo}`}>
-        <div className="flex flex-col items-end gap-3 pointer-events-auto">
+        {/* items-center centra el logo horizontalmente respecto al texto de pertenencia */}
+        <div className="flex flex-col items-center gap-2 pointer-events-auto">
           {config.restaurante_logo_url
             ? <LogoWithFallback src={config.restaurante_logo_url} alt={config.restaurante_nombre} className="h-16 w-16 object-contain" fallback={logoFallback} />
             : logoFallback
           }
           {mostrarParteDe && tienePertenencia && (
-            <p className="font-sans text-xs uppercase tracking-[0.25em] text-right" style={{ color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
+            <p className="font-sans text-xs uppercase tracking-[0.25em] text-center" style={{ color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
               Parte de{" "}
               {config.hosteria_url
                 ? <a href={config.hosteria_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.hosteria_nombre}</a>
                 : config.hosteria_nombre
               }
-              {config.empresa_nombre && ` · ${config.empresa_nombre}`}
+              {config.empresa_nombre && (
+                <>
+                  {" · "}
+                  {config.empresa_url
+                    ? <a href={config.empresa_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.empresa_nombre}</a>
+                    : config.empresa_nombre
+                  }
+                </>
+              )}
             </p>
           )}
         </div>
