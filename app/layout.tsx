@@ -42,13 +42,19 @@ export async function generateViewport(): Promise<Viewport> {
   }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const config = await getConfig()
+
   return (
     <html lang="es" className={`${geistSans.variable} ${playfair.variable} bg-background`}>
+      {/* Sobreescribe --background en modo día si se configuró desde el Sheet */}
+      {config.color_fondo_dia && (
+        <style>{`:root { --background: ${config.color_fondo_dia} !important; --card: ${config.color_fondo_dia} !important; }`}</style>
+      )}
       <body className="font-sans antialiased">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
