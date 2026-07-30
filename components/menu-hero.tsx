@@ -17,6 +17,28 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
   const posContenido = resolvePosClasses(config.hero_pos_contenido)
   const posLogo      = resolvePosClasses(config.hero_pos_logo)
 
+  // Inline styles para el <img> de fondo — evita que Tailwind base (img { height: auto })
+  // pise h-full y que object-position no tenga efecto por dimensiones incorrectas.
+  const imgStyleMobile: React.CSSProperties = {
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    objectPosition: "center 70%",
+    zIndex: 0,
+  }
+
+  const imgStyleDesktop: React.CSSProperties = {
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    objectPosition: "center",
+    zIndex: 0,
+  }
+
   const logoFallback = (
     <div
       className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl text-xl font-bold"
@@ -136,8 +158,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
             alt=""
             aria-hidden="true"
             loading="eager"
-            className="absolute inset-0 z-0 h-full w-full object-cover"
-            style={{ objectPosition: "center 70%" }}
+            style={imgStyleMobile}
           />
         )}
         {overlayYTextura}
@@ -168,8 +189,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
             alt=""
             aria-hidden="true"
             loading="eager"
-            className="absolute inset-0 z-0 h-full w-full object-cover"
-            style={{ objectPosition: "center" }}
+            style={imgStyleDesktop}
           />
         )}
         {overlayYTextura}
