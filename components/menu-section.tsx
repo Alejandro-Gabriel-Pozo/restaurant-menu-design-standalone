@@ -11,8 +11,9 @@ export function MenuSection({ category }: { category: MenuCategory }) {
       {/* ── Encabezado ──────────────────────────────────────────────────── */}
       <Reveal>
         <div className="mb-10 flex items-stretch gap-6 md:gap-10">
-          {/* Texto */}
-          <div className="flex-1 min-w-0">
+
+          {/* Texto: mínimo 55% del ancho en desktop */}
+          <div className="flex-1 min-w-0 md:min-w-[55%]">
             <p className="font-sans text-xs font-light uppercase tracking-[0.4em] text-primary">{category.label}</p>
             <h2 className="mt-3 font-serif text-4xl font-medium text-foreground text-balance md:text-5xl">{category.title}</h2>
             {category.description && (
@@ -20,13 +21,13 @@ export function MenuSection({ category }: { category: MenuCategory }) {
             )}
           </div>
 
-          {/* Imagen: misma altura que el texto en desktop, 1/3 del ancho en mobile */}
+          {/* Imagen: ancho fijo en desktop, 1/3 en mobile, altura igual al texto */}
           {category.imagen_url && (
-            <div className="shrink-0 w-1/3 md:w-auto">
+            <div className="shrink-0 w-1/3 md:w-[280px]">
               <img
                 src={category.imagen_url}
                 alt={category.title}
-                className="w-full md:w-auto md:h-full object-contain"
+                className="w-full h-full object-cover"
               />
             </div>
           )}
