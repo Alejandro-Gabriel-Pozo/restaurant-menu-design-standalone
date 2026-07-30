@@ -8,10 +8,7 @@ export function resolveHeroInk(value: string): string | null {
 }
 
 /**
- * Convierte 'top-left' | 'top-center' | 'top-right'
- *           'center-left' | 'center' | 'center-right'
- *           'bottom-left' | 'bottom-center' | 'bottom-right'
- * en clases Tailwind para un contenedor flex absoluto.
+ * Convierte 'top-left' | 'top-center' | ... en clases Tailwind para flex absoluto.
  */
 export function resolvePosClasses(pos: string): string {
   const map: Record<string, string> = {
@@ -26,4 +23,13 @@ export function resolvePosClasses(pos: string): string {
     "bottom-right":  "items-end justify-end    text-right",
   }
   return map[pos.trim().toLowerCase()] ?? map["center"]
+}
+
+/**
+ * Interpreta como verdadero: true, "true", "TRUE", "True", "si", "sí", "yes", "1"
+ * Cubre todos los formatos posibles que Google Sheets puede devolver.
+ */
+export function isTruthy(value: string): boolean {
+  const v = value.trim().toLowerCase()
+  return v === "true" || v === "si" || v === "sí" || v === "yes" || v === "1"
 }

@@ -1,5 +1,5 @@
 import type { SiteConfig } from "@/lib/get-config"
-import { resolvePosClasses } from "@/lib/hero-utils"
+import { resolvePosClasses, isTruthy } from "@/lib/hero-utils"
 import { LogoWithFallback } from "@/components/logo-with-fallback"
 import { DarkToggle } from "@/components/dark-toggle"
 
@@ -9,7 +9,7 @@ interface MenuHeroProps {
 }
 
 export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
-  const mostrarParteDe   = config.mostrar_pertenencia.toLowerCase() === "true"
+  const mostrarParteDe   = isTruthy(config.mostrar_pertenencia)
   const tienePertenencia = config.hosteria_nombre || config.empresa_nombre
   const acento           = config.hero_color_fondo || "#E8B84B"
   const ctaHref          = firstCategoryId ? `#${firstCategoryId}` : "#entrada"
@@ -49,7 +49,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
       {/* Toggle */}
       <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
 
-      {/* GRUPO A: texto principal — pointer-events-auto para que el botón sea clickeable */}
+      {/* GRUPO A: texto principal */}
       <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posContenido}`}>
         <div className="flex max-w-sm flex-col gap-6 pointer-events-auto">
           {config.hero_etiqueta_superior && (
@@ -82,7 +82,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         </div>
       </div>
 
-      {/* GRUPO B: logo + pertenencia — pointer-events-none en el contenedor, auto en el contenido */}
+      {/* GRUPO B: logo + pertenencia */}
       <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posLogo}`}>
         <div className="flex flex-col items-end gap-3 pointer-events-auto">
           {config.restaurante_logo_url
