@@ -49,9 +49,9 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
       {/* Toggle */}
       <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
 
-      {/* GRUPO A: texto principal */}
-      <div className={`absolute inset-0 z-10 flex px-8 py-16 ${posContenido}`}>
-        <div className="flex max-w-sm flex-col gap-6">
+      {/* GRUPO A: texto principal — pointer-events-auto para que el botón sea clickeable */}
+      <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posContenido}`}>
+        <div className="flex max-w-sm flex-col gap-6 pointer-events-auto">
           {config.hero_etiqueta_superior && (
             <p className="font-sans text-sm font-light tracking-[0.5em] uppercase" style={{ color: "oklch(from var(--hero-ink) l c h / 0.7)" }}>
               {config.hero_etiqueta_superior}
@@ -82,9 +82,9 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         </div>
       </div>
 
-      {/* GRUPO B: logo + pertenencia */}
-      <div className={`absolute inset-0 z-10 flex px-8 py-16 ${posLogo}`}>
-        <div className="flex flex-col items-end gap-3">
+      {/* GRUPO B: logo + pertenencia — pointer-events-none en el contenedor, auto en el contenido */}
+      <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posLogo}`}>
+        <div className="flex flex-col items-end gap-3 pointer-events-auto">
           {config.restaurante_logo_url
             ? <LogoWithFallback src={config.restaurante_logo_url} alt={config.restaurante_nombre} className="h-16 w-16 object-contain" fallback={logoFallback} />
             : logoFallback
