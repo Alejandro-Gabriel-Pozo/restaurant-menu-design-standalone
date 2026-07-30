@@ -14,8 +14,11 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
   const acento           = config.hero_color_fondo || "#E8B84B"
   const ctaHref          = firstCategoryId ? `#${firstCategoryId}` : "#entrada"
 
-  const posContenido = resolvePosClasses(config.hero_pos_contenido)
-  const posLogo      = resolvePosClasses(config.hero_pos_logo)
+  // Desktop usa los campos base; mobile hace fallback al desktop si el campo mobile está vacío
+  const posContenidoDesktop = resolvePosClasses(config.hero_pos_contenido)
+  const posLogoDesktop      = resolvePosClasses(config.hero_pos_logo)
+  const posContenidoMobile  = resolvePosClasses(config.hero_pos_contenido_mobile || config.hero_pos_contenido)
+  const posLogoMobile       = resolvePosClasses(config.hero_pos_logo_mobile || config.hero_pos_logo)
 
   const imgStyleMobile: React.CSSProperties = {
     position: "absolute",
@@ -166,10 +169,10 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         )}
         {overlayYTextura}
         <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
-        <div className={`absolute inset-0 z-10 flex px-6 pt-16 pb-8 pointer-events-none ${posContenido}`}>
+        <div className={`absolute inset-0 z-10 flex px-6 pt-16 pb-8 pointer-events-none ${posContenidoMobile}`}>
           <div className="pointer-events-auto">{grupoTexto}</div>
         </div>
-        <div className={`absolute inset-0 z-10 flex px-6 pt-16 pb-8 pointer-events-none ${posLogo}`}>
+        <div className={`absolute inset-0 z-10 flex px-6 pt-16 pb-8 pointer-events-none ${posLogoMobile}`}>
           <div className="pointer-events-auto">{grupoLogoMobile}</div>
         </div>
         {config.hero_etiqueta_scroll && (
@@ -202,11 +205,11 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         {overlayYTextura}
         <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
 
-        <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posContenido}`}>
+        <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posContenidoDesktop}`}>
           <div className="flex max-w-sm flex-col gap-6 pointer-events-auto">{grupoTexto}</div>
         </div>
 
-        <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posLogo}`}>
+        <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posLogoDesktop}`}>
           <div className="pointer-events-auto">{grupoLogoDesktop}</div>
         </div>
 

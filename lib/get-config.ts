@@ -18,7 +18,9 @@ export type SiteConfig = {
   hero_ink:                     string
   hero_ink_noche:               string
   hero_pos_contenido:           string
+  hero_pos_contenido_mobile:    string
   hero_pos_logo:                string
+  hero_pos_logo_mobile:         string
   color_fondo_dia:              string
   color_fondo_noche:            string
   mostrar_pertenencia:          string
@@ -56,7 +58,9 @@ const defaults: SiteConfig = {
   hero_ink:                     "",
   hero_ink_noche:               "",
   hero_pos_contenido:           "center-right",
+  hero_pos_contenido_mobile:    "",
   hero_pos_logo:                "bottom-right",
+  hero_pos_logo_mobile:         "",
   color_fondo_dia:              "",
   color_fondo_noche:            "",
   mostrar_pertenencia:          "",
