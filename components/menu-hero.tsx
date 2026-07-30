@@ -14,7 +14,6 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
   const acento           = config.hero_color_fondo || "#E8B84B"
   const ctaHref          = firstCategoryId ? `#${firstCategoryId}` : "#entrada"
 
-  // Desktop usa los campos base; mobile hace fallback al desktop si el campo mobile está vacío
   const posContenidoDesktop = resolvePosClasses(config.hero_pos_contenido)
   const posLogoDesktop      = resolvePosClasses(config.hero_pos_logo)
   const posContenidoMobile  = resolvePosClasses(config.hero_pos_contenido_mobile || config.hero_pos_contenido)
@@ -51,11 +50,58 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
     </div>
   )
 
-  const grupoTexto = (
-    <div className="flex max-w-[85vw] sm:max-w-sm flex-col gap-4 sm:gap-6">
+  // Mobile: w-fit hace que el contenedor se achique al elemento más ancho (el h1),
+  // así el botón queda alineado con el título en vez de estirarse al ancho del viewport.
+  // La descripción usa max-w-[85vw] para no romper el layout si el texto es largo.
+  const grupoTextoMobile = (
+    <div className="flex w-fit flex-col gap-4">
       {config.hero_etiqueta_superior && (
         <p
-          className="font-sans text-xs sm:text-sm font-light tracking-[0.5em] uppercase"
+          className="font-sans text-xs font-light tracking-[0.5em] uppercase"
+          style={{ color: "oklch(from var(--hero-ink) l c h / 0.7)" }}
+        >
+          {config.hero_etiqueta_superior}
+        </p>
+      )}
+      <div>
+        <h1
+          className="font-serif font-medium leading-tight"
+          style={{ fontSize: "clamp(2.25rem, 8vw, 3rem)", color: "var(--hero-ink)" }}
+        >
+          {config.restaurante_nombre}
+        </h1>
+        {config.restaurante_subtitulo && (
+          <p
+            className="mt-2 font-sans text-xs font-light uppercase tracking-[0.3em]"
+            style={{ color: "oklch(from var(--hero-ink) l c h / 0.6)" }}
+          >
+            {config.restaurante_subtitulo}
+          </p>
+        )}
+      </div>
+      {config.restaurante_descripcion && (
+        <p
+          className="max-w-[85vw] text-pretty text-sm leading-relaxed"
+          style={{ color: "oklch(from var(--hero-ink) l c h / 0.75)" }}
+        >
+          {config.restaurante_descripcion}
+        </p>
+      )}
+      <a
+        href={ctaHref}
+        className="w-full rounded-none border px-8 py-3 text-center text-xs font-light uppercase tracking-[0.35em] transition-opacity hover:opacity-70"
+        style={{ borderColor: "oklch(from var(--hero-ink) l c h / 0.6)", color: "var(--hero-ink)" }}
+      >
+        {config.restaurante_boton_hero}
+      </a>
+    </div>
+  )
+
+  const grupoTextoDesktop = (
+    <div className="flex max-w-sm flex-col gap-6">
+      {config.hero_etiqueta_superior && (
+        <p
+          className="font-sans text-sm font-light tracking-[0.5em] uppercase"
           style={{ color: "oklch(from var(--hero-ink) l c h / 0.7)" }}
         >
           {config.hero_etiqueta_superior}
@@ -87,7 +133,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
       )}
       <a
         href={ctaHref}
-        className="w-fit rounded-none border px-8 sm:px-10 py-3 text-xs font-light uppercase tracking-[0.35em] transition-opacity hover:opacity-70"
+        className="w-fit rounded-none border px-10 py-3 text-xs font-light uppercase tracking-[0.35em] transition-opacity hover:opacity-70"
         style={{ borderColor: "oklch(from var(--hero-ink) l c h / 0.6)", color: "var(--hero-ink)" }}
       >
         {config.restaurante_boton_hero}
@@ -170,7 +216,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         {overlayYTextura}
         <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
         <div className={`absolute inset-0 z-10 flex px-6 pt-16 pb-8 pointer-events-none ${posContenidoMobile}`}>
-          <div className="pointer-events-auto">{grupoTexto}</div>
+          <div className="pointer-events-auto">{grupoTextoMobile}</div>
         </div>
         <div className={`absolute inset-0 z-10 flex px-6 pt-16 pb-8 pointer-events-none ${posLogoMobile}`}>
           <div className="pointer-events-auto">{grupoLogoMobile}</div>
@@ -206,7 +252,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
 
         <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posContenidoDesktop}`}>
-          <div className="flex max-w-sm flex-col gap-6 pointer-events-auto">{grupoTexto}</div>
+          <div className="pointer-events-auto">{grupoTextoDesktop}</div>
         </div>
 
         <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posLogoDesktop}`}>
