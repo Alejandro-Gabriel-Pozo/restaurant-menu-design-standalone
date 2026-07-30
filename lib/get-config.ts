@@ -96,17 +96,17 @@ export async function getConfig(): Promise<SiteConfig> {
 
   try {
     const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=Config`
-    const res = await fetch(url, { next: { revalidate: 3600 } })
+    // cache: "no-store" para que cada build del deploy hook lea el Sheet fresco
+    const res = await fetch(url, { cache: "no-store" })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const table = parseGviz(await res.text())
 
     const config: SiteConfig = { ...defaults }
     for (const row of table.rows) {
       if (!row.c) continue
-      const key   = row.c[0]?.v != null ? String(row.c[0].v).trim() as keyof SiteConfig : undefined
-      // Castear a string para manejar booleanos (true/false) y números que Sheets devuelve sin comillas
-      const raw   = row.c[1]?.v
-      const val   = raw != null ? String(raw).trim() : ""
+      const key = row.c[0]?.v != null ? String(row.c[0].v).trim() as keyof SiteConfig : undefined
+      const raw = row.c[1]?.v
+      const val = raw != null ? String(raw).trim() : ""
       if (key && key in defaults && val) {
         config[key] = val
       }
