@@ -8,7 +8,7 @@ interface MenuHeroProps {
 }
 
 export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
-  const mostrarParteDe   = config.mostrar_pertenencia === "true"
+  const mostrarParteDe   = config.mostrar_pertenencia.toLowerCase() === "true"
   const tienePertenencia = config.hosteria_nombre || config.empresa_nombre
   const acento           = config.hero_color_fondo || "#E8B84B"
 
