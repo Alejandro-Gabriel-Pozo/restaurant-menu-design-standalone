@@ -1,7 +1,8 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Viewport } from 'next'
 import { Geist, Playfair_Display } from 'next/font/google'
-import { getConfig, resolveHeroInk } from '@/lib/get-config'
+import { getConfig } from '@/lib/get-config'
+import { resolveHeroInk } from '@/lib/hero-utils'
 import './globals.css'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
@@ -10,12 +11,10 @@ const playfair = Playfair_Display({
   subsets: ['latin'],
 })
 
-// ── Metadata dinámica desde Google Sheets ────────────────────────────────────
 export async function generateMetadata() {
   const config = await getConfig()
   const title       = config.meta_title       || `${config.restaurante_nombre} · Menú`
   const description = config.meta_descripcion || config.restaurante_descripcion
-
   return {
     title,
     description,
@@ -32,23 +31,16 @@ export async function generateMetadata() {
   }
 }
 
-// ── Viewport / theme-color dinámico ──────────────────────────────────────────
 export async function generateViewport(): Promise<Viewport> {
   const config = await getConfig()
   const color = config.theme_color || config.color_marca || '#E8B84B'
-  return {
-    colorScheme: 'light',
-    themeColor: color,
-  }
+  return { colorScheme: 'light', themeColor: color }
 }
 
 export default async function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   const config = await getConfig()
-
   const inkDia   = resolveHeroInk(config.hero_ink)
   const inkNoche = resolveHeroInk(config.hero_ink_noche)
 
@@ -59,11 +51,9 @@ export default async function RootLayout({
     config.color_fondo_noche
       ? `.dark { --background: ${config.color_fondo_noche} !important; --card: ${config.color_fondo_noche} !important; }`
       : "",
-    // hero_ink → solo modo día
     inkDia
       ? `:root:not(.dark) { --hero-ink: ${inkDia} !important; }`
       : "",
-    // hero_ink_noche → solo modo noche
     inkNoche
       ? `.dark { --hero-ink: ${inkNoche} !important; }`
       : "",
