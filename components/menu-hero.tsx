@@ -50,10 +50,8 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
     </div>
   )
 
-  // Mobile: contenedor sin max-w fijo, cada hijo controla su propio ancho.
-  // Botón w-fit → se achica al texto del botón.
-  // Descripción max-w-[65vw] → líneas cortas, no se estira.
-  // H1 sin restricción → ocupa lo que necesita el texto.
+  // Mobile: self-end en el botón lo pega al borde derecho del contenedor flex-col
+  // cuando posContenidoMobile tiene justify-end (right).
   const grupoTextoMobile = (
     <div className="flex flex-col gap-4">
       {config.hero_etiqueta_superior && (
@@ -90,7 +88,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
       )}
       <a
         href={ctaHref}
-        className="w-fit rounded-none border px-8 py-3 text-xs font-light uppercase tracking-[0.35em] transition-opacity hover:opacity-70"
+        className="self-end w-fit rounded-none border px-8 py-3 text-xs font-light uppercase tracking-[0.35em] transition-opacity hover:opacity-70"
         style={{ borderColor: "oklch(from var(--hero-ink) l c h / 0.6)", color: "var(--hero-ink)" }}
       >
         {config.restaurante_boton_hero}
@@ -222,20 +220,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         <div className={`absolute inset-0 z-10 flex px-6 pt-16 pb-8 pointer-events-none ${posLogoMobile}`}>
           <div className="pointer-events-auto">{grupoLogoMobile}</div>
         </div>
-        {config.hero_etiqueta_scroll && (
-          <div
-            aria-hidden="true"
-            className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2 flex flex-col items-center gap-1"
-            style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}
-          >
-            <span className="font-sans font-light uppercase tracking-[0.3em]" style={{ fontSize: "9px" }}>
-              {config.hero_etiqueta_scroll}
-            </span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-bounce">
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </div>
-        )}
+        {/* scroll label oculto en mobile: el logo ocupa el área inferior */}
       </section>
 
       {/* ─── DESKTOP (≥ sm) */}
