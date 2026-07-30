@@ -129,11 +129,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
   return (
     <>
       {/* ─── MOBILE (< sm) ──────────────────────────────────────────────────── */}
-      <section
-        className="relative isolate overflow-hidden min-h-svh sm:hidden"
-        style={bgSolido}
-      >
-        {/* Imagen con object-position preciso — z-0 debajo de todo */}
+      <section className="relative isolate overflow-hidden min-h-svh sm:hidden" style={bgSolido}>
         {config.hero_imagen_fondo_url && (
           <img
             src={config.hero_imagen_fondo_url}
@@ -141,13 +137,11 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
             aria-hidden="true"
             loading="eager"
             className="absolute inset-0 z-0 h-full w-full object-cover"
-            style={{ objectPosition: "center 45%" }}
+            style={{ objectPosition: "center 70%" }}
           />
         )}
-
         {overlayYTextura}
         <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
-
         <div className="relative z-10 flex flex-col justify-between min-h-svh px-6 pt-16 pb-8">
           <div>{grupoTexto}</div>
           <div className="flex flex-col items-end gap-3 mt-6">
@@ -167,10 +161,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
       </section>
 
       {/* ─── DESKTOP (≥ sm) ─────────────────────────────────────────────────── */}
-      <section
-        className="relative isolate overflow-hidden min-h-[85vh] hidden sm:block"
-        style={bgSolido}
-      >
+      <section className="relative isolate overflow-hidden min-h-[85vh] hidden sm:block" style={bgSolido}>
         {config.hero_imagen_fondo_url && (
           <img
             src={config.hero_imagen_fondo_url}
@@ -181,14 +172,11 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
             style={{ objectPosition: "center" }}
           />
         )}
-
         {overlayYTextura}
         <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
 
         <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posContenido}`}>
-          <div className="flex max-w-sm flex-col gap-6 pointer-events-auto">
-            {grupoTexto}
-          </div>
+          <div className="flex max-w-sm flex-col gap-6 pointer-events-auto">{grupoTexto}</div>
         </div>
 
         <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posLogo}`}>
