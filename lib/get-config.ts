@@ -55,7 +55,7 @@ const defaults: SiteConfig = {
   hero_etiqueta_scroll:         "Menú",
   hero_ink:                     "",
   hero_ink_noche:               "",
-  hero_pos_contenido:           "center",
+  hero_pos_contenido:           "middle-right",
   hero_pos_logo:                "bottom-right",
   color_fondo_dia:              "",
   color_fondo_noche:            "",
