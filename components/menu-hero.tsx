@@ -17,8 +17,15 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
   const posContenido = resolvePosClasses(config.hero_pos_contenido)
   const posLogo      = resolvePosClasses(config.hero_pos_logo)
 
-  // Inline styles para el <img> de fondo — evita que Tailwind base (img { height: auto })
-  // pise h-full y que object-position no tenga efecto por dimensiones incorrectas.
+  // El section tiene min-h-svh pero un <img> absolute con height:100%
+  // resuelve su alto desde el height del padre, no desde min-height.
+  // Solución: forzar height:100svh en el section también, así el img
+  // tiene referencia real y object-position funciona.
+  const sectionStyleMobile: React.CSSProperties = {
+    minHeight: "100svh",
+    height: "100svh",
+  }
+
   const imgStyleMobile: React.CSSProperties = {
     position: "absolute",
     inset: 0,
@@ -151,7 +158,10 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
   return (
     <>
       {/* ─── MOBILE (< sm) ──────────────────────────────────────────────────── */}
-      <section className="relative isolate overflow-hidden min-h-svh sm:hidden" style={bgSolido}>
+      <section
+        className="relative isolate overflow-hidden sm:hidden"
+        style={{ ...bgSolido, ...sectionStyleMobile }}
+      >
         {config.hero_imagen_fondo_url && (
           <img
             src={config.hero_imagen_fondo_url}
