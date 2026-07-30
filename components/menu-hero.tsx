@@ -50,11 +50,12 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
     </div>
   )
 
-  // Mobile: w-fit hace que el contenedor se achique al elemento más ancho (el h1),
-  // así el botón queda alineado con el título en vez de estirarse al ancho del viewport.
-  // La descripción usa max-w-[85vw] para no romper el layout si el texto es largo.
+  // Mobile: contenedor sin max-w fijo, cada hijo controla su propio ancho.
+  // Botón w-fit → se achica al texto del botón.
+  // Descripción max-w-[65vw] → líneas cortas, no se estira.
+  // H1 sin restricción → ocupa lo que necesita el texto.
   const grupoTextoMobile = (
-    <div className="flex w-fit flex-col gap-4">
+    <div className="flex flex-col gap-4">
       {config.hero_etiqueta_superior && (
         <p
           className="font-sans text-xs font-light tracking-[0.5em] uppercase"
@@ -81,7 +82,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
       </div>
       {config.restaurante_descripcion && (
         <p
-          className="max-w-[85vw] text-pretty text-sm leading-relaxed"
+          className="max-w-[65vw] text-pretty text-sm leading-relaxed"
           style={{ color: "oklch(from var(--hero-ink) l c h / 0.75)" }}
         >
           {config.restaurante_descripcion}
@@ -89,7 +90,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
       )}
       <a
         href={ctaHref}
-        className="w-full rounded-none border px-8 py-3 text-center text-xs font-light uppercase tracking-[0.35em] transition-opacity hover:opacity-70"
+        className="w-fit rounded-none border px-8 py-3 text-xs font-light uppercase tracking-[0.35em] transition-opacity hover:opacity-70"
         style={{ borderColor: "oklch(from var(--hero-ink) l c h / 0.6)", color: "var(--hero-ink)" }}
       >
         {config.restaurante_boton_hero}
