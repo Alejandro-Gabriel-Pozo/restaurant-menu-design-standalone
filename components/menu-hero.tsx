@@ -17,22 +17,24 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
   const posContenido = resolvePosClasses(config.hero_pos_contenido)
   const posLogo      = resolvePosClasses(config.hero_pos_logo)
 
-  // El section tiene min-h-svh pero un <img> absolute con height:100%
-  // resuelve su alto desde el height del padre, no desde min-height.
-  // Solución: forzar height:100svh en el section también, así el img
-  // tiene referencia real y object-position funciona.
   const sectionStyleMobile: React.CSSProperties = {
     minHeight: "100svh",
     height: "100svh",
   }
 
+  // scale(1.4) agranda la imagen 40% más allá del contenedor.
+  // transform-origin: center 70% ancla el zoom desde abajo,
+  // lo que empuja la parte inferior a ser visible en el recorte.
+  // Cambiá "center 70%" por "center 30%" para ver más la parte superior.
   const imgStyleMobile: React.CSSProperties = {
     position: "absolute",
     inset: 0,
     width: "100%",
     height: "100%",
     objectFit: "cover",
-    objectPosition: "center 70%",
+    objectPosition: "center",
+    transform: "scale(1.4)",
+    transformOrigin: "center 70%",
     zIndex: 0,
   }
 
@@ -157,7 +159,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
 
   return (
     <>
-      {/* ─── MOBILE (< sm) ──────────────────────────────────────────────────── */}
+      {/* ─── MOBILE (< sm) */}
       <section
         className="relative isolate overflow-hidden sm:hidden"
         style={{ ...bgSolido, ...sectionStyleMobile }}
@@ -191,7 +193,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         </div>
       </section>
 
-      {/* ─── DESKTOP (≥ sm) ─────────────────────────────────────────────────── */}
+      {/* ─── DESKTOP (≥ sm) */}
       <section className="relative isolate overflow-hidden min-h-[85vh] hidden sm:block" style={bgSolido}>
         {config.hero_imagen_fondo_url && (
           <img
