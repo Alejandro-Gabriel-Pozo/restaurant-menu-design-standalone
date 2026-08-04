@@ -3,13 +3,11 @@ import type { SiteConfig }   from "@/lib/get-config"
 import { TagIcon }           from "@/lib/tag-icons"
 import Link                  from "next/link"
 
-// ─── Tipos ────────────────────────────────────────────────────────────────────
 interface Props {
   menu:   MenuCategory[]
   config: SiteConfig
 }
 
-// ─── Componente principal ─────────────────────────────────────────────────────
 export function CartaView({ menu, config }: Props) {
   const restaurantName = config.nombre ?? "Restaurante"
   const subtitle       = config.subtitulo ?? ""
@@ -17,7 +15,7 @@ export function CartaView({ menu, config }: Props) {
   return (
     <div className="carta-root mx-auto max-w-[720px] px-8 py-12 font-serif text-foreground">
 
-      {/* ── Botón volver ───────────────────────────────────────────────────── */}
+      {/* Botón volver */}
       <div className="mb-8 flex items-center justify-between print:hidden">
         <Link
           href="/"
@@ -33,7 +31,7 @@ export function CartaView({ menu, config }: Props) {
         </button>
       </div>
 
-      {/* ── Portada ────────────────────────────────────────────────────────── */}
+      {/* Portada */}
       <header className="mb-16 text-center">
         <p className="mb-3 font-sans text-[10px] font-light uppercase tracking-[0.5em] text-primary">Carta</p>
         <h1 className="text-5xl font-medium tracking-tight text-foreground">{restaurantName}</h1>
@@ -47,7 +45,7 @@ export function CartaView({ menu, config }: Props) {
         </div>
       </header>
 
-      {/* ── Índice ─────────────────────────────────────────────────────────── */}
+      {/* Índice */}
       <nav className="mb-16 print:mb-8">
         <p className="mb-4 font-sans text-[9px] font-light uppercase tracking-[0.5em] text-primary">Contenido</p>
         <ol className="space-y-1">
@@ -66,14 +64,13 @@ export function CartaView({ menu, config }: Props) {
         </ol>
       </nav>
 
-      {/* ── Secciones ──────────────────────────────────────────────────────── */}
+      {/* Secciones */}
       {menu.map((category, catIdx) => (
         <section
           key={category.id}
           id={`carta-${category.id}`}
           className="mb-16 scroll-mt-10 break-inside-avoid-page"
         >
-          {/* Encabezado de sección */}
           <div className="mb-8 border-b border-primary/20 pb-4">
             <p className="mb-1 font-sans text-[9px] font-light uppercase tracking-[0.5em] text-primary">
               {String(catIdx + 1).padStart(2, "0")}
@@ -86,7 +83,6 @@ export function CartaView({ menu, config }: Props) {
             )}
           </div>
 
-          {/* Lista de platos */}
           <ul className="space-y-6">
             {category.items.map((item) => (
               <li
@@ -97,7 +93,6 @@ export function CartaView({ menu, config }: Props) {
                     : "border-dotted border-border/50"
                 }`}
               >
-                {/* Nombre */}
                 <div className="flex items-baseline gap-2">
                   <h3
                     className={`text-lg font-medium leading-tight ${
@@ -111,7 +106,6 @@ export function CartaView({ menu, config }: Props) {
                   </h3>
                 </div>
 
-                {/* Precio — alineado a la derecha, misma fila */}
                 <span
                   className="self-start font-serif text-lg font-medium text-primary"
                   aria-label={`Precio ${item.price}`}
@@ -119,14 +113,12 @@ export function CartaView({ menu, config }: Props) {
                   {item.price}
                 </span>
 
-                {/* Descripción — ocupa las 2 columnas */}
                 {item.description && (
                   <p className="col-span-2 font-sans text-sm font-light leading-relaxed text-muted-foreground">
                     {item.description}
                   </p>
                 )}
 
-                {/* Tags */}
                 {item.tags && item.tags.length > 0 && (
                   <div className="col-span-2 mt-1 flex flex-wrap gap-2">
                     {item.tags.map((tag) => (
@@ -146,7 +138,7 @@ export function CartaView({ menu, config }: Props) {
         </section>
       ))}
 
-      {/* ── Cierre ─────────────────────────────────────────────────────────── */}
+      {/* Cierre */}
       <footer className="mt-16 text-center">
         <div className="mb-6 flex items-center justify-center gap-4">
           <span className="block h-px w-16 bg-primary/30" />
@@ -161,16 +153,10 @@ export function CartaView({ menu, config }: Props) {
         )}
       </footer>
 
-      {/* ── Estilos de impresión ────────────────────────────────────────────── */}
       <style jsx global>{`
         @media print {
-          .carta-root {
-            max-width: 100%;
-            padding: 0;
-          }
-          a[href]::after {
-            content: none !important;
-          }
+          .carta-root { max-width: 100%; padding: 0; }
+          a[href]::after { content: none !important; }
         }
       `}</style>
     </div>
