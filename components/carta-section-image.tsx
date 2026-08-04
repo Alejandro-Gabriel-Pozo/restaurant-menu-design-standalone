@@ -2,13 +2,13 @@
 
 /**
  * Imagen de cabecera de sección:
- * - Desktop (≥640px): repite horizontalmente, altura = 100% de la banda
- * - Mobile (<640px):  repite en mosaico con tamaño fijo para verse bien a escala chica
+ * - Desktop (≥640px): repeat-x, altura = 100% de la banda — quedó bien, no se toca
+ * - Mobile (<640px):  mosaico 160px — tile más grande que antes (120px), se repite en todas direcciones
  */
 export function CartaSectionImage({ url }: { url: string }) {
   return (
     <>
-      {/* Desktop: repeat-x, alto proporcional */}
+      {/* Desktop */}
       <div
         className="absolute inset-0 hidden sm:block"
         aria-hidden
@@ -20,14 +20,14 @@ export function CartaSectionImage({ url }: { url: string }) {
           opacity:            0.38,
         }}
       />
-      {/* Mobile: mosaico con tile de 120px — se repite en todas direcciones */}
+      {/* Mobile: tile 160px (era 120px) */}
       <div
         className="absolute inset-0 sm:hidden"
         aria-hidden
         style={{
           backgroundImage:    `url(${url})`,
           backgroundRepeat:   "repeat",
-          backgroundSize:     "120px auto",
+          backgroundSize:     "160px auto",
           backgroundPosition: "top left",
           opacity:            0.38,
         }}

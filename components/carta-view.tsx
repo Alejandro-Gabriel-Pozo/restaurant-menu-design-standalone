@@ -94,19 +94,16 @@ export function CartaView({ menu, config }: Props) {
         <div key={category.id} data-page={category.id} className="carta-page relative bg-background">
           <div className="flex h-full flex-col overflow-y-auto pb-14">
 
-            {/* ENCABEZADO
-                Mobile:  altura fija pequeña (72px) — proporcional al contenido, no al viewport
-                Desktop: clamp 80–140px basado en 18vh — ya quedó bien
+            {/*
+              ENCABEZADO:
+              - Mobile (<640px): 90px fijo — compacto, todo el contenido adentro
+              - Desktop (≥640px): clamp(80px, 18vh, 140px) — como quedó bien antes
+              Solo se cambia la altura en mobile. Nada más.
             */}
             <div
-              className="relative shrink-0 overflow-hidden"
-              style={{
-                // sm+ mantiene el clamp con vh; mobile fija 72px
-                height: "72px",
-              }}
+              className="section-header-band relative shrink-0 overflow-hidden"
+              style={{ height: "90px" }}
             >
-              {/* Override en sm+ via inline style no es posible con Tailwind puro,
-                  usamos una clase CSS global definida abajo */}
               <style>{`
                 @media (min-width: 640px) {
                   .section-header-band { height: clamp(80px, 18vh, 140px) !important; }
@@ -118,7 +115,8 @@ export function CartaView({ menu, config }: Props) {
               <div className="absolute inset-0" aria-hidden
                 style={{ background: "linear-gradient(to right, oklch(from var(--background) l c h / 0.90) 0%, oklch(from var(--background) l c h / 0.60) 60%, oklch(from var(--background) l c h / 0.20) 100%)" }} />
 
-              <div className="absolute inset-0 flex flex-col justify-end px-6 pb-2 pt-10 sm:px-10">
+              {/* Todo el contenido adentro de la banda, siempre */}
+              <div className="absolute inset-0 flex flex-col justify-end px-6 pb-2 pt-10 sm:px-10 sm:pb-3">
                 <p className="mb-0.5 font-sans font-light uppercase tracking-[0.4em] text-primary" style={{ fontSize: "0.58rem" }}>
                   {category.categoria ? `${category.categoria} · ` : ""}
                   {String(catIdx + 1).padStart(2, "0")} / {String(menu.length).padStart(2, "0")}
@@ -128,7 +126,7 @@ export function CartaView({ menu, config }: Props) {
                   {category.titulo_seccion ?? category.title}
                 </h2>
                 {category.description && (
-                  <p className="mt-0.5 hidden font-sans font-light leading-snug text-muted-foreground sm:block"
+                  <p className="mt-0.5 font-sans font-light leading-snug text-muted-foreground"
                     style={{ fontSize: "clamp(0.68rem, 1.8vw, 0.78rem)" }}>
                     {category.description}
                   </p>
@@ -136,14 +134,6 @@ export function CartaView({ menu, config }: Props) {
               </div>
               <div className="absolute bottom-0 left-0 right-0 h-px bg-primary/20" />
             </div>
-
-            {/* Descripción en mobile: debajo del encabezado, en el flujo normal */}
-            {category.description && (
-              <p className="block px-6 pb-1 pt-2 font-sans font-light leading-snug text-muted-foreground sm:hidden"
-                style={{ fontSize: "0.72rem" }}>
-                {category.description}
-              </p>
-            )}
 
             {/* LISTA DE PLATOS */}
             <ul className="divide-y divide-dotted divide-border/40 px-6 sm:px-10">
