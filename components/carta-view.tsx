@@ -152,13 +152,6 @@ export function CartaView({ menu, config }: Props) {
           <p className="font-sans text-xs font-light text-muted-foreground">{config.telefono}</p>
         )}
       </footer>
-
-      <style jsx global>{`
-        @media print {
-          .carta-root { max-width: 100%; padding: 0; }
-          a[href]::after { content: none !important; }
-        }
-      `}</style>
     </div>
   )
 }
