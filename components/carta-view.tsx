@@ -1,6 +1,7 @@
 import type { MenuCategory } from "@/lib/get-menu"
 import type { SiteConfig }   from "@/lib/get-config"
 import { TagIcon }           from "@/lib/tag-icons"
+import { CartaPrintButton }  from "@/components/carta-print-button"
 import Link                  from "next/link"
 
 interface Props {
@@ -15,7 +16,7 @@ export function CartaView({ menu, config }: Props) {
   return (
     <div className="carta-root mx-auto max-w-[720px] px-8 py-12 font-serif text-foreground">
 
-      {/* Botón volver */}
+      {/* Botón volver + imprimir */}
       <div className="mb-8 flex items-center justify-between print:hidden">
         <Link
           href="/"
@@ -23,12 +24,7 @@ export function CartaView({ menu, config }: Props) {
         >
           ← Volver al menú
         </Link>
-        <button
-          onClick={() => window.print()}
-          className="inline-flex items-center gap-2 font-sans text-xs font-light uppercase tracking-[0.3em] border border-primary/40 px-4 py-2 text-primary hover:bg-primary/5 transition-colors"
-        >
-          Imprimir carta
-        </button>
+        <CartaPrintButton />
       </div>
 
       {/* Portada */}
@@ -53,7 +49,7 @@ export function CartaView({ menu, config }: Props) {
             <li key={cat.id} className="flex items-baseline justify-between gap-2">
               <a
                 href={`#carta-${cat.id}`}
-                className="font-serif text-sm text-foreground hover:text-primary transition-colors print:no-underline"
+                className="font-serif text-sm text-foreground hover:text-primary transition-colors"
               >
                 {cat.title}
               </a>
