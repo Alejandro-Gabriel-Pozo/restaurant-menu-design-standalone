@@ -94,17 +94,6 @@ export function CartaView({ menu, config }: Props) {
         <div key={category.id} data-page={category.id} className="carta-page relative bg-background">
           <div className="flex h-full flex-col overflow-y-auto pb-14">
 
-            {/*
-              ENCABEZADO
-              ─────────────────────────────────────────────────
-              DESKTOP (≥640px): imagen de fondo repeat-x, gradiente sobre ella, texto encima
-                height: clamp(80px, 18vh, 140px)
-
-              MOBILE (<640px): dos columnas
-                izquierda: contador + título + descripción
-                derecha:   imagen renderizada completa (contain), repeat-x si sobra espacio
-                height: 90px fijo
-            */}
             <div
               className="section-header-band relative shrink-0 overflow-hidden"
               style={{ height: "90px" }}
@@ -115,7 +104,7 @@ export function CartaView({ menu, config }: Props) {
                 }
               `}</style>
 
-              {/* ── DESKTOP: imagen de fondo + gradiente + texto absoluto ── */}
+              {/* DESKTOP: imagen fondo + gradiente + texto absoluto — sin cambios */}
               {category.imagen_url && (
                 <div className="absolute inset-0 hidden sm:block">
                   <CartaSectionImage url={category.imagen_url} />
@@ -123,12 +112,6 @@ export function CartaView({ menu, config }: Props) {
                     style={{ background: "linear-gradient(to right, oklch(from var(--background) l c h / 0.90) 0%, oklch(from var(--background) l c h / 0.60) 60%, oklch(from var(--background) l c h / 0.20) 100%)" }} />
                 </div>
               )}
-              {!category.imagen_url && (
-                <div className="absolute inset-0 hidden sm:block" aria-hidden
-                  style={{ background: "linear-gradient(to right, oklch(from var(--background) l c h / 0.90) 0%, oklch(from var(--background) l c h / 0.60) 60%, oklch(from var(--background) l c h / 0.20) 100%)" }} />
-              )}
-
-              {/* Texto desktop: absoluto, justify-end */}
               <div className="absolute inset-0 hidden flex-col justify-end px-10 pb-3 pt-10 sm:flex">
                 <p className="mb-0.5 font-sans font-light uppercase tracking-[0.4em] text-primary" style={{ fontSize: "0.58rem" }}>
                   {category.categoria ? `${category.categoria} · ` : ""}
@@ -139,48 +122,49 @@ export function CartaView({ menu, config }: Props) {
                   {category.titulo_seccion ?? category.title}
                 </h2>
                 {category.description && (
-                  <p className="mt-0.5 font-sans font-light leading-snug text-muted-foreground"
-                    style={{ fontSize: "0.78rem" }}>
+                  <p className="mt-0.5 font-sans font-light leading-snug text-muted-foreground" style={{ fontSize: "0.78rem" }}>
                     {category.description}
                   </p>
                 )}
               </div>
 
-              {/* ── MOBILE: dos columnas, imagen renderizada a la derecha ── */}
-              <div className="flex h-full sm:hidden">
+              {/* MOBILE: dos columnas, layout flex, visible solo en mobile */}
+              <div className="flex h-full items-center sm:hidden">
 
-                {/* Columna izquierda: texto */}
-                <div className="flex flex-1 flex-col justify-center px-4 py-2">
-                  <p className="mb-0.5 font-sans font-light uppercase tracking-[0.4em] text-primary" style={{ fontSize: "0.55rem" }}>
+                {/* Izquierda: texto centrado verticalmente */}
+                <div className="flex flex-1 flex-col justify-center gap-0.5 px-4">
+                  <p className="font-sans font-light uppercase tracking-[0.4em] text-primary" style={{ fontSize: "0.55rem" }}>
                     {category.categoria ? `${category.categoria} · ` : ""}
                     {String(catIdx + 1).padStart(2, "0")} / {String(menu.length).padStart(2, "0")}
                   </p>
-                  <h2 className="font-serif font-medium leading-tight tracking-tight text-foreground"
-                    style={{ fontSize: "clamp(1rem, 4vw, 1.2rem)" }}>
+                  <h2 className="font-serif font-medium leading-tight tracking-tight text-foreground" style={{ fontSize: "1.05rem" }}>
                     {category.titulo_seccion ?? category.title}
                   </h2>
                   {category.description && (
-                    <p className="mt-0.5 font-sans font-light leading-snug text-muted-foreground"
-                      style={{ fontSize: "0.65rem" }}>
+                    <p className="font-sans font-light leading-snug text-muted-foreground" style={{ fontSize: "0.65rem" }}>
                       {category.description}
                     </p>
                   )}
                 </div>
 
-                {/* Columna derecha: imagen completa (contain) + repeat-x si sobra */}
+                {/* Derecha: imagen completa dentro de la banda (object-contain) */}
                 {category.imagen_url && (
-                  <div
-                    className="h-full shrink-0"
-                    aria-hidden
-                    style={{
-                      width: "38%",
-                      backgroundImage:    `url(${category.imagen_url})`,
-                      backgroundRepeat:   "repeat-x",
-                      backgroundSize:     "auto 100%",
-                      backgroundPosition: "left center",
-                      opacity:            0.55,
-                    }}
-                  />
+                  <div className="flex h-full shrink-0 items-center justify-center overflow-hidden py-2 pr-3" style={{ width: "38%" }}>
+                    <img
+                      src={category.imagen_url}
+                      alt=""
+                      aria-hidden
+                      loading="lazy"
+                      style={{
+                        maxHeight: "100%",
+                        maxWidth:  "100%",
+                        width:     "auto",
+                        height:    "100%",
+                        objectFit: "contain",
+                        opacity:   0.6,
+                      }}
+                    />
+                  </div>
                 )}
               </div>
 
