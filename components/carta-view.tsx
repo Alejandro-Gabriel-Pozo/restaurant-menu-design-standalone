@@ -95,9 +95,15 @@ export function CartaView({ menu, config }: Props) {
           <div className="flex h-full flex-col overflow-y-auto pb-14">
 
             {/*
-              ENCABEZADO:
-              - Mobile (<640px): 90px fijo
-              - Desktop (≥640px): clamp(80px, 18vh, 140px) — no se toca
+              ENCABEZADO
+              ─────────────────────────────────────────────────
+              DESKTOP (≥640px): imagen de fondo repeat-x, gradiente sobre ella, texto encima
+                height: clamp(80px, 18vh, 140px)
+
+              MOBILE (<640px): dos columnas
+                izquierda: contador + título + descripción
+                derecha:   imagen renderizada completa (contain), repeat-x si sobra espacio
+                height: 90px fijo
             */}
             <div
               className="section-header-band relative shrink-0 overflow-hidden"
@@ -109,32 +115,75 @@ export function CartaView({ menu, config }: Props) {
                 }
               `}</style>
 
-              {category.imagen_url && <CartaSectionImage url={category.imagen_url} />}
+              {/* ── DESKTOP: imagen de fondo + gradiente + texto absoluto ── */}
+              {category.imagen_url && (
+                <div className="absolute inset-0 hidden sm:block">
+                  <CartaSectionImage url={category.imagen_url} />
+                  <div className="absolute inset-0" aria-hidden
+                    style={{ background: "linear-gradient(to right, oklch(from var(--background) l c h / 0.90) 0%, oklch(from var(--background) l c h / 0.60) 60%, oklch(from var(--background) l c h / 0.20) 100%)" }} />
+                </div>
+              )}
+              {!category.imagen_url && (
+                <div className="absolute inset-0 hidden sm:block" aria-hidden
+                  style={{ background: "linear-gradient(to right, oklch(from var(--background) l c h / 0.90) 0%, oklch(from var(--background) l c h / 0.60) 60%, oklch(from var(--background) l c h / 0.20) 100%)" }} />
+              )}
 
-              <div className="absolute inset-0" aria-hidden
-                style={{ background: "linear-gradient(to right, oklch(from var(--background) l c h / 0.90) 0%, oklch(from var(--background) l c h / 0.60) 60%, oklch(from var(--background) l c h / 0.20) 100%)" }} />
-
-              {/*
-                pt-2 en mobile para que el contador quede visible dentro de los 90px
-                (la topbar mide 40px, pt-10 los tapa — pt-2 los muestra correctamente)
-                Desktop mantiene pt-10 sm:pb-3 como antes
-              */}
-              <div className="absolute inset-0 flex flex-col justify-end px-6 pb-2 pt-2 sm:pt-10 sm:px-10 sm:pb-3">
+              {/* Texto desktop: absoluto, justify-end */}
+              <div className="absolute inset-0 hidden flex-col justify-end px-10 pb-3 pt-10 sm:flex">
                 <p className="mb-0.5 font-sans font-light uppercase tracking-[0.4em] text-primary" style={{ fontSize: "0.58rem" }}>
                   {category.categoria ? `${category.categoria} · ` : ""}
                   {String(catIdx + 1).padStart(2, "0")} / {String(menu.length).padStart(2, "0")}
                 </p>
                 <h2 className="font-serif font-medium leading-tight tracking-tight text-foreground"
-                  style={{ fontSize: "clamp(1.1rem, 4vw, 2rem)" }}>
+                  style={{ fontSize: "clamp(1.4rem, 4vw, 2rem)" }}>
                   {category.titulo_seccion ?? category.title}
                 </h2>
                 {category.description && (
                   <p className="mt-0.5 font-sans font-light leading-snug text-muted-foreground"
-                    style={{ fontSize: "clamp(0.68rem, 1.8vw, 0.78rem)" }}>
+                    style={{ fontSize: "0.78rem" }}>
                     {category.description}
                   </p>
                 )}
               </div>
+
+              {/* ── MOBILE: dos columnas, imagen renderizada a la derecha ── */}
+              <div className="flex h-full sm:hidden">
+
+                {/* Columna izquierda: texto */}
+                <div className="flex flex-1 flex-col justify-center px-4 py-2">
+                  <p className="mb-0.5 font-sans font-light uppercase tracking-[0.4em] text-primary" style={{ fontSize: "0.55rem" }}>
+                    {category.categoria ? `${category.categoria} · ` : ""}
+                    {String(catIdx + 1).padStart(2, "0")} / {String(menu.length).padStart(2, "0")}
+                  </p>
+                  <h2 className="font-serif font-medium leading-tight tracking-tight text-foreground"
+                    style={{ fontSize: "clamp(1rem, 4vw, 1.2rem)" }}>
+                    {category.titulo_seccion ?? category.title}
+                  </h2>
+                  {category.description && (
+                    <p className="mt-0.5 font-sans font-light leading-snug text-muted-foreground"
+                      style={{ fontSize: "0.65rem" }}>
+                      {category.description}
+                    </p>
+                  )}
+                </div>
+
+                {/* Columna derecha: imagen completa (contain) + repeat-x si sobra */}
+                {category.imagen_url && (
+                  <div
+                    className="h-full shrink-0"
+                    aria-hidden
+                    style={{
+                      width: "38%",
+                      backgroundImage:    `url(${category.imagen_url})`,
+                      backgroundRepeat:   "repeat-x",
+                      backgroundSize:     "auto 100%",
+                      backgroundPosition: "left center",
+                      opacity:            0.55,
+                    }}
+                  />
+                )}
+              </div>
+
               <div className="absolute bottom-0 left-0 right-0 h-px bg-primary/20" />
             </div>
 
