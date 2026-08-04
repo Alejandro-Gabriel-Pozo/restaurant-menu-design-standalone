@@ -94,8 +94,15 @@ export function CartaView({ menu, config }: Props) {
         <div key={category.id} data-page={category.id} className="carta-page relative bg-background">
           <div className="flex h-full flex-col overflow-y-auto pb-14">
 
+            {/*
+              ENCABEZADO
+              La topbar mide 40px (h-10). La banda empieza desde top:0.
+              Para que el contenido no quede tapado por la topbar:
+                mobile: pt-10 (40px) + contenido en los 50px restantes
+                desktop: height clamp(80px,18vh,140px), pt-10, sin cambios
+            */}
             <div
-              className="section-header-band relative shrink-0 overflow-hidden"
+              className="section-header-band relative shrink-0"
               style={{ height: "90px" }}
             >
               <style>{`
@@ -104,7 +111,7 @@ export function CartaView({ menu, config }: Props) {
                 }
               `}</style>
 
-              {/* DESKTOP: imagen fondo + gradiente + texto absoluto — sin cambios */}
+              {/* DESKTOP — sin cambios */}
               {category.imagen_url && (
                 <div className="absolute inset-0 hidden sm:block">
                   <CartaSectionImage url={category.imagen_url} />
@@ -112,7 +119,7 @@ export function CartaView({ menu, config }: Props) {
                     style={{ background: "linear-gradient(to right, oklch(from var(--background) l c h / 0.90) 0%, oklch(from var(--background) l c h / 0.60) 60%, oklch(from var(--background) l c h / 0.20) 100%)" }} />
                 </div>
               )}
-              <div className="absolute inset-0 hidden flex-col justify-end px-10 pb-3 pt-10 sm:flex">
+              <div className="absolute inset-0 hidden flex-col justify-end overflow-hidden px-10 pb-3 pt-10 sm:flex">
                 <p className="mb-0.5 font-sans font-light uppercase tracking-[0.4em] text-primary" style={{ fontSize: "0.58rem" }}>
                   {category.categoria ? `${category.categoria} · ` : ""}
                   {String(catIdx + 1).padStart(2, "0")} / {String(menu.length).padStart(2, "0")}
@@ -128,34 +135,44 @@ export function CartaView({ menu, config }: Props) {
                 )}
               </div>
 
-              {/* MOBILE: dos columnas, layout flex, visible solo en mobile */}
-              <div className="flex h-full items-center sm:hidden">
+              {/* MOBILE: dos columnas
+                  pt-10 = 40px para quedar debajo de la topbar
+                  los 50px restantes alojan texto e imagen
+              */}
+              <div className="flex h-full pt-10 sm:hidden">
 
-                {/* Izquierda: texto centrado verticalmente */}
-                <div className="flex flex-1 flex-col justify-center gap-0.5 px-4">
+                {/* Izquierda: texto en los 50px disponibles */}
+                <div className="flex flex-1 flex-col justify-center gap-px px-4 pb-1">
                   <p className="font-sans font-light uppercase tracking-[0.4em] text-primary" style={{ fontSize: "0.55rem" }}>
                     {category.categoria ? `${category.categoria} · ` : ""}
                     {String(catIdx + 1).padStart(2, "0")} / {String(menu.length).padStart(2, "0")}
                   </p>
-                  <h2 className="font-serif font-medium leading-tight tracking-tight text-foreground" style={{ fontSize: "1.05rem" }}>
+                  <h2
+                    className="font-serif font-medium leading-none tracking-tight text-foreground"
+                    style={{ fontSize: "0.95rem" }}
+                  >
                     {category.titulo_seccion ?? category.title}
                   </h2>
                   {category.description && (
-                    <p className="font-sans font-light leading-snug text-muted-foreground" style={{ fontSize: "0.65rem" }}>
+                    <p className="font-sans font-light leading-none text-muted-foreground" style={{ fontSize: "0.6rem" }}>
                       {category.description}
                     </p>
                   )}
                 </div>
 
-                {/* Derecha: imagen completa dentro de la banda (object-contain) */}
+                {/* Derecha: imagen contenida en los 50px restantes, no se sale de la banda */}
                 {category.imagen_url && (
-                  <div className="flex h-full shrink-0 items-center justify-center overflow-hidden py-2 pr-3" style={{ width: "38%" }}>
+                  <div
+                    className="flex shrink-0 items-center justify-center overflow-hidden pb-1 pr-3"
+                    style={{ width: "38%" }}
+                  >
                     <img
                       src={category.imagen_url}
                       alt=""
                       aria-hidden
                       loading="lazy"
                       style={{
+                        display:   "block",
                         maxHeight: "100%",
                         maxWidth:  "100%",
                         width:     "auto",
