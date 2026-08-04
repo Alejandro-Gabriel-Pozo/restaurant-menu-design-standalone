@@ -45,7 +45,6 @@ export function CartaControls({ children, menu }: Props) {
     if (idx !== -1) goTo(idx)
   }, [pages, goTo])
 
-  // Delegación: botones data-goto dentro del índice
   const handleIndexClick = useCallback((e: React.MouseEvent) => {
     const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-goto]")
     if (btn?.dataset.goto) goToId(btn.dataset.goto)
@@ -58,11 +57,8 @@ export function CartaControls({ children, menu }: Props) {
     !pages[current].startsWith("portada") &&
     !pages[current].startsWith("indice")
 
-  // ── Imprimir todas las páginas ──
-  // Expandimos el slider, imprimimos, restauramos
   const handlePrint = useCallback(() => {
     setPrinting(true)
-    // Dar un frame para que React aplique la clase print-mode
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         window.print()
@@ -77,9 +73,10 @@ export function CartaControls({ children, menu }: Props) {
         printing ? " carta-printing" : ""
       }`}
     >
-      {/* ── Topbar fija, z-index alto, fondo sólido ── */}
+      {/* Topbar */}
       <header
-        className="absolute left-0 right-0 top-0 z-40 flex h-10 items-center justify-between bg-background/90 px-4 backdrop-blur-sm print:hidden"
+        id="carta-topbar"
+        className="absolute left-0 right-0 top-0 z-40 flex h-10 items-center justify-between bg-background/90 px-4 backdrop-blur-sm"
         style={{ borderBottom: "1px solid oklch(from var(--border) l c h / 0.4)" }}
       >
         <Link
@@ -89,7 +86,6 @@ export function CartaControls({ children, menu }: Props) {
           ← Menú
         </Link>
         <div className="flex items-center gap-3">
-          {/* Toggle imprimir — solo visible para staff */}
           <button
             onClick={handlePrint}
             aria-label="Imprimir carta completa"
@@ -106,7 +102,7 @@ export function CartaControls({ children, menu }: Props) {
         </div>
       </header>
 
-      {/* ── Slider ── */}
+      {/* Slider */}
       <div
         ref={sliderRef}
         onScroll={onScroll}
@@ -126,14 +122,14 @@ export function CartaControls({ children, menu }: Props) {
         {children}
       </div>
 
-      {/* ── Barra nav inferior — FUERA del scroll ── */}
+      {/* Nav inferior */}
       {total > 1 && (
         <nav
+          id="carta-nav"
           aria-label="Navegación de carta"
-          className="absolute bottom-0 left-0 right-0 z-40 flex h-14 items-center justify-between bg-background/90 px-3 backdrop-blur-sm print:hidden"
+          className="absolute bottom-0 left-0 right-0 z-40 flex h-14 items-center justify-between bg-background/90 px-3 backdrop-blur-sm"
           style={{ borderTop: "1px solid oklch(from var(--border) l c h / 0.4)" }}
         >
-          {/* Flecha prev — 44×44 mínimo */}
           <button
             onClick={prev}
             disabled={current === 0}
@@ -145,7 +141,6 @@ export function CartaControls({ children, menu }: Props) {
             </svg>
           </button>
 
-          {/* Centro */}
           <div className="flex flex-col items-center gap-1">
             {isCategory && (
               <button
@@ -159,13 +154,11 @@ export function CartaControls({ children, menu }: Props) {
                 Índice
               </button>
             )}
-            {/* Indicador de página */}
             <p className="font-sans text-[9px] font-light text-muted-foreground">
               {current + 1} / {total}
             </p>
           </div>
 
-          {/* Flecha next */}
           <button
             onClick={next}
             disabled={current === total - 1}
@@ -179,30 +172,38 @@ export function CartaControls({ children, menu }: Props) {
         </nav>
       )}
 
-      {/* ── CSS de impresión — todas las páginas visibles ── */}
+      {/* CSS de impresión */}
       <style>{`
         @media print {
-          /* Reset de altura fija para que fluya todo el contenido */
+          /* Ocultar UI de navegación por ID (más confiable que clases Tailwind) */
+          #carta-topbar, #carta-nav { display: none !important; }
+
+          /* El wrapper principal no limita el alto */
+          .relative.h-svh { height: auto !important; overflow: visible !important; }
+
+          /* El slider se convierte en flujo vertical */
           .carta-slider {
             display: block !important;
             overflow: visible !important;
             height: auto !important;
             scroll-snap-type: none !important;
           }
+
+          /* Cada página fluye en vertical, salto de página entre cada una */
           .carta-page {
             width: 100% !important;
             min-width: unset !important;
             height: auto !important;
             min-height: unset !important;
             scroll-snap-align: none !important;
-            break-inside: avoid;
             page-break-after: always;
+            break-after: page;
           }
-          /* Ocultar UI de navegación */
-          header, nav, .print\\:hidden { display: none !important; }
-          /* Imagen de sección en impresión: altura fija razonable */
-          .carta-page [style*="clamp"] { height: 80px; }
-          /* Fondo blanco, texto oscuro para ahorrar tinta */
+
+          /* La banda de encabezado usa altura fija en impresión */
+          .section-header-band { height: 80px !important; }
+
+          /* Fondo blanco, texto oscuro */
           body, .bg-background { background: white !important; color: black !important; }
         }
       `}</style>
