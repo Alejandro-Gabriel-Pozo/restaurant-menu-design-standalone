@@ -75,58 +75,72 @@ export function CartaView({ menu, config }: Props) {
           </p>
         </div>
 
-        {/* MOBILE — bloque central: logo + etiqueta + nombre + subtitulo */}
+        {/*
+          MOBILE — bloque centrado en pantalla (vertical y horizontal).
+          Tiene un overlay con blur + fondo semitransparente oscuro
+          para sobresalir sobre el arco amarillo.
+        */}
         <div
           className="absolute z-10 flex flex-col items-center sm:hidden"
           style={{
+            top: "50%",
             left: "50%",
-            transform: "translateX(-50%)",
-            bottom: "calc(env(safe-area-inset-bottom, 0px) + 90px)",
+            transform: "translate(-50%, -50%)",
             width: "min(80vw, 300px)",
           }}
         >
-          {logoUrl && (
-            <LogoWithFallback
-              src={logoUrl}
-              alt={nombre}
-              className="mb-3 h-10 w-10 object-contain"
-              fallback={
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold"
-                  style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}>
-                  {nombre.charAt(0)}
-                </div>
-              }
-            />
-          )}
+          {/* Overlay card */}
+          <div
+            className="flex w-full flex-col items-center rounded-2xl px-6 py-6"
+            style={{
+              background: "oklch(0.12 0.02 40 / 0.55)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              border: "1px solid oklch(1 0 0 / 0.08)",
+            }}
+          >
+            {logoUrl && (
+              <LogoWithFallback
+                src={logoUrl}
+                alt={nombre}
+                className="mb-3 h-10 w-10 object-contain"
+                fallback={
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold"
+                    style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}>
+                    {nombre.charAt(0)}
+                  </div>
+                }
+              />
+            )}
 
-          {config.hero_etiqueta_superior && (
-            <p className="text-center font-sans font-light uppercase tracking-[0.45em]"
-              style={{ fontSize: "0.58rem", color: "oklch(from var(--hero-ink) l c h / 0.6)" }}>
-              {config.hero_etiqueta_superior}
-            </p>
-          )}
+            {config.hero_etiqueta_superior && (
+              <p className="text-center font-sans font-light uppercase tracking-[0.45em]"
+                style={{ fontSize: "0.58rem", color: "oklch(from var(--hero-ink) l c h / 0.6)" }}>
+                {config.hero_etiqueta_superior}
+              </p>
+            )}
 
-          <h1 className="text-center font-serif font-medium leading-tight"
-            style={{ fontSize: "clamp(1.7rem, 7vw, 2.1rem)", color: "var(--hero-ink)" }}>
-            {nombre}
-          </h1>
+            <h1 className="text-center font-serif font-medium leading-tight"
+              style={{ fontSize: "clamp(1.7rem, 7vw, 2.1rem)", color: "var(--hero-ink)" }}>
+              {nombre}
+            </h1>
 
-          {subtitulo && (
-            <p className="mt-0.5 text-center font-sans font-light uppercase tracking-[0.22em]"
-              style={{ fontSize: "0.6rem", color: "oklch(from var(--hero-ink) l c h / 0.5)" }}>
-              {subtitulo}
-            </p>
-          )}
+            {subtitulo && (
+              <p className="mt-0.5 text-center font-sans font-light uppercase tracking-[0.22em]"
+                style={{ fontSize: "0.6rem", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
+                {subtitulo}
+              </p>
+            )}
 
-          {/* Separador */}
-          <div className="mt-3 flex items-center gap-2">
-            <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.25)" }} />
-            <span style={{ fontSize: "7px", color: "oklch(from var(--hero-ink) l c h / 0.35)" }}>•</span>
-            <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.25)" }} />
+            <div className="mt-3 flex items-center gap-2">
+              <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.2)" }} />
+              <span style={{ fontSize: "7px", color: "oklch(from var(--hero-ink) l c h / 0.3)" }}>•</span>
+              <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.2)" }} />
+            </div>
           </div>
         </div>
 
-        {/* MOBILE — CTA "Deslizá" anclado al center-bottom */}
+        {/* MOBILE — CTA anclado al center-bottom */}
         <div
           className="absolute z-10 flex flex-col items-center sm:hidden"
           style={{
