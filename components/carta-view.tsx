@@ -41,7 +41,7 @@ export function CartaView({ menu, config }: Props) {
         <div className="absolute inset-0 z-[1] opacity-[0.06]" aria-hidden
           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")` }} />
 
-        {/* DESKTOP — sin cambios */}
+        {/* DESKTOP */}
         <div className="relative z-10 hidden h-full flex-col items-center justify-center gap-5 px-8 text-center sm:flex">
           {logoUrl
             ? <LogoWithFallback src={logoUrl} alt={nombre} className="h-16 w-16 object-contain" fallback={logoFallback} />
@@ -75,11 +75,7 @@ export function CartaView({ menu, config }: Props) {
           </p>
         </div>
 
-        {/*
-          MOBILE — bloque centrado en pantalla (vertical y horizontal).
-          Tiene un overlay con blur + fondo semitransparente oscuro
-          para sobresalir sobre el arco amarillo.
-        */}
+        {/* MOBILE — bloque centrado con glass sutil */}
         <div
           className="absolute z-10 flex flex-col items-center sm:hidden"
           style={{
@@ -89,14 +85,13 @@ export function CartaView({ menu, config }: Props) {
             width: "min(80vw, 300px)",
           }}
         >
-          {/* Overlay card */}
           <div
             className="flex w-full flex-col items-center rounded-2xl px-6 py-6"
             style={{
-              background: "oklch(0.12 0.02 40 / 0.55)",
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-              border: "1px solid oklch(1 0 0 / 0.08)",
+              background: "oklch(0.1 0.015 40 / 0.28)",
+              backdropFilter: "blur(20px) saturate(1.4)",
+              WebkitBackdropFilter: "blur(20px) saturate(1.4)",
+              border: "1px solid oklch(1 0 0 / 0.05)",
             }}
           >
             {logoUrl && (
@@ -133,20 +128,20 @@ export function CartaView({ menu, config }: Props) {
             )}
 
             <div className="mt-3 flex items-center gap-2">
-              <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.2)" }} />
-              <span style={{ fontSize: "7px", color: "oklch(from var(--hero-ink) l c h / 0.3)" }}>•</span>
-              <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.2)" }} />
+              <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.18)" }} />
+              <span style={{ fontSize: "7px", color: "oklch(from var(--hero-ink) l c h / 0.25)" }}>•</span>
+              <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.18)" }} />
             </div>
           </div>
         </div>
 
-        {/* MOBILE — CTA anclado al center-bottom */}
+        {/* MOBILE — CTA center-bottom, sobre la barra del sistema */}
         <div
           className="absolute z-10 flex flex-col items-center sm:hidden"
           style={{
             left: "50%",
             transform: "translateX(-50%)",
-            bottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
+            bottom: "calc(env(safe-area-inset-bottom, 16px) + 52px)",
           }}
         >
           <p className="whitespace-nowrap text-center font-sans font-light uppercase tracking-[0.35em]"
