@@ -75,47 +75,71 @@ export function CartaView({ menu, config }: Props) {
           </p>
         </div>
 
-        {/* MOBILE — esquina inferior-derecha */}
-        <div className="relative z-10 flex h-full flex-col items-end justify-end pb-16 pr-6 text-right sm:hidden">
+        {/*
+          MOBILE — posicionamiento absoluto en esquina inferior-derecha.
+          Todo el contenido vive en un bloque único (inline-flex col)
+          pegado a bottom-right. Internamente todo alineado a la derecha.
+        */}
+        <div
+          className="absolute bottom-0 right-0 z-10 flex flex-col items-end pb-14 pr-5 sm:hidden"
+        >
+          {/* Logo — alineado derecha, separado abajo */}
           {logoUrl && (
-            <LogoWithFallback src={logoUrl} alt={nombre} className="mb-3 h-10 w-10 object-contain"
+            <LogoWithFallback src={logoUrl} alt={nombre} className="mb-2 h-9 w-9 object-contain"
               fallback={
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl text-base font-bold"
+                <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold"
                   style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}>
                   {nombre.charAt(0)}
                 </div>
               }
             />
           )}
+
+          {/* Etiqueta superior */}
           {config.hero_etiqueta_superior && (
-            <p className="mb-1 font-sans font-light uppercase tracking-[0.45em]"
-              style={{ fontSize: "0.6rem", color: "oklch(from var(--hero-ink) l c h / 0.6)" }}>
+            <p className="font-sans font-light uppercase tracking-[0.45em]"
+              style={{ fontSize: "0.55rem", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
               {config.hero_etiqueta_superior}
             </p>
           )}
-          <h1 className="font-serif font-medium leading-tight"
-            style={{ fontSize: "clamp(1.6rem, 7vw, 2.2rem)", color: "var(--hero-ink)" }}>
+
+          {/* Nombre — el elemento más grande, ancla visual del bloque */}
+          <h1 className="font-serif font-medium leading-none"
+            style={{ fontSize: "clamp(1.5rem, 6.5vw, 2rem)", color: "var(--hero-ink)" }}>
             {nombre}
           </h1>
+
+          {/* Subtitulo */}
           {subtitulo && (
-            <p className="mt-0.5 font-sans font-light uppercase tracking-[0.25em]"
-              style={{ fontSize: "0.6rem", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
+            <p className="mt-0.5 font-sans font-light uppercase tracking-[0.2em]"
+              style={{ fontSize: "0.58rem", color: "oklch(from var(--hero-ink) l c h / 0.5)" }}>
               {subtitulo}
             </p>
           )}
+
+          {/* Descripcion */}
           {descripcion && (
-            <p className="mt-1 max-w-[16rem] text-pretty font-sans font-light leading-snug"
-              style={{ fontSize: "0.65rem", color: "oklch(from var(--hero-ink) l c h / 0.7)" }}>
+            <p className="mt-1 font-sans font-light leading-snug"
+              style={{
+                fontSize: "0.62rem",
+                maxWidth: "min(15rem, 55vw)",
+                textAlign: "right",
+                color: "oklch(from var(--hero-ink) l c h / 0.65)",
+              }}>
               {descripcion}
             </p>
           )}
-          <div className="mt-2 flex items-center justify-end gap-3">
-            <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.3)" }} />
-            <span style={{ fontSize: "8px", color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>✦</span>
-            <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.3)" }} />
+
+          {/* Separador */}
+          <div className="mt-2 flex items-center gap-2">
+            <span className="block h-px w-6" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.25)" }} />
+            <span style={{ fontSize: "7px", color: "oklch(from var(--hero-ink) l c h / 0.35)" }}>✦</span>
+            <span className="block h-px w-6" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.25)" }} />
           </div>
-          <p className="mt-2 font-sans font-light uppercase tracking-[0.35em]"
-            style={{ fontSize: "0.55rem", color: "oklch(from var(--hero-ink) l c h / 0.45)" }}>
+
+          {/* CTA deslizar */}
+          <p className="mt-1.5 font-sans font-light uppercase tracking-[0.3em]"
+            style={{ fontSize: "0.5rem", color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>
             Deslizá para ver la carta
           </p>
         </div>
