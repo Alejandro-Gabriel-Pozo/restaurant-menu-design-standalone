@@ -75,7 +75,28 @@ export function CartaView({ menu, config }: Props) {
           </p>
         </div>
 
-        {/* MOBILE — bloque centrado con glass sutil */}
+        {/*
+          MOBILE — neblina radial detrás del bloque, sin bordes ni card visible.
+          Dos capas: una elipse grande muy difusa (la "nube") y el contenido encima.
+        */}
+
+        {/* Neblina radial — misma posición que el bloque */}
+        <div
+          aria-hidden
+          className="absolute z-[8] sm:hidden"
+          style={{
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "110vw",
+            height: "55vh",
+            background: "radial-gradient(ellipse 70% 60% at 50% 50%, oklch(0.08 0.01 40 / 0.55) 0%, oklch(0.08 0.01 40 / 0.0) 100%)",
+            filter: "blur(18px)",
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* Bloque principal centrado — sin fondo, sin borde */}
         <div
           className="absolute z-10 flex flex-col items-center sm:hidden"
           style={{
@@ -85,63 +106,53 @@ export function CartaView({ menu, config }: Props) {
             width: "min(80vw, 300px)",
           }}
         >
-          <div
-            className="flex w-full flex-col items-center rounded-2xl px-6 py-6"
-            style={{
-              background: "oklch(0.1 0.015 40 / 0.28)",
-              backdropFilter: "blur(20px) saturate(1.4)",
-              WebkitBackdropFilter: "blur(20px) saturate(1.4)",
-              border: "1px solid oklch(1 0 0 / 0.05)",
-            }}
-          >
-            {logoUrl && (
-              <LogoWithFallback
-                src={logoUrl}
-                alt={nombre}
-                className="mb-3 h-10 w-10 object-contain"
-                fallback={
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold"
-                    style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}>
-                    {nombre.charAt(0)}
-                  </div>
-                }
-              />
-            )}
+          {logoUrl && (
+            <LogoWithFallback
+              src={logoUrl}
+              alt={nombre}
+              className="mb-3 h-10 w-10 object-contain"
+              fallback={
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold"
+                  style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}>
+                  {nombre.charAt(0)}
+                </div>
+              }
+            />
+          )}
 
-            {config.hero_etiqueta_superior && (
-              <p className="text-center font-sans font-light uppercase tracking-[0.45em]"
-                style={{ fontSize: "0.58rem", color: "oklch(from var(--hero-ink) l c h / 0.6)" }}>
-                {config.hero_etiqueta_superior}
-              </p>
-            )}
+          {config.hero_etiqueta_superior && (
+            <p className="text-center font-sans font-light uppercase tracking-[0.45em]"
+              style={{ fontSize: "0.58rem", color: "oklch(from var(--hero-ink) l c h / 0.6)" }}>
+              {config.hero_etiqueta_superior}
+            </p>
+          )}
 
-            <h1 className="text-center font-serif font-medium leading-tight"
-              style={{ fontSize: "clamp(1.7rem, 7vw, 2.1rem)", color: "var(--hero-ink)" }}>
-              {nombre}
-            </h1>
+          <h1 className="text-center font-serif font-medium leading-tight"
+            style={{ fontSize: "clamp(1.7rem, 7vw, 2.1rem)", color: "var(--hero-ink)" }}>
+            {nombre}
+          </h1>
 
-            {subtitulo && (
-              <p className="mt-0.5 text-center font-sans font-light uppercase tracking-[0.22em]"
-                style={{ fontSize: "0.6rem", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
-                {subtitulo}
-              </p>
-            )}
+          {subtitulo && (
+            <p className="mt-0.5 text-center font-sans font-light uppercase tracking-[0.22em]"
+              style={{ fontSize: "0.6rem", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
+              {subtitulo}
+            </p>
+          )}
 
-            <div className="mt-3 flex items-center gap-2">
-              <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.18)" }} />
-              <span style={{ fontSize: "7px", color: "oklch(from var(--hero-ink) l c h / 0.25)" }}>•</span>
-              <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.18)" }} />
-            </div>
+          <div className="mt-3 flex items-center gap-2">
+            <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.18)" }} />
+            <span style={{ fontSize: "7px", color: "oklch(from var(--hero-ink) l c h / 0.25)" }}>•</span>
+            <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.18)" }} />
           </div>
         </div>
 
-        {/* MOBILE — CTA center-bottom, sobre la barra del sistema */}
+        {/* MOBILE — CTA bien por encima de la barra del sistema */}
         <div
           className="absolute z-10 flex flex-col items-center sm:hidden"
           style={{
             left: "50%",
             transform: "translateX(-50%)",
-            bottom: "calc(env(safe-area-inset-bottom, 16px) + 52px)",
+            bottom: "calc(env(safe-area-inset-bottom, 20px) + 80px)",
           }}
         >
           <p className="whitespace-nowrap text-center font-sans font-light uppercase tracking-[0.35em]"
