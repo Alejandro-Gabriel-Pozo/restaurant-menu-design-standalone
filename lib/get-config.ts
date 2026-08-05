@@ -38,6 +38,10 @@ export type SiteConfig = {
   restaurante_instagram:        string
   restaurante_facebook:         string
   restaurante_whatsapp:         string
+  // Carta: posicion del bloque principal en mobile (% desde arriba, default 50)
+  carta_pos_bloque:             string
+  // Carta: posicion del CTA "desliza" en mobile (% desde abajo, default 18)
+  carta_pos_cta:                string
 }
 
 const defaults: SiteConfig = {
@@ -78,6 +82,8 @@ const defaults: SiteConfig = {
   restaurante_instagram:        "",
   restaurante_facebook:         "",
   restaurante_whatsapp:         "",
+  carta_pos_bloque:             "50",
+  carta_pos_cta:                "18",
 }
 
 type GvizCell = { v: string | number | boolean | null }

@@ -19,6 +19,16 @@ export function CartaView({ menu, config }: Props) {
   const bgUrl       = config.hero_imagen_fondo_url ?? ""
   const bgSolido: React.CSSProperties = !bgUrl ? { backgroundColor: acento } : {}
 
+  // Posicion configurable: % desde arriba para el bloque, % desde abajo para el CTA
+  const bloqueTop = `${config.carta_pos_bloque || "50"}%`
+  const ctaBottom = `${config.carta_pos_cta   || "18"}%`
+
+  // Redes sociales
+  const instagram = config.restaurante_instagram
+  const facebook  = config.restaurante_facebook
+  const whatsapp  = config.restaurante_whatsapp
+  const mapsUrl   = config.restaurante_footer_maps_url
+
   const logoFallback = (
     <div className="flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-bold"
       style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}>
@@ -27,7 +37,7 @@ export function CartaView({ menu, config }: Props) {
   )
 
   return (
-    <CartaControls menu={menu}>
+    <CartaControls menu={menu} config={config}>
 
       {/* ══ PORTADA ══ */}
       <div data-page="portada" className="carta-page relative isolate overflow-hidden" style={bgSolido}>
@@ -75,17 +85,12 @@ export function CartaView({ menu, config }: Props) {
           </p>
         </div>
 
-        {/*
-          MOBILE — neblina radial detrás del bloque, sin bordes ni card visible.
-          Dos capas: una elipse grande muy difusa (la "nube") y el contenido encima.
-        */}
-
-        {/* Neblina radial — misma posición que el bloque */}
+        {/* MOBILE — neblina radial (sin bordes, sin card) */}
         <div
           aria-hidden
           className="absolute z-[8] sm:hidden"
           style={{
-            top: "50%",
+            top: bloqueTop,
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: "110vw",
@@ -96,11 +101,11 @@ export function CartaView({ menu, config }: Props) {
           }}
         />
 
-        {/* Bloque principal centrado — sin fondo, sin borde */}
+        {/* MOBILE — bloque principal, posición configurable */}
         <div
           className="absolute z-10 flex flex-col items-center sm:hidden"
           style={{
-            top: "50%",
+            top: bloqueTop,
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: "min(80vw, 300px)",
@@ -119,26 +124,22 @@ export function CartaView({ menu, config }: Props) {
               }
             />
           )}
-
           {config.hero_etiqueta_superior && (
             <p className="text-center font-sans font-light uppercase tracking-[0.45em]"
               style={{ fontSize: "0.58rem", color: "oklch(from var(--hero-ink) l c h / 0.6)" }}>
               {config.hero_etiqueta_superior}
             </p>
           )}
-
           <h1 className="text-center font-serif font-medium leading-tight"
             style={{ fontSize: "clamp(1.7rem, 7vw, 2.1rem)", color: "var(--hero-ink)" }}>
             {nombre}
           </h1>
-
           {subtitulo && (
             <p className="mt-0.5 text-center font-sans font-light uppercase tracking-[0.22em]"
               style={{ fontSize: "0.6rem", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
               {subtitulo}
             </p>
           )}
-
           <div className="mt-3 flex items-center gap-2">
             <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.18)" }} />
             <span style={{ fontSize: "7px", color: "oklch(from var(--hero-ink) l c h / 0.25)" }}>•</span>
@@ -146,13 +147,13 @@ export function CartaView({ menu, config }: Props) {
           </div>
         </div>
 
-        {/* MOBILE — CTA bien por encima de la barra del sistema */}
+        {/* MOBILE — CTA posición configurable desde abajo */}
         <div
           className="absolute z-10 flex flex-col items-center sm:hidden"
           style={{
             left: "50%",
             transform: "translateX(-50%)",
-            bottom: "calc(env(safe-area-inset-bottom, 20px) + 80px)",
+            bottom: ctaBottom,
           }}
         >
           <p className="whitespace-nowrap text-center font-sans font-light uppercase tracking-[0.35em]"
