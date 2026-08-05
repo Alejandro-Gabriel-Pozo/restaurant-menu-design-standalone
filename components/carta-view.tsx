@@ -76,42 +76,47 @@ export function CartaView({ menu, config }: Props) {
         </div>
 
         {/*
-          MOBILE — posicionamiento absoluto en esquina inferior-derecha.
-          Todo el contenido vive en un bloque único (inline-flex col)
-          pegado a bottom-right. Internamente todo alineado a la derecha.
+          MOBILE — bloque absoluto bottom-right.
+          El contenedor tiene ancho fijo (60vw máx 240px).
+          Todo el texto dentro usa text-right y ocupa el 100% del ancho del bloque.
+          Así todos los elementos comparten el mismo borde derecho e izquierdo
+          y se ven como una columna tipográfica coherente.
         */}
         <div
-          className="absolute bottom-0 right-0 z-10 flex flex-col items-end pb-14 pr-5 sm:hidden"
+          className="absolute bottom-0 right-0 z-10 flex flex-col pb-12 pr-4 sm:hidden"
+          style={{ width: "min(60vw, 240px)" }}
         >
-          {/* Logo — alineado derecha, separado abajo */}
+          {/* Logo alineado a la derecha del bloque */}
           {logoUrl && (
-            <LogoWithFallback src={logoUrl} alt={nombre} className="mb-2 h-9 w-9 object-contain"
-              fallback={
-                <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold"
-                  style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}>
-                  {nombre.charAt(0)}
-                </div>
-              }
-            />
+            <div className="mb-2 flex justify-end">
+              <LogoWithFallback src={logoUrl} alt={nombre} className="h-9 w-9 object-contain"
+                fallback={
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold"
+                    style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}>
+                    {nombre.charAt(0)}
+                  </div>
+                }
+              />
+            </div>
           )}
 
-          {/* Etiqueta superior */}
+          {/* Etiqueta */}
           {config.hero_etiqueta_superior && (
-            <p className="font-sans font-light uppercase tracking-[0.45em]"
+            <p className="w-full text-right font-sans font-light uppercase tracking-[0.45em]"
               style={{ fontSize: "0.55rem", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
               {config.hero_etiqueta_superior}
             </p>
           )}
 
-          {/* Nombre — el elemento más grande, ancla visual del bloque */}
-          <h1 className="font-serif font-medium leading-none"
-            style={{ fontSize: "clamp(1.5rem, 6.5vw, 2rem)", color: "var(--hero-ink)" }}>
+          {/* Nombre — ocupa todo el ancho del bloque, alineado derecha */}
+          <h1 className="w-full text-right font-serif font-medium leading-tight"
+            style={{ fontSize: "clamp(1.4rem, 6vw, 1.9rem)", color: "var(--hero-ink)" }}>
             {nombre}
           </h1>
 
           {/* Subtitulo */}
           {subtitulo && (
-            <p className="mt-0.5 font-sans font-light uppercase tracking-[0.2em]"
+            <p className="w-full text-right font-sans font-light uppercase tracking-[0.2em]"
               style={{ fontSize: "0.58rem", color: "oklch(from var(--hero-ink) l c h / 0.5)" }}>
               {subtitulo}
             </p>
@@ -119,26 +124,21 @@ export function CartaView({ menu, config }: Props) {
 
           {/* Descripcion */}
           {descripcion && (
-            <p className="mt-1 font-sans font-light leading-snug"
-              style={{
-                fontSize: "0.62rem",
-                maxWidth: "min(15rem, 55vw)",
-                textAlign: "right",
-                color: "oklch(from var(--hero-ink) l c h / 0.65)",
-              }}>
+            <p className="mt-1 w-full text-right font-sans font-light leading-snug"
+              style={{ fontSize: "0.62rem", color: "oklch(from var(--hero-ink) l c h / 0.65)" }}>
               {descripcion}
             </p>
           )}
 
           {/* Separador */}
-          <div className="mt-2 flex items-center gap-2">
+          <div className="mt-2 flex w-full items-center justify-end gap-2">
             <span className="block h-px w-6" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.25)" }} />
             <span style={{ fontSize: "7px", color: "oklch(from var(--hero-ink) l c h / 0.35)" }}>✦</span>
             <span className="block h-px w-6" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.25)" }} />
           </div>
 
-          {/* CTA deslizar */}
-          <p className="mt-1.5 font-sans font-light uppercase tracking-[0.3em]"
+          {/* CTA */}
+          <p className="mt-1.5 w-full text-right font-sans font-light uppercase tracking-[0.3em]"
             style={{ fontSize: "0.5rem", color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>
             Deslizá para ver la carta
           </p>
