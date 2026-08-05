@@ -6,7 +6,7 @@ export async function GET() {
   const sheetId = process.env.MENU_SHEET_ID
   if (!sheetId) return NextResponse.json({ error: "MENU_SHEET_ID no configurado" })
 
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=Config`
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=Config&headers=0`
   const res = await fetch(url, { cache: "no-store" })
   const raw = await res.text()
 

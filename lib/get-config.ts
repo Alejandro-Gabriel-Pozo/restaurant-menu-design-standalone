@@ -105,7 +105,7 @@ export async function getConfig(): Promise<SiteConfig> {
   if (!sheetId) return defaults
 
   try {
-    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=Config`
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=Config&headers=0`
     const res = await fetch(url, { cache: "no-store" })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const table = parseGviz(await res.text())
@@ -116,7 +116,7 @@ export async function getConfig(): Promise<SiteConfig> {
       const key = row.c[0]?.v != null ? String(row.c[0].v).trim() as keyof SiteConfig : undefined
       const raw = row.c[1]?.v
       const val = raw != null ? String(raw).trim() : ""
-      if (key && key in defaults && val) {
+      if (key && key in defaults && raw != null && val !== "") {
         config[key] = val
       }
     }
