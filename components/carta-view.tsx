@@ -76,21 +76,21 @@ export function CartaView({ menu, config }: Props) {
         </div>
 
         {/*
-          MOBILE — el bloque vive en la zona libre debajo del arco.
-          - right: 20px + left: auto con width fijo → margen derecho cómodo
-          - bottom usa safe-area + 60px para no quedar bajo la barra del sistema
-          - flex-col items-end + text-right → todo alineado al borde derecho del bloque
-          - El bloque ocupa ~72% del ancho para aprovechar el espacio libre del arco
+          MOBILE — centrado horizontalmente, en la zona libre bajo el arco.
+          left:50% + translateX(-50%) lo centra en la pantalla.
+          bottom alto (≈25% del viewport) para caer bajo el arco sin pegarse al borde inferior.
+          text-center para que todo el texto quede simétrico dentro del bloque.
         */}
         <div
-          className="absolute z-10 flex flex-col items-end sm:hidden"
+          className="absolute z-10 flex flex-col items-center sm:hidden"
           style={{
-            right: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
             bottom: "calc(env(safe-area-inset-bottom, 0px) + 60px)",
-            width: "min(72vw, 260px)",
+            width: "min(80vw, 300px)",
           }}
         >
-          {/* Logo alineado con el texto */}
+          {/* Logo centrado */}
           {logoUrl && (
             <LogoWithFallback
               src={logoUrl}
@@ -107,21 +107,21 @@ export function CartaView({ menu, config }: Props) {
 
           {/* Etiqueta */}
           {config.hero_etiqueta_superior && (
-            <p className="text-right font-sans font-light uppercase tracking-[0.45em]"
+            <p className="text-center font-sans font-light uppercase tracking-[0.45em]"
               style={{ fontSize: "0.55rem", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
               {config.hero_etiqueta_superior}
             </p>
           )}
 
           {/* Nombre */}
-          <h1 className="text-right font-serif font-medium leading-tight"
-            style={{ fontSize: "clamp(1.5rem, 6vw, 1.9rem)", color: "var(--hero-ink)" }}>
+          <h1 className="text-center font-serif font-medium leading-tight"
+            style={{ fontSize: "clamp(1.6rem, 6.5vw, 2rem)", color: "var(--hero-ink)" }}>
             {nombre}
           </h1>
 
           {/* Subtitulo */}
           {subtitulo && (
-            <p className="text-right font-sans font-light uppercase tracking-[0.22em]"
+            <p className="text-center font-sans font-light uppercase tracking-[0.22em]"
               style={{ fontSize: "0.57rem", color: "oklch(from var(--hero-ink) l c h / 0.5)" }}>
               {subtitulo}
             </p>
@@ -129,7 +129,7 @@ export function CartaView({ menu, config }: Props) {
 
           {/* Descripcion */}
           {descripcion && (
-            <p className="mt-1 text-right font-sans font-light leading-snug"
+            <p className="mt-1 text-center font-sans font-light leading-snug"
               style={{ fontSize: "0.62rem", color: "oklch(from var(--hero-ink) l c h / 0.65)" }}>
               {descripcion}
             </p>
@@ -143,7 +143,7 @@ export function CartaView({ menu, config }: Props) {
           </div>
 
           {/* CTA */}
-          <p className="mt-1.5 text-right font-sans font-light uppercase tracking-[0.3em]"
+          <p className="mt-1.5 text-center font-sans font-light uppercase tracking-[0.3em]"
             style={{ fontSize: "0.5rem", color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>
             Deslizá para ver la carta
           </p>
