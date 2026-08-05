@@ -76,71 +76,75 @@ export function CartaView({ menu, config }: Props) {
         </div>
 
         {/*
-          MOBILE — bloque absoluto, ancho fijo, pegado a la derecha.
-          bottom: 60px para no quedar tapado por la barra del sistema.
-          Todos los hijos usan w-full + text-right → mismo borde izq y der.
+          MOBILE — el bloque vive en la zona libre debajo del arco.
+          - right: 20px + left: auto con width fijo → margen derecho cómodo
+          - bottom usa safe-area + 60px para no quedar bajo la barra del sistema
+          - flex-col items-end + text-right → todo alineado al borde derecho del bloque
+          - El bloque ocupa ~72% del ancho para aprovechar el espacio libre del arco
         */}
         <div
-          className="absolute right-0 z-10 flex flex-col pr-5 sm:hidden"
-          style={{ bottom: "60px", width: "min(60vw, 220px)" }}
+          className="absolute z-10 flex flex-col items-end sm:hidden"
+          style={{
+            right: "20px",
+            bottom: "calc(env(safe-area-inset-bottom, 0px) + 60px)",
+            width: "min(72vw, 260px)",
+          }}
         >
-          {/* Logo — alineado a la derecha dentro del bloque */}
+          {/* Logo alineado con el texto */}
           {logoUrl && (
-            <div className="mb-2 flex w-full justify-end">
-              <LogoWithFallback
-                src={logoUrl}
-                alt={nombre}
-                className="h-8 w-8 object-contain"
-                fallback={
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold"
-                    style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}>
-                    {nombre.charAt(0)}
-                  </div>
-                }
-              />
-            </div>
+            <LogoWithFallback
+              src={logoUrl}
+              alt={nombre}
+              className="mb-2 h-9 w-9 object-contain"
+              fallback={
+                <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold"
+                  style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}>
+                  {nombre.charAt(0)}
+                </div>
+              }
+            />
           )}
 
-          {/* Etiqueta superior */}
+          {/* Etiqueta */}
           {config.hero_etiqueta_superior && (
-            <p className="w-full text-right font-sans font-light uppercase tracking-[0.45em]"
+            <p className="text-right font-sans font-light uppercase tracking-[0.45em]"
               style={{ fontSize: "0.55rem", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
               {config.hero_etiqueta_superior}
             </p>
           )}
 
           {/* Nombre */}
-          <h1 className="w-full text-right font-serif font-medium leading-tight"
-            style={{ fontSize: "clamp(1.3rem, 5.5vw, 1.75rem)", color: "var(--hero-ink)" }}>
+          <h1 className="text-right font-serif font-medium leading-tight"
+            style={{ fontSize: "clamp(1.5rem, 6vw, 1.9rem)", color: "var(--hero-ink)" }}>
             {nombre}
           </h1>
 
           {/* Subtitulo */}
           {subtitulo && (
-            <p className="w-full text-right font-sans font-light uppercase tracking-[0.2em]"
-              style={{ fontSize: "0.55rem", color: "oklch(from var(--hero-ink) l c h / 0.5)" }}>
+            <p className="text-right font-sans font-light uppercase tracking-[0.22em]"
+              style={{ fontSize: "0.57rem", color: "oklch(from var(--hero-ink) l c h / 0.5)" }}>
               {subtitulo}
             </p>
           )}
 
           {/* Descripcion */}
           {descripcion && (
-            <p className="mt-1 w-full text-right font-sans font-light leading-snug"
-              style={{ fontSize: "0.6rem", color: "oklch(from var(--hero-ink) l c h / 0.65)" }}>
+            <p className="mt-1 text-right font-sans font-light leading-snug"
+              style={{ fontSize: "0.62rem", color: "oklch(from var(--hero-ink) l c h / 0.65)" }}>
               {descripcion}
             </p>
           )}
 
           {/* Separador */}
-          <div className="mt-2 flex w-full items-center justify-end gap-2">
-            <span className="block h-px w-5" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.25)" }} />
-            <span style={{ fontSize: "6px", color: "oklch(from var(--hero-ink) l c h / 0.35)" }}>✦</span>
-            <span className="block h-px w-5" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.25)" }} />
+          <div className="mt-2 flex items-center gap-2">
+            <span className="block h-px w-6" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.25)" }} />
+            <span style={{ fontSize: "7px", color: "oklch(from var(--hero-ink) l c h / 0.35)" }}>✦</span>
+            <span className="block h-px w-6" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.25)" }} />
           </div>
 
-          {/* CTA deslizar */}
-          <p className="mt-1 w-full text-right font-sans font-light uppercase tracking-[0.28em]"
-            style={{ fontSize: "0.48rem", color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>
+          {/* CTA */}
+          <p className="mt-1.5 text-right font-sans font-light uppercase tracking-[0.3em]"
+            style={{ fontSize: "0.5rem", color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>
             Deslizá para ver la carta
           </p>
         </div>
