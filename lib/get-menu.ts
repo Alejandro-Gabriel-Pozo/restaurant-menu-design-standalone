@@ -143,8 +143,7 @@ export async function getMenu(): Promise<MenuCategory[]> {
 
   try {
     const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`
-    // ISR: revalida cada hora; el deploy hook de Sheets invalida el caché al instante
-    const res = await fetch(url, { next: { revalidate: 3600 } })
+    const res = await fetch(url, { cache: "no-store" })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const table = parseGviz(await res.text())
     const cols  = table.cols.map((c) => c.label.toLowerCase().trim())
