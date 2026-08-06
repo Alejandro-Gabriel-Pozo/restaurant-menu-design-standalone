@@ -23,11 +23,14 @@ export function CartaView({ menu, config }: Props) {
   const ctaBottom = `${config.carta_pos_cta   || "18"}%`
 
   const bandaAltoMobile  = config.carta_banda_alto_mobile
-    ? (isNaN(Number(config.carta_banda_alto_mobile)) ? config.carta_banda_alto_mobile : `${config.carta_banda_alto_mobile}px`)
+    ? (isNaN(Number(config.carta_banda_alto_mobile))
+        ? config.carta_banda_alto_mobile
+        : `${config.carta_banda_alto_mobile}px`)
     : "90px"
   const bandaAltoDesktop = config.carta_banda_alto_desktop || "clamp(80px, 18vh, 140px)"
 
-  // Imagen de banda
+  // Imagen de banda — una sola familia de claves para todos los modos
+  const imgModo         = (config.carta_imagen_modo || "fondo") as "fondo" | "miniatura" | "ambos"
   const imgAnchoMobile  = config.carta_imagen_ancho_mobile  || "160"
   const imgAnchoDesktop = config.carta_imagen_ancho_desktop || "auto 100%"
   const imgPosX         = config.carta_imagen_pos_x         || "left"
@@ -36,8 +39,10 @@ export function CartaView({ menu, config }: Props) {
   const imgOpacidad     = Number(config.carta_imagen_opacidad) || 38
 
   const logoFallback = (
-    <div className="flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-bold"
-      style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}>
+    <div
+      className="flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-bold"
+      style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}
+    >
       {nombre.charAt(0)}
     </div>
   )
@@ -196,10 +201,10 @@ export function CartaView({ menu, config }: Props) {
                 }
               `}</style>
 
-              {/* Imagen de fondo de la banda (desktop + mobile tile) */}
               {category.imagen_url && (
                 <CartaSectionImage
                   url={category.imagen_url}
+                  modo={imgModo}
                   anchoMobile={imgAnchoMobile}
                   anchoDesktop={imgAnchoDesktop}
                   posX={imgPosX}
@@ -225,7 +230,7 @@ export function CartaView({ menu, config }: Props) {
                 )}
               </div>
 
-              {/* MOBILE — solo texto, sin img inline */}
+              {/* MOBILE — texto */}
               <div className="flex h-full items-center sm:hidden" style={{ position: "relative", zIndex: 10 }}>
                 <div className="flex flex-col justify-center gap-px px-4 py-2">
                   <p className="font-sans font-light uppercase tracking-[0.4em] text-primary" style={{ fontSize: "0.55rem" }}>
