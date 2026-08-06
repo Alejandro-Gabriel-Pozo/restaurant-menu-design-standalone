@@ -34,16 +34,20 @@ export function CartaSectionImage({
   const overlayGradient =
     "radial-gradient(ellipse 55% 100% at 0% 50%, oklch(from var(--background) l c h / 0.85) 0%, oklch(from var(--background) l c h / 0.0) 100%)"
 
-  // Miniatura — interpreta anchoMobile/anchoDesktop como %
+  // Miniatura — % del ancho de la banda
   const pctMobile  = isNaN(Number(anchoMobile)) ? anchoMobile : `${anchoMobile}%`
   const pctDesktop = (() => {
     const first = anchoDesktop?.split(" ")[0]
     return isNaN(Number(first)) ? "38%" : `${first}%`
   })()
 
-  // Alineación horizontal de la miniatura
+  // Alineación horizontal
   const miniJustify =
     posX === "right" ? "flex-end" : posX === "center" ? "center" : "flex-start"
+
+  // Alineación vertical — pos_y controla align-items
+  const miniAlign =
+    posY === "bottom" ? "flex-end" : posY === "center" ? "center" : "flex-start"
 
   return (
     <>
@@ -94,18 +98,24 @@ export function CartaSectionImage({
       {/* ── MINIATURA desktop ── */}
       {showMini && (
         <div
-          className="absolute inset-0 hidden sm:flex items-center"
+          className="absolute inset-0 hidden sm:flex"
           aria-hidden
-          style={{ justifyContent: miniJustify, padding: "0 1rem" }}
+          style={{
+            justifyContent: miniJustify,
+            alignItems:     miniAlign,
+            overflow:       "hidden",
+            padding:        "0 1rem",
+          }}
         >
           <img
             src={url}
             alt=""
             style={{
-              width:     pctDesktop,
-              maxHeight: "100%",
-              objectFit: "contain",
+              width:      pctDesktop,
+              maxHeight:  "none",
+              objectFit:  "contain",
               opacity,
+              flexShrink: 0,
             }}
           />
         </div>
@@ -114,18 +124,24 @@ export function CartaSectionImage({
       {/* ── MINIATURA mobile ── */}
       {showMini && (
         <div
-          className="absolute inset-0 flex items-center sm:hidden"
+          className="absolute inset-0 flex sm:hidden"
           aria-hidden
-          style={{ justifyContent: miniJustify, padding: "0 0.75rem" }}
+          style={{
+            justifyContent: miniJustify,
+            alignItems:     miniAlign,
+            overflow:       "hidden",
+            padding:        "0 0.75rem",
+          }}
         >
           <img
             src={url}
             alt=""
             style={{
-              width:     pctMobile,
-              maxHeight: "100%",
-              objectFit: "contain",
+              width:      pctMobile,
+              maxHeight:  "none",
+              objectFit:  "contain",
               opacity,
+              flexShrink: 0,
             }}
           />
         </div>
