@@ -1,25 +1,29 @@
 "use client"
 
 interface Props {
-  url:           string
-  modo?:         "fondo" | "miniatura" | "ambos"
-  anchoMobile?:  string   // fondo → px del tile | miniatura → % del alto de la banda
-  anchoDesktop?: string   // fondo → CSS background-size | miniatura → % del alto de la banda
-  posX?:         string   // left | center | right
-  posY?:         string   // top | center | bottom
-  overlay?:      boolean
-  opacidad?:     number   // 0-100
+  url:            string
+  modo?:          "fondo" | "miniatura" | "ambos"
+  anchoMobile?:   string   // fondo → px del tile | miniatura → % del alto de la banda
+  anchoDesktop?:  string   // fondo → CSS background-size | miniatura → % del alto de la banda
+  posX?:          string   // left | center | right
+  posY?:          string   // top | center | bottom
+  overlay?:       boolean
+  opacidad?:      number   // 0-100
+  bandaAltoMobile?:  string  // px de alto de la banda mobile (para calcular altura en px)
+  bandaAltoDesktop?: string  // px de alto de la banda desktop
 }
 
 export function CartaSectionImage({
   url,
-  modo         = "fondo",
-  anchoMobile  = "80",
-  anchoDesktop = "auto 100%",
-  posX         = "left",
-  posY         = "top",
-  overlay      = true,
-  opacidad     = 38,
+  modo            = "fondo",
+  anchoMobile     = "80",
+  anchoDesktop    = "auto 100%",
+  posX            = "left",
+  posY            = "top",
+  overlay         = true,
+  opacidad        = 38,
+  bandaAltoMobile  = "90",
+  bandaAltoDesktop = "120",
 }: Props) {
   const opacity   = opacidad / 100
   const bgPos     = `${posX} ${posY}`
@@ -32,33 +36,33 @@ export function CartaSectionImage({
   const overlayGradient =
     "radial-gradient(ellipse 55% 100% at 0% 50%, oklch(from var(--background) l c h / 0.85) 0%, oklch(from var(--background) l c h / 0.0) 100%)"
 
-  // Miniatura — % del alto de la banda
-  const heightMobile  = isNaN(Number(anchoMobile))  ? anchoMobile  : `${anchoMobile}%`
-  const heightDesktop = (() => {
-    const first = anchoDesktop?.split(" ")[0]
-    return isNaN(Number(first)) ? "80%" : `${first}%`
-  })()
+  // Miniatura — calcular px reales a partir del % y la altura de la banda
+  const calcHeightPx = (pctStr: string, bandaStr: string): string => {
+    const pct   = Number(pctStr)
+    const banda = Number(bandaStr.replace("px", ""))
+    if (!isNaN(pct) && !isNaN(banda) && banda > 0) {
+      return `${Math.round(banda * pct / 100)}px`
+    }
+    return `${pctStr}`  // fallback: pasar el valor tal cual
+  }
 
-  // pos_x → left/right/center con transform
-  const miniLeft =
-    posX === "right"  ? "auto" :
-    posX === "center" ? "50%"  : "1rem"
-  const miniRight =
-    posX === "right"  ? "1rem" : "auto"
-  const miniTransformX =
-    posX === "center" ? "translateX(-50%)" : "none"
+  const heightMobile  = calcHeightPx(anchoMobile,  bandaAltoMobile)
+  const heightDesktop = calcHeightPx(
+    anchoDesktop?.split(" ")[0] ?? "80",
+    bandaAltoDesktop
+  )
 
-  // pos_y → top/bottom/center con transform
-  const miniTop =
-    posY === "bottom" ? "auto"  :
-    posY === "center" ? "50%"   : "0"
-  const miniBottom =
-    posY === "bottom" ? "0"     : "auto"
-  const miniTransformY =
-    posY === "center" ? "translateY(-50%)" : "none"
+  // pos_x
+  const miniLeft  = posX === "right" ? "auto" : posX === "center" ? "50%"  : "1rem"
+  const miniRight = posX === "right" ? "1rem" : "auto"
+  const miniTX    = posX === "center" ? "translateX(-50%)" : ""
 
-  const miniTransform = [miniTransformX, miniTransformY]
-    .filter(v => v !== "none").join(" ") || "none"
+  // pos_y
+  const miniTop    = posY === "bottom" ? "auto" : posY === "center" ? "50%"  : "0"
+  const miniBottom = posY === "bottom" ? "0"    : "auto"
+  const miniTY     = posY === "center" ? "translateY(-50%)" : ""
+
+  const miniTransform = [miniTX, miniTY].filter(Boolean).join(" ") || "none"
 
   const miniStyle = (height: string): React.CSSProperties => ({
     position:  "absolute",
