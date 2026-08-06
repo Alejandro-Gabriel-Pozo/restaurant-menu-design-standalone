@@ -35,11 +35,6 @@ export function CartaView({ menu, config }: Props) {
   const imgOverlay      = (config.carta_imagen_overlay || "si") !== "no"
   const imgOpacidad     = Number(config.carta_imagen_opacidad) || 38
 
-  const instagram = config.restaurante_instagram
-  const facebook  = config.restaurante_facebook
-  const whatsapp  = config.restaurante_whatsapp
-  const mapsUrl   = config.restaurante_footer_maps_url
-
   const logoFallback = (
     <div className="flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-bold"
       style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}>
@@ -201,6 +196,7 @@ export function CartaView({ menu, config }: Props) {
                 }
               `}</style>
 
+              {/* Imagen de fondo de la banda (desktop + mobile tile) */}
               {category.imagen_url && (
                 <CartaSectionImage
                   url={category.imagen_url}
@@ -229,9 +225,9 @@ export function CartaView({ menu, config }: Props) {
                 )}
               </div>
 
-              {/* MOBILE — texto sobre la banda */}
-              <div className="flex h-full pt-10 sm:hidden" style={{ position: "relative", zIndex: 10 }}>
-                <div className="flex flex-1 flex-col justify-center gap-px px-4 pb-1">
+              {/* MOBILE — solo texto, sin img inline */}
+              <div className="flex h-full items-center sm:hidden" style={{ position: "relative", zIndex: 10 }}>
+                <div className="flex flex-col justify-center gap-px px-4 py-2">
                   <p className="font-sans font-light uppercase tracking-[0.4em] text-primary" style={{ fontSize: "0.55rem" }}>
                     {category.categoria ? `${category.categoria} · ` : ""}
                     {String(catIdx + 1).padStart(2, "0")} / {String(menu.length).padStart(2, "0")}
@@ -245,12 +241,6 @@ export function CartaView({ menu, config }: Props) {
                     </p>
                   )}
                 </div>
-                {category.imagen_url && (
-                  <div className="flex shrink-0 items-center justify-center overflow-hidden pb-1 pr-3" style={{ width: "38%" }}>
-                    <img src={category.imagen_url} alt="" aria-hidden loading="lazy"
-                      style={{ display: "block", maxHeight: "100%", maxWidth: "100%", width: "auto", height: "100%", objectFit: "contain", opacity: 0.6 }} />
-                  </div>
-                )}
               </div>
 
               <div className="absolute bottom-0 left-0 right-0 h-px bg-primary/20" />
