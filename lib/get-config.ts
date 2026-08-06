@@ -38,14 +38,17 @@ export type SiteConfig = {
   restaurante_instagram:        string
   restaurante_facebook:         string
   restaurante_whatsapp:         string
-  // Carta: posicion del bloque principal en mobile (% desde arriba, default 50)
   carta_pos_bloque:             string
-  // Carta: posicion del CTA "desliza" en mobile (% desde abajo, default 18)
   carta_pos_cta:                string
-  // Carta: altura de la banda de sección en mobile (px, default 90)
   carta_banda_alto_mobile:      string
-  // Carta: altura de la banda de sección en desktop (px o clamp, default clamp(80px,18vh,140px))
   carta_banda_alto_desktop:     string
+  // Imagen en la banda de sección
+  carta_imagen_ancho_mobile:    string  // px, ej: "160"
+  carta_imagen_ancho_desktop:   string  // valor CSS, ej: "auto 100%"
+  carta_imagen_pos_x:           string  // left | center | right
+  carta_imagen_pos_y:           string  // top | center | bottom
+  carta_imagen_overlay:         string  // si | no
+  carta_imagen_opacidad:        string  // 0-100, ej: "38"
 }
 
 const defaults: SiteConfig = {
@@ -90,6 +93,12 @@ const defaults: SiteConfig = {
   carta_pos_cta:                "18",
   carta_banda_alto_mobile:      "90",
   carta_banda_alto_desktop:     "clamp(80px, 18vh, 140px)",
+  carta_imagen_ancho_mobile:    "160",
+  carta_imagen_ancho_desktop:   "auto 100%",
+  carta_imagen_pos_x:           "left",
+  carta_imagen_pos_y:           "top",
+  carta_imagen_overlay:         "si",
+  carta_imagen_opacidad:        "38",
 }
 
 type GvizCell = { v: string | number | boolean | null }

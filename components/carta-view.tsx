@@ -12,24 +12,29 @@ interface Props {
 
 export function CartaView({ menu, config }: Props) {
   const acento      = config.hero_color_fondo || "#E8B84B"
-  const nombre      = config.restaurante_nombre ?? config.nombre ?? "Restaurante"
-  const subtitulo   = config.restaurante_subtitulo ?? config.subtitulo ?? ""
+  const nombre      = config.restaurante_nombre ?? "Restaurante"
+  const subtitulo   = config.restaurante_subtitulo ?? ""
   const descripcion = config.restaurante_descripcion ?? ""
   const logoUrl     = config.restaurante_logo_url ?? ""
   const bgUrl       = config.hero_imagen_fondo_url ?? ""
   const bgSolido: React.CSSProperties = !bgUrl ? { backgroundColor: acento } : {}
 
-  // Posicion configurable: % desde arriba para el bloque, % desde abajo para el CTA
   const bloqueTop = `${config.carta_pos_bloque || "50"}%`
   const ctaBottom = `${config.carta_pos_cta   || "18"}%`
 
-  // Altura de la banda de sección (configurable desde el Sheet)
   const bandaAltoMobile  = config.carta_banda_alto_mobile
     ? (isNaN(Number(config.carta_banda_alto_mobile)) ? config.carta_banda_alto_mobile : `${config.carta_banda_alto_mobile}px`)
     : "90px"
   const bandaAltoDesktop = config.carta_banda_alto_desktop || "clamp(80px, 18vh, 140px)"
 
-  // Redes sociales
+  // Imagen de banda
+  const imgAnchoMobile  = config.carta_imagen_ancho_mobile  || "160"
+  const imgAnchoDesktop = config.carta_imagen_ancho_desktop || "auto 100%"
+  const imgPosX         = config.carta_imagen_pos_x         || "left"
+  const imgPosY         = config.carta_imagen_pos_y         || "top"
+  const imgOverlay      = (config.carta_imagen_overlay || "si") !== "no"
+  const imgOpacidad     = Number(config.carta_imagen_opacidad) || 38
+
   const instagram = config.restaurante_instagram
   const facebook  = config.restaurante_facebook
   const whatsapp  = config.restaurante_whatsapp
@@ -92,36 +97,22 @@ export function CartaView({ menu, config }: Props) {
         </div>
 
         {/* MOBILE — neblina radial */}
-        <div
-          aria-hidden
-          className="absolute z-[8] sm:hidden"
+        <div aria-hidden className="absolute z-[8] sm:hidden"
           style={{
-            top: bloqueTop,
-            left: "50%",
+            top: bloqueTop, left: "50%",
             transform: "translate(-50%, -50%)",
-            width: "110vw",
-            height: "55vh",
+            width: "110vw", height: "55vh",
             background: "radial-gradient(ellipse 70% 60% at 50% 50%, oklch(0.08 0.01 40 / 0.55) 0%, oklch(0.08 0.01 40 / 0.0) 100%)",
-            filter: "blur(18px)",
-            pointerEvents: "none",
+            filter: "blur(18px)", pointerEvents: "none",
           }}
         />
 
         {/* MOBILE — bloque principal */}
-        <div
-          className="absolute z-10 flex flex-col items-center sm:hidden"
-          style={{
-            top: bloqueTop,
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "min(80vw, 300px)",
-          }}
+        <div className="absolute z-10 flex flex-col items-center sm:hidden"
+          style={{ top: bloqueTop, left: "50%", transform: "translate(-50%, -50%)", width: "min(80vw, 300px)" }}
         >
           {logoUrl && (
-            <LogoWithFallback
-              src={logoUrl}
-              alt={nombre}
-              className="mb-3 h-10 w-10 object-contain"
+            <LogoWithFallback src={logoUrl} alt={nombre} className="mb-3 h-10 w-10 object-contain"
               fallback={
                 <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold"
                   style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}>
@@ -154,13 +145,8 @@ export function CartaView({ menu, config }: Props) {
         </div>
 
         {/* MOBILE — CTA */}
-        <div
-          className="absolute z-10 flex flex-col items-center sm:hidden"
-          style={{
-            left: "50%",
-            transform: "translateX(-50%)",
-            bottom: ctaBottom,
-          }}
+        <div className="absolute z-10 flex flex-col items-center sm:hidden"
+          style={{ left: "50%", transform: "translateX(-50%)", bottom: ctaBottom }}
         >
           <p className="whitespace-nowrap text-center font-sans font-light uppercase tracking-[0.35em]"
             style={{ fontSize: "0.5rem", color: "oklch(from var(--hero-ink) l c h / 0.45)" }}>
@@ -214,14 +200,21 @@ export function CartaView({ menu, config }: Props) {
                   .section-header-band { height: ${bandaAltoDesktop} !important; }
                 }
               `}</style>
+
               {category.imagen_url && (
-                <div className="absolute inset-0 hidden sm:block">
-                  <CartaSectionImage url={category.imagen_url} />
-                  <div className="absolute inset-0" aria-hidden
-                    style={{ background: "linear-gradient(to right, oklch(from var(--background) l c h / 0.90) 0%, oklch(from var(--background) l c h / 0.60) 60%, oklch(from var(--background) l c h / 0.20) 100%)" }} />
-                </div>
+                <CartaSectionImage
+                  url={category.imagen_url}
+                  anchoMobile={imgAnchoMobile}
+                  anchoDesktop={imgAnchoDesktop}
+                  posX={imgPosX}
+                  posY={imgPosY}
+                  overlay={imgOverlay}
+                  opacidad={imgOpacidad}
+                />
               )}
-              <div className="absolute inset-0 hidden flex-col justify-end overflow-hidden px-10 pb-3 pt-10 sm:flex">
+
+              {/* DESKTOP — texto sobre la banda */}
+              <div className="absolute inset-0 hidden flex-col justify-end overflow-hidden px-10 pb-3 pt-10 sm:flex" style={{ zIndex: 10 }}>
                 <p className="mb-0.5 font-sans font-light uppercase tracking-[0.4em] text-primary" style={{ fontSize: "0.58rem" }}>
                   {category.categoria ? `${category.categoria} · ` : ""}
                   {String(catIdx + 1).padStart(2, "0")} / {String(menu.length).padStart(2, "0")}
@@ -235,7 +228,9 @@ export function CartaView({ menu, config }: Props) {
                   </p>
                 )}
               </div>
-              <div className="flex h-full pt-10 sm:hidden">
+
+              {/* MOBILE — texto sobre la banda */}
+              <div className="flex h-full pt-10 sm:hidden" style={{ position: "relative", zIndex: 10 }}>
                 <div className="flex flex-1 flex-col justify-center gap-px px-4 pb-1">
                   <p className="font-sans font-light uppercase tracking-[0.4em] text-primary" style={{ fontSize: "0.55rem" }}>
                     {category.categoria ? `${category.categoria} · ` : ""}
@@ -257,8 +252,10 @@ export function CartaView({ menu, config }: Props) {
                   </div>
                 )}
               </div>
+
               <div className="absolute bottom-0 left-0 right-0 h-px bg-primary/20" />
             </div>
+
             <ul className="divide-y divide-dotted divide-border/40 px-6 sm:px-10">
               {category.items.map((item) => (
                 <li key={item.name} className="py-2.5">
