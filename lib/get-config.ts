@@ -42,6 +42,10 @@ export type SiteConfig = {
   carta_pos_bloque:             string
   // Carta: posicion del CTA "desliza" en mobile (% desde abajo, default 18)
   carta_pos_cta:                string
+  // Carta: altura de la banda de sección en mobile (px, default 90)
+  carta_banda_alto_mobile:      string
+  // Carta: altura de la banda de sección en desktop (px o clamp, default clamp(80px,18vh,140px))
+  carta_banda_alto_desktop:     string
 }
 
 const defaults: SiteConfig = {
@@ -84,6 +88,8 @@ const defaults: SiteConfig = {
   restaurante_whatsapp:         "",
   carta_pos_bloque:             "50",
   carta_pos_cta:                "18",
+  carta_banda_alto_mobile:      "90",
+  carta_banda_alto_desktop:     "clamp(80px, 18vh, 140px)",
 }
 
 type GvizCell = { v: string | number | boolean | null }

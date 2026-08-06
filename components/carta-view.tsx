@@ -23,6 +23,12 @@ export function CartaView({ menu, config }: Props) {
   const bloqueTop = `${config.carta_pos_bloque || "50"}%`
   const ctaBottom = `${config.carta_pos_cta   || "18"}%`
 
+  // Altura de la banda de sección (configurable desde el Sheet)
+  const bandaAltoMobile  = config.carta_banda_alto_mobile
+    ? (isNaN(Number(config.carta_banda_alto_mobile)) ? config.carta_banda_alto_mobile : `${config.carta_banda_alto_mobile}px`)
+    : "90px"
+  const bandaAltoDesktop = config.carta_banda_alto_desktop || "clamp(80px, 18vh, 140px)"
+
   // Redes sociales
   const instagram = config.restaurante_instagram
   const facebook  = config.restaurante_facebook
@@ -85,7 +91,7 @@ export function CartaView({ menu, config }: Props) {
           </p>
         </div>
 
-        {/* MOBILE — neblina radial (sin bordes, sin card) */}
+        {/* MOBILE — neblina radial */}
         <div
           aria-hidden
           className="absolute z-[8] sm:hidden"
@@ -101,7 +107,7 @@ export function CartaView({ menu, config }: Props) {
           }}
         />
 
-        {/* MOBILE — bloque principal, posición configurable */}
+        {/* MOBILE — bloque principal */}
         <div
           className="absolute z-10 flex flex-col items-center sm:hidden"
           style={{
@@ -147,7 +153,7 @@ export function CartaView({ menu, config }: Props) {
           </div>
         </div>
 
-        {/* MOBILE — CTA posición configurable desde abajo */}
+        {/* MOBILE — CTA */}
         <div
           className="absolute z-10 flex flex-col items-center sm:hidden"
           style={{
@@ -199,10 +205,13 @@ export function CartaView({ menu, config }: Props) {
       {menu.map((category, catIdx) => (
         <div key={category.id} data-page={category.id} className="carta-page relative bg-background">
           <div className="flex h-full flex-col overflow-y-auto pb-14">
-            <div className="section-header-band relative shrink-0" style={{ height: "90px" }}>
+            <div
+              className="section-header-band relative shrink-0"
+              style={{ height: bandaAltoMobile }}
+            >
               <style>{`
                 @media (min-width: 640px) {
-                  .section-header-band { height: clamp(80px, 18vh, 140px) !important; }
+                  .section-header-band { height: ${bandaAltoDesktop} !important; }
                 }
               `}</style>
               {category.imagen_url && (
