@@ -2,9 +2,9 @@
 
 interface Props {
   url:           string
-  modo?:         "fondo" | "miniatura" | "ambos"  // default: fondo
-  anchoMobile?:  string   // fondo → px del tile | miniatura → % ancho banda (ej: "38")
-  anchoDesktop?: string   // fondo → CSS background-size | miniatura → % ancho banda
+  modo?:         "fondo" | "miniatura" | "ambos"
+  anchoMobile?:  string   // fondo → px del tile | miniatura → % del alto de la banda (ej: "80")
+  anchoDesktop?: string   // fondo → CSS background-size | miniatura → % del alto de la banda
   posX?:         string   // left | center | right
   posY?:         string   // top | center | bottom
   overlay?:      boolean  // solo aplica en modo fondo / ambos
@@ -14,7 +14,7 @@ interface Props {
 export function CartaSectionImage({
   url,
   modo         = "fondo",
-  anchoMobile  = "160",
+  anchoMobile  = "80",
   anchoDesktop = "auto 100%",
   posX         = "left",
   posY         = "top",
@@ -34,18 +34,18 @@ export function CartaSectionImage({
   const overlayGradient =
     "radial-gradient(ellipse 55% 100% at 0% 50%, oklch(from var(--background) l c h / 0.85) 0%, oklch(from var(--background) l c h / 0.0) 100%)"
 
-  // Miniatura — % del ancho de la banda
-  const pctMobile  = isNaN(Number(anchoMobile)) ? anchoMobile : `${anchoMobile}%`
-  const pctDesktop = (() => {
+  // Miniatura — el número es % del ALTO de la banda; el ancho escala solo
+  const heightMobile  = isNaN(Number(anchoMobile))  ? anchoMobile  : `${anchoMobile}%`
+  const heightDesktop = (() => {
     const first = anchoDesktop?.split(" ")[0]
-    return isNaN(Number(first)) ? "38%" : `${first}%`
+    return isNaN(Number(first)) ? "80%" : `${first}%`
   })()
 
   // Alineación horizontal
   const miniJustify =
     posX === "right" ? "flex-end" : posX === "center" ? "center" : "flex-start"
 
-  // Alineación vertical — pos_y controla align-items
+  // Alineación vertical
   const miniAlign =
     posY === "bottom" ? "flex-end" : posY === "center" ? "center" : "flex-start"
 
@@ -111,8 +111,9 @@ export function CartaSectionImage({
             src={url}
             alt=""
             style={{
-              width:      pctDesktop,
-              maxHeight:  "none",
+              height:     heightDesktop,  // controla el tamaño
+              width:      "auto",         // proporcional
+              maxWidth:   "none",
               objectFit:  "contain",
               opacity,
               flexShrink: 0,
@@ -137,8 +138,9 @@ export function CartaSectionImage({
             src={url}
             alt=""
             style={{
-              width:      pctMobile,
-              maxHeight:  "none",
+              height:     heightMobile,   // controla el tamaño
+              width:      "auto",         // proporcional
+              maxWidth:   "none",
               objectFit:  "contain",
               opacity,
               flexShrink: 0,
