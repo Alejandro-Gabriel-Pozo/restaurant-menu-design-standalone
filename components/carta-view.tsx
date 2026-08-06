@@ -29,7 +29,7 @@ export function CartaView({ menu, config }: Props) {
     : "90px"
   const bandaAltoDesktop = config.carta_banda_alto_desktop || "clamp(80px, 18vh, 140px)"
 
-  // Imagen de banda — una sola familia de claves para todos los modos
+  // Imagen de banda
   const imgModo         = (config.carta_imagen_modo || "fondo") as "fondo" | "miniatura" | "ambos"
   const imgAnchoMobile  = config.carta_imagen_ancho_mobile  || "160"
   const imgAnchoDesktop = config.carta_imagen_ancho_desktop || "auto 100%"
@@ -37,6 +37,10 @@ export function CartaView({ menu, config }: Props) {
   const imgPosY         = config.carta_imagen_pos_y         || "top"
   const imgOverlay      = (config.carta_imagen_overlay || "si") !== "no"
   const imgOpacidad     = Number(config.carta_imagen_opacidad) || 38
+
+  // Altura de banda en px puro (para que CartaSectionImage calcule height en px)
+  const bandaAltoMobilePx  = config.carta_banda_alto_mobile  || "90"
+  const bandaAltoDesktopPx = config.carta_banda_alto_desktop || "120"
 
   const logoFallback = (
     <div
@@ -88,7 +92,7 @@ export function CartaView({ menu, config }: Props) {
           )}
           <div className="flex items-center gap-4">
             <span className="block h-px w-10" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.3)" }} />
-            <span className="text-[9px]" style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>✦</span>
+            <span className="text-[9px]" style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>✶</span>
             <span className="block h-px w-10" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.3)" }} />
           </div>
           <p className="font-sans text-[10px] font-light uppercase tracking-[0.4em]" style={{ color: "oklch(from var(--hero-ink) l c h / 0.5)" }}>
@@ -211,6 +215,8 @@ export function CartaView({ menu, config }: Props) {
                   posY={imgPosY}
                   overlay={imgOverlay}
                   opacidad={imgOpacidad}
+                  bandaAltoMobile={bandaAltoMobilePx}
+                  bandaAltoDesktop={bandaAltoDesktopPx}
                 />
               )}
 
