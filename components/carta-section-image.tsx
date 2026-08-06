@@ -111,10 +111,10 @@ export function CartaSectionImage({
             src={url}
             alt=""
             style={{
-              height:     heightDesktop,  // controla el tamaño
-              width:      "auto",         // proporcional
+              height:     heightDesktop,
+              width:      "auto",
               maxWidth:   "none",
-              objectFit:  "contain",
+              display:    "block",   // elimina espacio inferior de inline
               opacity,
               flexShrink: 0,
             }}
@@ -138,10 +138,10 @@ export function CartaSectionImage({
             src={url}
             alt=""
             style={{
-              height:     heightMobile,   // controla el tamaño
-              width:      "auto",         // proporcional
+              height:     heightMobile,
+              width:      "auto",
               maxWidth:   "none",
-              objectFit:  "contain",
+              display:    "block",   // elimina espacio inferior de inline
               opacity,
               flexShrink: 0,
             }}
