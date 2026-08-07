@@ -1,5 +1,6 @@
 import type { MenuCategory } from "@/lib/get-menu"
 import type { SiteConfig }   from "@/lib/get-config"
+import { normFuente }        from "@/lib/get-config"
 import { TagIcon }           from "@/lib/tag-icons"
 import { CartaControls }     from "@/components/carta-controls"
 import { CartaSectionImage } from "@/components/carta-section-image"
@@ -37,10 +38,17 @@ export function CartaView({ menu, config }: Props) {
   const imgPosY         = config.carta_imagen_pos_y         || "top"
   const imgOverlay      = (config.carta_imagen_overlay || "si") !== "no"
   const imgOpacidad     = Number(config.carta_imagen_opacidad) || 38
-
-  // Altura de banda en px puro (para que CartaSectionImage calcule height en px)
   const bandaAltoMobilePx  = config.carta_banda_alto_mobile  || "90"
   const bandaAltoDesktopPx = config.carta_banda_alto_desktop || "120"
+
+  // Fuentes
+  const fBandaEtiqueta   = normFuente(config.carta_fuente_banda_etiqueta)
+  const fBandaTitulo     = normFuente(config.carta_fuente_banda_titulo)
+  const fBandaDesc       = normFuente(config.carta_fuente_banda_descripcion)
+  const fItemNombre      = normFuente(config.carta_fuente_item_nombre)
+  const fItemPrecio      = normFuente(config.carta_fuente_item_precio)
+  const fItemDesc        = normFuente(config.carta_fuente_item_descripcion)
+  const fItemTags        = normFuente(config.carta_fuente_item_tags)
 
   const logoFallback = (
     <div
@@ -92,7 +100,7 @@ export function CartaView({ menu, config }: Props) {
           )}
           <div className="flex items-center gap-4">
             <span className="block h-px w-10" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.3)" }} />
-            <span className="text-[9px]" style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>✶</span>
+            <span className="text-[9px]" style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>✦</span>
             <span className="block h-px w-10" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.3)" }} />
           </div>
           <p className="font-sans text-[10px] font-light uppercase tracking-[0.4em]" style={{ color: "oklch(from var(--hero-ink) l c h / 0.5)" }}>
@@ -222,15 +230,18 @@ export function CartaView({ menu, config }: Props) {
 
               {/* DESKTOP — texto sobre la banda */}
               <div className="absolute inset-0 hidden flex-col justify-end overflow-hidden px-10 pb-3 pt-10 sm:flex" style={{ zIndex: 10 }}>
-                <p className="mb-0.5 font-sans font-light uppercase tracking-[0.4em] text-primary" style={{ fontSize: "0.58rem" }}>
+                <p className="mb-0.5 font-sans font-light uppercase tracking-[0.4em] text-primary"
+                  style={{ fontSize: fBandaEtiqueta }}>
                   {category.categoria ? `${category.categoria} · ` : ""}
                   {String(catIdx + 1).padStart(2, "0")} / {String(menu.length).padStart(2, "0")}
                 </p>
-                <h2 className="font-serif font-medium leading-tight tracking-tight text-foreground" style={{ fontSize: "clamp(1.4rem, 4vw, 2rem)" }}>
+                <h2 className="font-serif font-medium leading-tight tracking-tight text-foreground"
+                  style={{ fontSize: fBandaTitulo }}>
                   {category.titulo_seccion ?? category.title}
                 </h2>
                 {category.description && (
-                  <p className="mt-0.5 font-sans font-light leading-snug text-muted-foreground" style={{ fontSize: "0.78rem" }}>
+                  <p className="mt-0.5 font-sans font-light leading-snug text-muted-foreground"
+                    style={{ fontSize: fBandaDesc }}>
                     {category.description}
                   </p>
                 )}
@@ -239,15 +250,18 @@ export function CartaView({ menu, config }: Props) {
               {/* MOBILE — texto */}
               <div className="flex h-full items-center sm:hidden" style={{ position: "relative", zIndex: 10 }}>
                 <div className="flex flex-col justify-center gap-px px-4 py-2">
-                  <p className="font-sans font-light uppercase tracking-[0.4em] text-primary" style={{ fontSize: "0.55rem" }}>
+                  <p className="font-sans font-light uppercase tracking-[0.4em] text-primary"
+                    style={{ fontSize: fBandaEtiqueta }}>
                     {category.categoria ? `${category.categoria} · ` : ""}
                     {String(catIdx + 1).padStart(2, "0")} / {String(menu.length).padStart(2, "0")}
                   </p>
-                  <h2 className="font-serif font-medium leading-none tracking-tight text-foreground" style={{ fontSize: "0.95rem" }}>
+                  <h2 className="font-serif font-medium leading-none tracking-tight text-foreground"
+                    style={{ fontSize: fBandaTitulo }}>
                     {category.titulo_seccion ?? category.title}
                   </h2>
                   {category.description && (
-                    <p className="font-sans font-light leading-none text-muted-foreground" style={{ fontSize: "0.6rem" }}>
+                    <p className="font-sans font-light leading-none text-muted-foreground"
+                      style={{ fontSize: fBandaDesc }}>
                       {category.description}
                     </p>
                   )}
@@ -262,22 +276,25 @@ export function CartaView({ menu, config }: Props) {
                 <li key={item.name} className="py-2.5">
                   <div className="flex items-baseline justify-between gap-3">
                     <h3 className={`font-serif font-semibold leading-tight ${item.especial ? "text-primary" : "text-foreground"}`}
-                      style={{ fontSize: "clamp(0.88rem, 2.2vw, 1rem)" }}>
+                      style={{ fontSize: fItemNombre }}>
                       {item.name}{item.especial && <span className="ml-1 text-[8px] text-primary"> ★</span>}
                     </h3>
-                    <span className="shrink-0 font-serif font-semibold text-primary" style={{ fontSize: "clamp(0.88rem, 2.2vw, 1rem)" }}>
+                    <span className="shrink-0 font-serif font-semibold text-primary"
+                      style={{ fontSize: fItemPrecio }}>
                       {item.price}
                     </span>
                   </div>
                   {item.description && (
-                    <p className="mt-0.5 font-sans font-light leading-snug text-muted-foreground/75" style={{ fontSize: "clamp(0.68rem, 1.8vw, 0.78rem)" }}>
+                    <p className="mt-0.5 font-sans font-light leading-snug text-muted-foreground/75"
+                      style={{ fontSize: fItemDesc }}>
                       {item.description}
                     </p>
                   )}
                   {item.tags && item.tags.length > 0 && (
                     <div className="mt-1 flex flex-wrap gap-1.5">
                       {item.tags.map((tag) => (
-                        <span key={tag} className="inline-flex items-center gap-0.5 font-sans font-light uppercase tracking-wider text-primary/50" style={{ fontSize: "0.6rem" }}>
+                        <span key={tag} className="inline-flex items-center gap-0.5 font-sans font-light uppercase tracking-wider text-primary/50"
+                          style={{ fontSize: fItemTags }}>
                           <TagIcon tag={tag} />{tag}
                         </span>
                       ))}

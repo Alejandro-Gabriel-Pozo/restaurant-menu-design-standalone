@@ -43,16 +43,21 @@ export type SiteConfig = {
   carta_banda_alto_mobile:      string
   carta_banda_alto_desktop:     string
   // --- imagen en banda de sección ---
-  // carta_imagen_modo: fondo | miniatura | ambos  (default: fondo)
-  carta_imagen_modo:            string
-  // fondo: tile size en px | miniatura: % del ancho de la banda (ej: "38")
+  carta_imagen_modo:            string  // fondo | miniatura | ambos
   carta_imagen_ancho_mobile:    string
-  // fondo: CSS background-size (ej: "auto 100%") | miniatura: % ancho banda desktop
   carta_imagen_ancho_desktop:   string
   carta_imagen_pos_x:           string  // left | center | right
   carta_imagen_pos_y:           string  // top | center | bottom
-  carta_imagen_overlay:         string  // si | no  (solo fondo/ambos)
+  carta_imagen_overlay:         string  // si | no
   carta_imagen_opacidad:        string  // 0-100
+  // --- tamaños de fuente (rem, px, o número solo → px) ---
+  carta_fuente_banda_etiqueta:  string  // «03 / 15 · Clásicos»  default: 0.55rem
+  carta_fuente_banda_titulo:    string  // h2 de sección          default: 0.95rem
+  carta_fuente_banda_descripcion: string // descripción sección   default: 0.6rem
+  carta_fuente_item_nombre:     string  // nombre del plato       default: 0.88rem
+  carta_fuente_item_precio:     string  // precio                 default: 0.88rem
+  carta_fuente_item_descripcion: string // descripción plato      default: 0.68rem
+  carta_fuente_item_tags:       string  // tags                   default: 0.6rem
 }
 
 const defaults: SiteConfig = {
@@ -104,6 +109,13 @@ const defaults: SiteConfig = {
   carta_imagen_pos_y:           "top",
   carta_imagen_overlay:         "si",
   carta_imagen_opacidad:        "38",
+  carta_fuente_banda_etiqueta:  "0.55rem",
+  carta_fuente_banda_titulo:    "0.95rem",
+  carta_fuente_banda_descripcion: "0.6rem",
+  carta_fuente_item_nombre:     "0.88rem",
+  carta_fuente_item_precio:     "0.88rem",
+  carta_fuente_item_descripcion: "0.68rem",
+  carta_fuente_item_tags:       "0.6rem",
 }
 
 type GvizCell = { v: string | number | boolean | null }
@@ -118,6 +130,11 @@ function parseGviz(text: string): GvizTable {
     .slice(0, -2)
   const json: GvizResponse = JSON.parse(cleaned)
   return json.table
+}
+
+/** Normaliza un valor de fuente: si es número puro lo convierte a px, si no lo deja tal cual */
+export function normFuente(val: string): string {
+  return /^\d+(\.\d+)?$/.test(val.trim()) ? `${val.trim()}px` : val.trim()
 }
 
 export async function getConfig(): Promise<SiteConfig> {
