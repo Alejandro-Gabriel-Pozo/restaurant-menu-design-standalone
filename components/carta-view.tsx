@@ -30,7 +30,6 @@ export function CartaView({ menu, config }: Props) {
     : "90px"
   const bandaAltoDesktop = config.carta_banda_alto_desktop || "clamp(80px, 18vh, 140px)"
 
-  // Imagen de banda
   const imgModo         = (config.carta_imagen_modo || "fondo") as "fondo" | "miniatura" | "ambos"
   const imgAnchoMobile  = config.carta_imagen_ancho_mobile  || "160"
   const imgAnchoDesktop = config.carta_imagen_ancho_desktop || "auto 100%"
@@ -41,7 +40,6 @@ export function CartaView({ menu, config }: Props) {
   const bandaAltoMobilePx  = config.carta_banda_alto_mobile  || "90"
   const bandaAltoDesktopPx = config.carta_banda_alto_desktop || "120"
 
-  // Fuentes
   const fBandaEtiqueta   = normFuente(config.carta_fuente_banda_etiqueta)
   const fBandaTitulo     = normFuente(config.carta_fuente_banda_titulo)
   const fBandaDesc       = normFuente(config.carta_fuente_banda_descripcion)
@@ -49,6 +47,11 @@ export function CartaView({ menu, config }: Props) {
   const fItemPrecio      = normFuente(config.carta_fuente_item_precio)
   const fItemDesc        = normFuente(config.carta_fuente_item_descripcion)
   const fItemTags        = normFuente(config.carta_fuente_item_tags)
+
+  const fPortadaEtiqueta  = normFuente(config.carta_fuente_portada_etiqueta)
+  const fPortadaNombre    = normFuente(config.carta_fuente_portada_nombre)
+  const fPortadaSubtitulo = normFuente(config.carta_fuente_portada_subtitulo)
+  const fPortadaDesc      = normFuente(config.carta_fuente_portada_descripcion)
 
   const logoFallback = (
     <div
@@ -62,7 +65,7 @@ export function CartaView({ menu, config }: Props) {
   return (
     <CartaControls menu={menu} config={config}>
 
-      {/* ══ PORTADA ══ */}
+      {/* PORTADA */}
       <div data-page="portada" className="carta-page relative isolate overflow-hidden" style={bgSolido}>
         {bgUrl && (
           <img src={bgUrl} alt="" aria-hidden loading="eager"
@@ -80,21 +83,24 @@ export function CartaView({ menu, config }: Props) {
             ? <LogoWithFallback src={logoUrl} alt={nombre} className="h-16 w-16 object-contain" fallback={logoFallback} />
             : logoFallback}
           {config.hero_etiqueta_superior && (
-            <p className="font-sans text-xs font-light uppercase tracking-[0.5em]" style={{ color: "oklch(from var(--hero-ink) l c h / 0.7)" }}>
+            <p className="font-sans font-light uppercase tracking-[0.5em]"
+              style={{ fontSize: fPortadaEtiqueta, color: "oklch(from var(--hero-ink) l c h / 0.7)" }}>
               {config.hero_etiqueta_superior}
             </p>
           )}
           <h1 className="font-serif font-medium leading-tight text-balance"
-            style={{ fontSize: "clamp(2.5rem, 8vw, 4rem)", color: "var(--hero-ink)" }}>
+            style={{ fontSize: fPortadaNombre, color: "var(--hero-ink)" }}>
             {nombre}
           </h1>
           {subtitulo && (
-            <p className="font-sans text-xs font-light uppercase tracking-[0.3em]" style={{ color: "oklch(from var(--hero-ink) l c h / 0.6)" }}>
+            <p className="font-sans font-light uppercase tracking-[0.3em]"
+              style={{ fontSize: fPortadaSubtitulo, color: "oklch(from var(--hero-ink) l c h / 0.6)" }}>
               {subtitulo}
             </p>
           )}
           {descripcion && (
-            <p className="max-w-xs text-pretty text-sm leading-relaxed" style={{ color: "oklch(from var(--hero-ink) l c h / 0.75)" }}>
+            <p className="max-w-xs text-pretty leading-relaxed"
+              style={{ fontSize: fPortadaDesc, color: "oklch(from var(--hero-ink) l c h / 0.75)" }}>
               {descripcion}
             </p>
           )}
@@ -119,9 +125,14 @@ export function CartaView({ menu, config }: Props) {
           }}
         />
 
-        {/* MOBILE — bloque principal */}
+        {/* MOBILE — bloque principal: 50vw centrado */}
         <div className="absolute z-10 flex flex-col items-center sm:hidden"
-          style={{ top: bloqueTop, left: "50%", transform: "translate(-50%, -50%)", width: "min(80vw, 300px)" }}
+          style={{
+            top: bloqueTop,
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "50vw",
+          }}
         >
           {logoUrl && (
             <LogoWithFallback src={logoUrl} alt={nombre} className="mb-3 h-10 w-10 object-contain"
@@ -135,18 +146,24 @@ export function CartaView({ menu, config }: Props) {
           )}
           {config.hero_etiqueta_superior && (
             <p className="text-center font-sans font-light uppercase tracking-[0.45em]"
-              style={{ fontSize: "0.58rem", color: "oklch(from var(--hero-ink) l c h / 0.6)" }}>
+              style={{ fontSize: fPortadaEtiqueta, color: "oklch(from var(--hero-ink) l c h / 0.6)" }}>
               {config.hero_etiqueta_superior}
             </p>
           )}
           <h1 className="text-center font-serif font-medium leading-tight"
-            style={{ fontSize: "clamp(1.7rem, 7vw, 2.1rem)", color: "var(--hero-ink)" }}>
+            style={{ fontSize: fPortadaNombre, color: "var(--hero-ink)" }}>
             {nombre}
           </h1>
           {subtitulo && (
             <p className="mt-0.5 text-center font-sans font-light uppercase tracking-[0.22em]"
-              style={{ fontSize: "0.6rem", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
+              style={{ fontSize: fPortadaSubtitulo, color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
               {subtitulo}
+            </p>
+          )}
+          {descripcion && (
+            <p className="mt-1 text-center font-sans font-light leading-snug"
+              style={{ fontSize: fPortadaDesc, color: "oklch(from var(--hero-ink) l c h / 0.7)" }}>
+              {descripcion}
             </p>
           )}
           <div className="mt-3 flex items-center gap-2">
@@ -167,7 +184,7 @@ export function CartaView({ menu, config }: Props) {
         </div>
       </div>
 
-      {/* ══ ÍNDICE ══ */}
+      {/* ÍNDICE */}
       <div data-page="indice-0" className="carta-page bg-background">
         <div className="flex h-full flex-col px-6 pb-16 pt-12 sm:px-10">
           <div className="mb-4 shrink-0">
@@ -199,7 +216,7 @@ export function CartaView({ menu, config }: Props) {
         </div>
       </div>
 
-      {/* ══ PÁGINAS DE CATEGORÍAS ══ */}
+      {/* PÁGINAS DE CATEGORÍAS */}
       {menu.map((category, catIdx) => (
         <div key={category.id} data-page={category.id} className="carta-page relative bg-background">
           <div className="flex h-full flex-col overflow-y-auto pb-14">
@@ -228,7 +245,6 @@ export function CartaView({ menu, config }: Props) {
                 />
               )}
 
-              {/* DESKTOP — texto sobre la banda */}
               <div className="absolute inset-0 hidden flex-col justify-end overflow-hidden px-10 pb-3 pt-10 sm:flex" style={{ zIndex: 10 }}>
                 <p className="mb-0.5 font-sans font-light uppercase tracking-[0.4em] text-primary"
                   style={{ fontSize: fBandaEtiqueta }}>
@@ -247,7 +263,6 @@ export function CartaView({ menu, config }: Props) {
                 )}
               </div>
 
-              {/* MOBILE — texto */}
               <div className="flex h-full items-center sm:hidden" style={{ position: "relative", zIndex: 10 }}>
                 <div className="flex flex-col justify-center gap-px px-4 py-2">
                   <p className="font-sans font-light uppercase tracking-[0.4em] text-primary"
