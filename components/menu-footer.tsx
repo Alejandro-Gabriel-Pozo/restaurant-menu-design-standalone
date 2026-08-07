@@ -48,6 +48,13 @@ export function MenuFooter({ config }: MenuFooterProps) {
     : []
   const acento = config.color_marca || "#E8B84B"
 
+  const txtHorarios         = config.footer_texto_horarios
+  const txtContacto         = config.footer_texto_contacto
+  const txtHorariosFallback = config.footer_texto_horarios_fallback
+  const txtParteDe          = config.footer_texto_parte_de
+  const txtTipo             = config.footer_texto_tipo
+  const txtDerechos         = config.footer_texto_derechos
+
   const mapsUrl = config.restaurante_footer_maps_url
     || (config.restaurante_footer_direccion
       ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(config.restaurante_footer_direccion)}`
@@ -88,7 +95,7 @@ export function MenuFooter({ config }: MenuFooterProps) {
         <div className="border-b border-border">
           <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-8 py-6">
             <span className="font-sans text-xs font-light uppercase tracking-[0.3em] text-muted-foreground">
-              {config.restaurante_nombre} Restaurante
+              {config.restaurante_nombre} {txtTipo}
             </span>
             {config.empresa_logo_url ? (
               <LogoWithFallback
@@ -99,7 +106,7 @@ export function MenuFooter({ config }: MenuFooterProps) {
               />
             ) : empresaLogoFallback}
             <span className="font-sans text-xs font-light uppercase tracking-[0.3em] text-muted-foreground">
-              Parte de {config.hosteria_nombre}
+              {txtParteDe} {config.hosteria_nombre}
             </span>
           </div>
         </div>
@@ -139,21 +146,21 @@ export function MenuFooter({ config }: MenuFooterProps) {
         {/* Col 2: horarios */}
         <div>
           <h3 className="font-sans text-xs font-light uppercase tracking-[0.3em] text-primary">
-            Horarios
+            {txtHorarios}
           </h3>
           {horarios.length > 0 ? (
             <ul className="mt-4 space-y-1 text-sm text-muted-foreground">
               {horarios.map((h, i) => <li key={i}>{h}</li>)}
             </ul>
           ) : (
-            <p className="mt-4 text-sm text-muted-foreground">Consultar horarios</p>
+            <p className="mt-4 text-sm text-muted-foreground">{txtHorariosFallback}</p>
           )}
         </div>
 
         {/* Col 3: contacto */}
         <div>
           <h3 className="font-sans text-xs font-light uppercase tracking-[0.3em] text-primary">
-            Contacto
+            {txtContacto}
           </h3>
           <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
             {config.restaurante_footer_direccion && (
@@ -214,7 +221,7 @@ export function MenuFooter({ config }: MenuFooterProps) {
             ) : config.empresa_nombre}
           </span>
         )}
-        . Todos los derechos reservados.
+        . {txtDerechos}
       </div>
     </footer>
   )

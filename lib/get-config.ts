@@ -70,6 +70,18 @@ export type SiteConfig = {
   carta_fuente_indice_numero:    string
   carta_fuente_indice_categoria: string
   carta_fuente_indice_item:      string
+  // textos portada / índice
+  carta_texto_portada_cta:        string
+  carta_texto_portada_separador:  string
+  carta_texto_indice_etiqueta:    string
+  carta_texto_indice_titulo:      string
+  // textos footer
+  footer_texto_horarios:          string
+  footer_texto_contacto:          string
+  footer_texto_horarios_fallback: string
+  footer_texto_parte_de:          string
+  footer_texto_tipo:              string
+  footer_texto_derechos:          string
 }
 
 const defaults: SiteConfig = {
@@ -138,6 +150,16 @@ const defaults: SiteConfig = {
   carta_fuente_indice_numero:    "0.6rem",
   carta_fuente_indice_categoria: "0.58rem",
   carta_fuente_indice_item:      "clamp(0.82rem, 2.5vw, 0.95rem)",
+  carta_texto_portada_cta:        "Deslizá para ver la carta",
+  carta_texto_portada_separador:  "✦",
+  carta_texto_indice_etiqueta:    "Índice",
+  carta_texto_indice_titulo:      "La carta",
+  footer_texto_horarios:          "Horarios",
+  footer_texto_contacto:          "Contacto",
+  footer_texto_horarios_fallback: "Consultar horarios",
+  footer_texto_parte_de:          "Parte de",
+  footer_texto_tipo:              "Restaurante",
+  footer_texto_derechos:          "Todos los derechos reservados.",
 }
 
 type GvizCell = { v: string | number | boolean | null }
