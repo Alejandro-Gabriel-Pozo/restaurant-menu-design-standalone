@@ -40,18 +40,30 @@ export function CartaView({ menu, config }: Props) {
   const bandaAltoMobilePx  = config.carta_banda_alto_mobile  || "90"
   const bandaAltoDesktopPx = config.carta_banda_alto_desktop || "120"
 
+  // Fuentes banda
   const fBandaEtiqueta   = normFuente(config.carta_fuente_banda_etiqueta)
   const fBandaTitulo     = normFuente(config.carta_fuente_banda_titulo)
   const fBandaDesc       = normFuente(config.carta_fuente_banda_descripcion)
+
+  // Fuentes items
   const fItemNombre      = normFuente(config.carta_fuente_item_nombre)
   const fItemPrecio      = normFuente(config.carta_fuente_item_precio)
   const fItemDesc        = normFuente(config.carta_fuente_item_descripcion)
   const fItemTags        = normFuente(config.carta_fuente_item_tags)
 
+  // Fuentes portada
   const fPortadaEtiqueta  = normFuente(config.carta_fuente_portada_etiqueta)
   const fPortadaNombre    = normFuente(config.carta_fuente_portada_nombre)
   const fPortadaSubtitulo = normFuente(config.carta_fuente_portada_subtitulo)
   const fPortadaDesc      = normFuente(config.carta_fuente_portada_descripcion)
+  const fPortadaCta       = normFuente(config.carta_fuente_portada_cta)
+
+  // Fuentes índice
+  const fIndiceEtiqueta  = normFuente(config.carta_fuente_indice_etiqueta)
+  const fIndiceTitulo    = normFuente(config.carta_fuente_indice_titulo)
+  const fIndiceNumero    = normFuente(config.carta_fuente_indice_numero)
+  const fIndiceCategoria = normFuente(config.carta_fuente_indice_categoria)
+  const fIndiceItem      = normFuente(config.carta_fuente_indice_item)
 
   const logoFallback = (
     <div
@@ -106,10 +118,11 @@ export function CartaView({ menu, config }: Props) {
           )}
           <div className="flex items-center gap-4">
             <span className="block h-px w-10" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.3)" }} />
-            <span className="text-[9px]" style={{ color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>✦</span>
+            <span style={{ fontSize: "9px", color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>✦</span>
             <span className="block h-px w-10" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.3)" }} />
           </div>
-          <p className="font-sans text-[10px] font-light uppercase tracking-[0.4em]" style={{ color: "oklch(from var(--hero-ink) l c h / 0.5)" }}>
+          <p className="font-sans font-light uppercase tracking-[0.4em]"
+            style={{ fontSize: fPortadaCta, color: "oklch(from var(--hero-ink) l c h / 0.5)" }}>
             Deslizá para ver la carta
           </p>
         </div>
@@ -178,7 +191,7 @@ export function CartaView({ menu, config }: Props) {
           style={{ left: "50%", transform: "translateX(-50%)", bottom: ctaBottom }}
         >
           <p className="whitespace-nowrap text-center font-sans font-light uppercase tracking-[0.35em]"
-            style={{ fontSize: "0.5rem", color: "oklch(from var(--hero-ink) l c h / 0.45)" }}>
+            style={{ fontSize: fPortadaCta, color: "oklch(from var(--hero-ink) l c h / 0.45)" }}>
             Deslizá para ver la carta
           </p>
         </div>
@@ -188,8 +201,14 @@ export function CartaView({ menu, config }: Props) {
       <div data-page="indice-0" className="carta-page bg-background">
         <div className="flex h-full flex-col px-6 pb-16 pt-12 sm:px-10">
           <div className="mb-4 shrink-0">
-            <p className="mb-0.5 font-sans text-[8px] font-light uppercase tracking-[0.5em] text-primary">Índice</p>
-            <h1 className="font-serif font-medium text-foreground" style={{ fontSize: "clamp(1.2rem, 4vw, 1.75rem)" }}>La carta</h1>
+            <p className="mb-0.5 font-sans font-light uppercase tracking-[0.5em] text-primary"
+              style={{ fontSize: fIndiceEtiqueta }}>
+              Índice
+            </p>
+            <h1 className="font-serif font-medium text-foreground"
+              style={{ fontSize: fIndiceTitulo }}>
+              La carta
+            </h1>
           </div>
           <ol className="flex-1 overflow-y-auto"
             style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", alignContent: "start", gap: "0" }}>
@@ -197,15 +216,19 @@ export function CartaView({ menu, config }: Props) {
               <li key={cat.id}>
                 <button data-goto={cat.id}
                   className="group flex w-full items-baseline gap-2.5 border-b border-dotted border-border/40 py-2 text-left transition-colors hover:bg-primary/5 active:bg-primary/10">
-                  <span className="w-5 shrink-0 font-sans font-light text-primary" style={{ fontSize: "0.6rem" }}>
+                  <span className="w-5 shrink-0 font-sans font-light text-primary"
+                    style={{ fontSize: fIndiceNumero }}>
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="flex-1">
                     {cat.categoria && cat.categoria !== cat.titulo_seccion && (
-                      <span className="block font-sans font-light uppercase tracking-widest text-muted-foreground" style={{ fontSize: "0.58rem" }}>{cat.categoria}</span>
+                      <span className="block font-sans font-light uppercase tracking-widest text-muted-foreground"
+                        style={{ fontSize: fIndiceCategoria }}>
+                        {cat.categoria}
+                      </span>
                     )}
                     <span className="block font-serif font-medium leading-snug text-foreground transition-colors group-hover:text-primary"
-                      style={{ fontSize: "clamp(0.82rem, 2.5vw, 0.95rem)" }}>
+                      style={{ fontSize: fIndiceItem }}>
                       {cat.titulo_seccion ?? cat.title}
                     </span>
                   </span>

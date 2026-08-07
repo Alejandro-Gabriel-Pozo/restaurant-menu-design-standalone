@@ -49,17 +49,27 @@ export type SiteConfig = {
   carta_imagen_pos_y:           string
   carta_imagen_overlay:         string
   carta_imagen_opacidad:        string
+  // fuentes banda
   carta_fuente_banda_etiqueta:    string
   carta_fuente_banda_titulo:      string
   carta_fuente_banda_descripcion: string
+  // fuentes items
   carta_fuente_item_nombre:       string
   carta_fuente_item_precio:       string
   carta_fuente_item_descripcion:  string
   carta_fuente_item_tags:         string
+  // fuentes portada
   carta_fuente_portada_etiqueta:    string
   carta_fuente_portada_nombre:      string
   carta_fuente_portada_subtitulo:   string
   carta_fuente_portada_descripcion: string
+  carta_fuente_portada_cta:         string
+  // fuentes índice
+  carta_fuente_indice_etiqueta:  string
+  carta_fuente_indice_titulo:    string
+  carta_fuente_indice_numero:    string
+  carta_fuente_indice_categoria: string
+  carta_fuente_indice_item:      string
 }
 
 const defaults: SiteConfig = {
@@ -122,6 +132,12 @@ const defaults: SiteConfig = {
   carta_fuente_portada_nombre:      "clamp(1.7rem, 7vw, 2.1rem)",
   carta_fuente_portada_subtitulo:   "0.6rem",
   carta_fuente_portada_descripcion: "0.75rem",
+  carta_fuente_portada_cta:         "0.5rem",
+  carta_fuente_indice_etiqueta:  "0.5rem",
+  carta_fuente_indice_titulo:    "clamp(1.2rem, 4vw, 1.75rem)",
+  carta_fuente_indice_numero:    "0.6rem",
+  carta_fuente_indice_categoria: "0.58rem",
+  carta_fuente_indice_item:      "clamp(0.82rem, 2.5vw, 0.95rem)",
 }
 
 type GvizCell = { v: string | number | boolean | null }
