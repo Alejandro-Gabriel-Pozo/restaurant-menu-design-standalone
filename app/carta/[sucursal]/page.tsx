@@ -1,17 +1,26 @@
-import { notFound }          from "next/navigation"
-import { getTenantBySlug }   from "@/lib/tenants"
-import { getMenu }            from "@/lib/get-menu"
-import { getConfig }          from "@/lib/get-config"
-import { CartaView }          from "@/components/carta-view"
-import { MenuFooter }         from "@/components/menu-footer"
-import { getTenants }         from "@/lib/tenants"
+import { notFound }        from "next/navigation"
+import { getTenantBySlug } from "@/lib/tenants"
+import { getTenants }      from "@/lib/tenants"
+import { getMenu }         from "@/lib/get-menu"
+import { getConfig }       from "@/lib/get-config"
+import { CartaView }       from "@/components/carta-view"
+import { MenuFooter }      from "@/components/menu-footer"
 
 // ISR: regenerar cada hora
 export const revalidate = 3600
 
 /**
+ * CRÍTICO: permite que slugs no pre-generados en build
+ * se resuelvan on-demand en vez de devolver 404.
+ * Sin esto, cualquier tenant agregado después del último build
+ * da 404 hasta el próximo deploy.
+ */
+export const dynamicParams = true
+
+/**
  * Pre-genera rutas estáticas para todos los tenants activos.
- * Si MASTER_SHEET_ID no está en build, se omite y se usa SSR on-demand.
+ * Si MASTER_SHEET_ID no está disponible en build, devuelve []
+ * y dynamicParams=true se encarga del resto.
  */
 export async function generateStaticParams() {
   try {
@@ -36,7 +45,6 @@ export default async function CartaSucursalPage({ params }: Props) {
     getConfig(tenant.sheet_id),
   ])
 
-  // CSS vars dinámicas de acento para este tenant
   const cssVars = config.color_marca
     ? ({
         "--primary": config.color_marca,
