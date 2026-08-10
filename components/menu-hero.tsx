@@ -9,6 +9,7 @@ interface MenuHeroProps {
 }
 
 export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
+  // ─── CÁLCULOS DE CONFIG ──────────────────────────────────────────────────────
   const mostrarParteDe   = isTruthy(config.mostrar_pertenencia)
   const tienePertenencia = config.hosteria_nombre || config.empresa_nombre
   const acento           = config.hero_color_fondo || "#E8B84B"
@@ -18,6 +19,10 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
   const posLogoDesktop      = resolvePosClasses(config.hero_pos_logo)
   const posContenidoMobile  = resolvePosClasses(config.hero_pos_contenido_mobile || config.hero_pos_contenido)
   const posLogoMobile       = resolvePosClasses(config.hero_pos_logo_mobile || config.hero_pos_logo)
+
+  const bgSolido: React.CSSProperties = !config.hero_imagen_fondo_url
+    ? { backgroundColor: acento }
+    : {}
 
   const imgStyleMobile: React.CSSProperties = {
     position: "absolute",
@@ -41,6 +46,20 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
     zIndex: 0,
   }
 
+  // ─── FRAGMENTOS COMPARTIDOS ───────────────────────────────────────────────────
+  const overlayYTextura = (
+    <>
+      {config.hero_imagen_fondo_url && (
+        <div className="absolute inset-0 z-[1]" style={{ backgroundColor: `${acento}BF` }} aria-hidden="true" />
+      )}
+      <div
+        className="absolute inset-0 z-[1] opacity-[0.06]"
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")` }}
+        aria-hidden="true"
+      />
+    </>
+  )
+
   const logoFallback = (
     <div
       className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl text-xl font-bold"
@@ -50,8 +69,7 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
     </div>
   )
 
-  // Mobile: self-end en el botón lo pega al borde derecho del contenedor flex-col
-  // cuando posContenidoMobile tiene justify-end (right).
+  // ─── BLOQUES JSX MOBILE ───────────────────────────────────────────────────────
   const grupoTextoMobile = (
     <div className="flex flex-col gap-4">
       {config.hero_etiqueta_superior && (
@@ -96,6 +114,28 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
     </div>
   )
 
+  const grupoLogoMobile = (
+    <div className="flex flex-col items-center gap-1.5">
+      {config.restaurante_logo_url
+        ? <LogoWithFallback src={config.restaurante_logo_url} alt={config.restaurante_nombre} className="h-14 w-14 object-contain" fallback={logoFallback} />
+        : logoFallback
+      }
+      {mostrarParteDe && tienePertenencia && (
+        <p
+          className="uppercase tracking-[0.2em] leading-snug"
+          style={{ fontSize: "10px", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}
+        >
+          Parte de{" "}
+          {config.hosteria_url ? <a href={config.hosteria_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.hosteria_nombre}</a> : config.hosteria_nombre}
+          {config.empresa_nombre && (
+            <>{" · "}{config.empresa_url ? <a href={config.empresa_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.empresa_nombre}</a> : config.empresa_nombre}</>
+          )}
+        </p>
+      )}
+    </div>
+  )
+
+  // ─── BLOQUES JSX DESKTOP ──────────────────────────────────────────────────────
   const grupoTextoDesktop = (
     <div className="flex max-w-sm flex-col gap-6">
       {config.hero_etiqueta_superior && (
@@ -158,47 +198,10 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
     </div>
   )
 
-  const grupoLogoMobile = (
-    <div className="flex flex-col items-center gap-1.5">
-      {config.restaurante_logo_url
-        ? <LogoWithFallback src={config.restaurante_logo_url} alt={config.restaurante_nombre} className="h-14 w-14 object-contain" fallback={logoFallback} />
-        : logoFallback
-      }
-      {mostrarParteDe && tienePertenencia && (
-        <p
-          className="uppercase tracking-[0.2em] leading-snug"
-          style={{ fontSize: "10px", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}
-        >
-          Parte de{" "}
-          {config.hosteria_url ? <a href={config.hosteria_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.hosteria_nombre}</a> : config.hosteria_nombre}
-          {config.empresa_nombre && (
-            <>{" · "}{config.empresa_url ? <a href={config.empresa_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.empresa_nombre}</a> : config.empresa_nombre}</>
-          )}
-        </p>
-      )}
-    </div>
-  )
-
-  const overlayYTextura = (
-    <>
-      {config.hero_imagen_fondo_url && (
-        <div className="absolute inset-0 z-[1]" style={{ backgroundColor: `${acento}BF` }} aria-hidden="true" />
-      )}
-      <div
-        className="absolute inset-0 z-[1] opacity-[0.06]"
-        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")` }}
-        aria-hidden="true"
-      />
-    </>
-  )
-
-  const bgSolido = !config.hero_imagen_fondo_url
-    ? { backgroundColor: acento } as React.CSSProperties
-    : undefined
-
+  // ─── RENDER ───────────────────────────────────────────────────────────────────
   return (
     <>
-      {/* ─── MOBILE (< sm) */}
+      {/* ─── MOBILE (< sm) ────────────────────────────────────────────────────── */}
       <section
         className="relative isolate overflow-hidden sm:hidden"
         style={{ ...bgSolido, minHeight: "100svh", height: "100svh" }}
@@ -220,10 +223,9 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         <div className={`absolute inset-0 z-10 flex px-6 pt-16 pb-8 pointer-events-none ${posLogoMobile}`}>
           <div className="pointer-events-auto">{grupoLogoMobile}</div>
         </div>
-        {/* scroll label oculto en mobile: el logo ocupa el área inferior */}
       </section>
 
-      {/* ─── DESKTOP (≥ sm) */}
+      {/* ─── DESKTOP (≥ sm) ───────────────────────────────────────────────────── */}
       <section className="relative isolate overflow-hidden min-h-[85vh] hidden sm:block" style={bgSolido}>
         {config.hero_imagen_fondo_url && (
           <img
