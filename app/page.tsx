@@ -1,8 +1,8 @@
-import Link                     from "next/link"
-import { getSucursalesActivas } from "@/lib/sucursales"
-import { getConfig }            from "@/lib/get-config"
-import { getMenu }              from "@/lib/get-menu"
-import { MenuClient }           from "@/components/menu-client"
+import Link           from "next/link"
+import { getTenants } from "@/lib/tenants"
+import { getConfig }  from "@/lib/get-config"
+import { getMenu }    from "@/lib/get-menu"
+import { MenuClient } from "@/components/menu-client"
 
 export const revalidate = 3600
 
@@ -17,15 +17,15 @@ function buildCssVars(color_marca?: string): React.CSSProperties {
 /**
  * Página raíz.
  *
- * — Si la hoja "Sucursales" tiene entradas activas → landing multisucursal.
- * — Si no hay sucursales (hoja vacía / no existe / todas inactivas)
- *   → comportamiento original: carta de la sucursal raíz (sin cambios).
+ * — Si hay tenants activos en la sheet maestra → portal multisucursal.
+ * — Si no hay ninguno (MASTER_SHEET_ID vacío / todos inactivos)
+ *   → comportamiento original: carta de la sucursal raíz.
  */
 export default async function HomePage() {
-  const sucursales = await getSucursalesActivas()
+  const tenants = await getTenants()
 
-  // ── Modo single ────────────────────────────────────────────────────────────────
-  if (sucursales.length === 0) {
+  // ── Modo single ──────────────────────────────────────────────────────────────
+  if (tenants.length === 0) {
     const [menu, config] = await Promise.all([getMenu(), getConfig()])
     return (
       <main className="min-h-screen bg-background" style={buildCssVars(config.color_marca)}>
@@ -34,17 +34,15 @@ export default async function HomePage() {
     )
   }
 
-  // ── Modo multi ─────────────────────────────────────────────────────────────────
-  const rootConfig = await getConfig()
-  const empresa    = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre || ""
-  const logoUrl    = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
+  // ── Modo multi ───────────────────────────────────────────────────────────────
+  const rootConfig = await getConfig().catch(() => ({} as Awaited<ReturnType<typeof getConfig>>))
+  const empresa    = rootConfig.empresa_nombre    || rootConfig.restaurante_nombre    || ""
+  const logoUrl    = rootConfig.empresa_logo_url  || rootConfig.restaurante_logo_url  || ""
   const acento     = rootConfig.color_marca || ""
 
   return (
-    <main
-      className="min-h-screen bg-background"
-      style={buildCssVars(acento)}
-    >
+    <main className="min-h-screen bg-background" style={buildCssVars(acento)}>
+
       {/* Header */}
       <header className="border-b border-border/50 px-8 py-6">
         <div className="mx-auto flex max-w-4xl items-center gap-4">
@@ -82,18 +80,18 @@ export default async function HomePage() {
           style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))" }}
           role="list"
         >
-          {sucursales.map((suc) => (
-            <li key={suc.slug}>
+          {tenants.map((t) => (
+            <li key={t.tenant_id}>
               <Link
-                href={`/carta/${suc.slug}`}
+                href={`/carta/${t.tenant_id}`}
                 className="group flex items-center justify-between rounded-xl border border-border bg-card px-6 py-5 shadow-sm transition-all hover:border-primary/40 hover:shadow-md active:scale-[0.98]"
               >
                 <div>
                   <p className="font-serif text-lg font-medium text-foreground transition-colors group-hover:text-primary">
-                    {suc.label}
+                    {t.label}
                   </p>
-                  {suc.notas && (
-                    <p className="mt-0.5 text-xs text-muted-foreground">{suc.notas}</p>
+                  {t.notas && (
+                    <p className="mt-0.5 text-xs text-muted-foreground">{t.notas}</p>
                   )}
                 </div>
                 <svg
@@ -119,6 +117,7 @@ export default async function HomePage() {
           ? ` · ${rootConfig.footer_texto_derechos}`
           : ""}
       </footer>
+
     </main>
   )
 }
