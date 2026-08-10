@@ -1,65 +1,51 @@
-import { notFound }             from "next/navigation"
-import type { Metadata }        from "next"
-import { getSucursal, getSucursalSlugs } from "@/lib/sucursales"
-import { getMenu }              from "@/lib/get-menu"
-import { getConfig }            from "@/lib/get-config"
-import { CartaView }            from "@/components/carta-view"
-import { MenuFooter }           from "@/components/menu-footer"
-import { resolveHeroInk }       from "@/lib/hero-utils"
+import { notFound }          from "next/navigation"
+import { getTenantBySlug }   from "@/lib/tenants"
+import { getMenu }            from "@/lib/get-menu"
+import { getConfig }          from "@/lib/get-config"
+import { CartaView }          from "@/components/carta-view"
+import { MenuFooter }         from "@/components/menu-footer"
+import { getTenants }         from "@/lib/tenants"
 
-type Props = { params: Promise<{ sucursal: string }> }
-
+// ISR: regenerar cada hora
 export const revalidate = 3600
 
+/**
+ * Pre-genera rutas estáticas para todos los tenants activos.
+ * Si MASTER_SHEET_ID no está en build, se omite y se usa SSR on-demand.
+ */
 export async function generateStaticParams() {
-  const slugs = await getSucursalSlugs()
-  return slugs.map((slug) => ({ sucursal: slug }))
+  try {
+    const tenants = await getTenants()
+    return tenants.map((t) => ({ sucursal: t.tenant_id }))
+  } catch {
+    return []
+  }
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { sucursal } = await params
-  const def = await getSucursal(sucursal)
-  if (!def || !def.activa) return {}
-
-  const config = await getConfig(def.sheetId, def.configSheet)
-  const nombre = config.restaurante_nombre || def.label
-  const title  = config.meta_title || `${nombre} · Menú`
-
-  return {
-    title,
-    description: config.meta_descripcion || config.restaurante_descripcion || undefined,
-    openGraph: {
-      title,
-      siteName: nombre,
-      ...(config.meta_og_image_url && { images: [{ url: config.meta_og_image_url }] }),
-    },
-  }
+interface Props {
+  params: Promise<{ sucursal: string }>
 }
 
 export default async function CartaSucursalPage({ params }: Props) {
   const { sucursal } = await params
-  const def = await getSucursal(sucursal)
-
-  // 404 si no existe o está desactivada
-  if (!def || !def.activa) notFound()
+  const tenant = await getTenantBySlug(sucursal)
+  if (!tenant) notFound()
 
   const [menu, config] = await Promise.all([
-    getMenu(def.sheetId, def.sheetName),
-    getConfig(def.sheetId, def.configSheet),
+    getMenu(tenant.sheet_id, tenant.sheet_name),
+    getConfig(tenant.sheet_id),
   ])
 
-  const inkDia   = resolveHeroInk(config.hero_ink)
-  const inkNoche = resolveHeroInk(config.hero_ink_noche)
-
-  const inlineVars: React.CSSProperties = {
-    ...(config.color_marca     && { ["--primary" as string]:        config.color_marca }),
-    ...(config.color_fondo_dia && { ["--background" as string]:     config.color_fondo_dia }),
-    ...(inkDia                 && { ["--hero-ink" as string]:       inkDia }),
-    ...(inkNoche               && { ["--hero-ink-noche" as string]: inkNoche }),
-  }
+  // CSS vars dinámicas de acento para este tenant
+  const cssVars = config.color_marca
+    ? ({
+        "--primary": config.color_marca,
+        "--ring":    config.color_marca,
+      } as React.CSSProperties)
+    : {}
 
   return (
-    <main className="min-h-screen bg-background" style={inlineVars}>
+    <main className="min-h-screen bg-background" style={cssVars}>
       <CartaView menu={menu} config={config} />
       <MenuFooter config={config} />
     </main>
