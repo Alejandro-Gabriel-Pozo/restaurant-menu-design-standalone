@@ -218,8 +218,7 @@ export function normFuente(val: string): string {
 
 /**
  * Formatea un precio según la configuración del tenant.
- * - Si el valor no es numérico lo devuelve tal cual (compatibilidad con sheets
- *   que ya tienen el símbolo escrito a mano).
+ * - Si el valor no es numérico lo devuelve tal cual.
  * - precio_posicion: "izquierda" → "$1.500" | "derecha" → "1.500$"
  */
 export function formatPrecio(
@@ -238,13 +237,22 @@ export function formatPrecio(
     : `${simbolo}${formatted}`
 }
 
-export async function getConfig(sheetId?: string): Promise<SiteConfig> {
+/**
+ * Descarga la configuración del tenant desde Google Sheets con ISR (revalidate: 3600).
+ *
+ * @param sheetId     - ID del spreadsheet (default: MENU_SHEET_ID)
+ * @param configSheet - Nombre de la hoja de config (default: "Config")
+ */
+export async function getConfig(
+  sheetId?: string,
+  configSheet = "Config",
+): Promise<SiteConfig> {
   const id = sheetId ?? process.env.MENU_SHEET_ID
   if (!id) return defaults
 
   try {
-    const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=Config&headers=0`
-    const res = await fetch(url, { cache: "no-store" })
+    const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(configSheet)}&headers=0`
+    const res = await fetch(url, { next: { revalidate: 3600 } })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const table = parseGviz(await res.text())
 

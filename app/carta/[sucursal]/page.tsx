@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const def = await getSucursal(sucursal)
   if (!def || !def.activa) return {}
 
-  const config = await getConfig(def.sheetId)
+  const config = await getConfig(def.sheetId, def.configSheet)
   const nombre = config.restaurante_nombre || def.label
   const title  = config.meta_title || `${nombre} · Menú`
 
@@ -45,16 +45,16 @@ export default async function CartaSucursalPage({ params }: Props) {
 
   const [menu, config] = await Promise.all([
     getMenu(def.sheetId, def.sheetName),
-    getConfig(def.sheetId),
+    getConfig(def.sheetId, def.configSheet),
   ])
 
   const inkDia   = resolveHeroInk(config.hero_ink)
   const inkNoche = resolveHeroInk(config.hero_ink_noche)
 
   const inlineVars: React.CSSProperties = {
-    ...(config.color_marca     && { ["--primary" as string]:    config.color_marca }),
-    ...(config.color_fondo_dia && { ["--background" as string]: config.color_fondo_dia }),
-    ...(inkDia                 && { ["--hero-ink" as string]:   inkDia }),
+    ...(config.color_marca     && { ["--primary" as string]:        config.color_marca }),
+    ...(config.color_fondo_dia && { ["--background" as string]:     config.color_fondo_dia }),
+    ...(inkDia                 && { ["--hero-ink" as string]:       inkDia }),
     ...(inkNoche               && { ["--hero-ink-noche" as string]: inkNoche }),
   }
 

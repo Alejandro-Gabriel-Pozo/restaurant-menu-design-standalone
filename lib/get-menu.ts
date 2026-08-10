@@ -62,7 +62,6 @@ function rowToItem(cols: string[], row: GvizRow): SheetMenuItem | null {
   if (typeof categoria !== "string" || !categoria.trim()) return null
   if (typeof platillo  !== "string" || !platillo.trim())  return null
 
-  // Guardamos el precio como string crudo para que formatPrecio() lo procese
   const precioRaw = get("precio")
   const precio =
     precioRaw == null
@@ -120,7 +119,7 @@ function buildCategories(items: SheetMenuItem[]): MenuCategory[] {
       map.set(id, {
         id,
         label: item.categoria,
-        title: item.titulo_seccion,         // backward-compat
+        title: item.titulo_seccion,
         titulo_seccion: item.titulo_seccion,
         description: item.descripcion_seccion,
         imagen_url: item.imagen_seccion_url,
@@ -131,7 +130,7 @@ function buildCategories(items: SheetMenuItem[]): MenuCategory[] {
     map.get(id)!.items.push({
       name: item.platillo,
       description: item.descripcion,
-      price: item.precio,                   // crudo → formatPrecio() en CartaView
+      price: item.precio,
       tags: item.tags.length ? item.tags : undefined,
       especial: item.especial,
     })
@@ -140,7 +139,7 @@ function buildCategories(items: SheetMenuItem[]): MenuCategory[] {
 }
 
 /**
- * Descarga el menú de Google Sheets.
+ * Descarga el menú de Google Sheets con ISR (revalidate: 3600).
  *
  * @param sheetId   - ID del spreadsheet (default: MENU_SHEET_ID)
  * @param sheetName - Nombre de la hoja  (default: MENU_SHEET_NAME o "Menu")
@@ -156,7 +155,7 @@ export async function getMenu(
 
   try {
     const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(name)}`
-    const res = await fetch(url, { cache: "no-store" })
+    const res = await fetch(url, { next: { revalidate: 3600 } })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const table = parseGviz(await res.text())
     const cols  = table.cols.map((c) => c.label.toLowerCase().trim())
