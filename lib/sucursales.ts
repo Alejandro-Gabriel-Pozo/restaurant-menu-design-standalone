@@ -1,75 +1,112 @@
 /**
- * Registro de sucursales.
+ * Registro de sucursales — leído desde Google Sheets.
  *
- * Cómo agregar una sucursal:
- * 1. Agregar las env vars en Vercel (o .env.local):
- *      SUCURSAL_<SLUG>_SHEET_ID=1abc...
- *      SUCURSAL_<SLUG>_SHEET_NAME=NombreHoja   (opcional, default = Menu)
- *      SUCURSAL_<SLUG>_CONFIG_SHEET=Config      (opcional, default = Config)
- * 2. Agregar la entrada al objeto SUCURSALES abajo.
+ * Hoja requerida: "Sucursales" en el spreadsheet raíz (MENU_SHEET_ID).
  *
- * El slug se convierte en la URL: /carta/<slug>
- * Ej: slug "miches"  →  /carta/miches
- *     slug "sf"      →  /carta/sf
+ * Columnas esperadas (fila 1 = encabezados):
+ *   slug         | string   | Identificador URL: /carta/<slug>
+ *   label        | string   | Nombre legible (ej. "Miches")
+ *   sheet_id     | string   | ID del Google Spreadsheet de la sucursal
+ *   sheet_name   | string   | Nombre de la hoja del menú (default "Menu")
+ *   config_sheet | string   | Nombre de la hoja de config (default "Config")
+ *   activa       | boolean  | TRUE = publicada, FALSE = oculta/WIP
+ *   deploy_hook  | string   | URL del deploy hook de Vercel (opcional, solo docs)
+ *   notas        | string   | Campo libre: estado, pendientes, fecha de alta, etc.
  */
 
+import "server-only"
+
 export interface SucursalDef {
-  /** ID del Google Spreadsheet de esta sucursal */
+  slug: string
+  label: string
   sheetId: string
-  /** Nombre de la hoja del menú (default "Menu") */
   sheetName: string
-  /** Nombre de la hoja de configuración (default "Config") */
   configSheet: string
-  /** Nombre legible para metadatos y logs */
-  label?: string
+  activa: boolean
+  deployHook?: string
+  notas?: string
 }
 
-function suc(
-  slugEnv: string,
-  label?: string,
-): SucursalDef | null {
-  const envPrefix = `SUCURSAL_${slugEnv.toUpperCase()}`
-  const sheetId = process.env[`${envPrefix}_SHEET_ID`]
-  if (!sheetId) return null
-  return {
-    sheetId,
-    sheetName:   process.env[`${envPrefix}_SHEET_NAME`]   ?? "Menu",
-    configSheet: process.env[`${envPrefix}_CONFIG_SHEET`] ?? "Config",
-    label,
-  }
+type GvizCell = { v: string | number | boolean | null }
+type GvizRow  = { c: (GvizCell | null)[] }
+type GvizTable = { cols: { label: string }[]; rows: GvizRow[] }
+type GvizResponse = { table: GvizTable }
+
+function parseGviz(text: string): GvizTable {
+  const cleaned = text
+    .replace("/*O_o*/", "")
+    .replace("google.visualization.Query.setResponse(", "")
+    .slice(0, -2)
+  const json: GvizResponse = JSON.parse(cleaned)
+  return json.table
 }
 
 /**
- * Agrega aquí una entrada por cada sucursal.
- * La clave es el slug que aparece en la URL.
- *
- * suc("miches", "Miches") busca:
- *   SUCURSAL_MICHES_SHEET_ID
- *   SUCURSAL_MICHES_SHEET_NAME  (opcional)
- *   SUCURSAL_MICHES_CONFIG_SHEET (opcional)
+ * Descarga y parsea la hoja "Sucursales" del spreadsheet raíz.
+ * Revalida cada hora (ISR). Si la hoja no existe o hay error, devuelve [].
  */
-const rawSucursales: Record<string, SucursalDef | null> = {
-  // Agregar sucursales aquí:
-  // miches:    suc("miches",    "Miches"),
-  // sf:        suc("sf",        "San Francisco"),
-  // neuquen:   suc("neuquen",   "Neuquén"),
+export async function getSucursales(): Promise<SucursalDef[]> {
+  const sheetId = process.env.MENU_SHEET_ID
+  if (!sheetId) return []
+
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=Sucursales&headers=1`
+    const res = await fetch(url, { next: { revalidate: 3600 } })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const table = parseGviz(await res.text())
+    const cols  = table.cols.map((c) => c.label.toLowerCase().trim())
+
+    const sucursales: SucursalDef[] = []
+    for (const row of table.rows) {
+      if (!row.c) continue
+      const get = (label: string): string | number | boolean | null => {
+        const idx = cols.indexOf(label)
+        if (idx === -1) return null
+        return row.c[idx]?.v ?? null
+      }
+
+      const slug    = String(get("slug")     ?? "").trim()
+      const sheetId = String(get("sheet_id") ?? "").trim()
+      if (!slug || !sheetId) continue
+
+      const activaRaw = get("activa")
+      const activa =
+        typeof activaRaw === "boolean"
+          ? activaRaw
+          : String(activaRaw).toLowerCase() === "true"
+
+      sucursales.push({
+        slug,
+        label:       String(get("label")        ?? slug).trim(),
+        sheetId,
+        sheetName:   String(get("sheet_name")   || "Menu").trim(),
+        configSheet: String(get("config_sheet") || "Config").trim(),
+        activa,
+        deployHook:  get("deploy_hook") ? String(get("deploy_hook")).trim() : undefined,
+        notas:       get("notas")       ? String(get("notas")).trim()       : undefined,
+      })
+    }
+    return sucursales
+  } catch (err) {
+    console.error("getSucursales() falló", err)
+    return []
+  }
 }
 
-/** Mapa filtrado: solo sucursales con env vars presentes */
-export const SUCURSALES: Record<string, SucursalDef> = Object.fromEntries(
-  Object.entries(rawSucursales).filter(
-    (entry): entry is [string, SucursalDef] => entry[1] !== null,
-  ),
-)
-
-export type SucursalSlug = keyof typeof SUCURSALES
-
-/** Slugs válidos para generateStaticParams */
-export function getSucursalSlugs(): string[] {
-  return Object.keys(SUCURSALES)
+/** Sucursales públicas solamente */
+export async function getSucursalesActivas(): Promise<SucursalDef[]> {
+  const all = await getSucursales()
+  return all.filter((s) => s.activa)
 }
 
-/** Obtiene la definición de una sucursal por slug */
-export function getSucursal(slug: string): SucursalDef | undefined {
-  return SUCURSALES[slug]
+/** Lookup por slug (incluye inactivas — para mostrar 404 con contexto) */
+export async function getSucursal(slug: string): Promise<SucursalDef | undefined> {
+  const all = await getSucursales()
+  return all.find((s) => s.slug === slug)
+}
+
+/** Slugs activos para generateStaticParams */
+export async function getSucursalSlugs(): Promise<string[]> {
+  const activas = await getSucursalesActivas()
+  return activas.map((s) => s.slug)
 }
