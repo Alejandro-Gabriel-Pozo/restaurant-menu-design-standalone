@@ -17,9 +17,13 @@ function buildCssVars(color_marca?: string): React.CSSProperties {
 /**
  * Página raíz.
  *
- * — Si hay tenants activos en la sheet maestra → portal multisucursal.
- * — Si no hay ninguno (MASTER_SHEET_ID vacío / todos inactivos)
- *   → comportamiento original: carta de la sucursal raíz.
+ * Configuración del portal (nombre empresa, logo, color, footer):
+ *   1. ROOT_SHEET_ID  → sheet dedicada al portal (recomendado)
+ *   2. MASTER_SHEET_ID con tab "Config" → misma planilla maestra
+ *   3. MENU_SHEET_ID  → fallback original
+ *
+ * — Si hay tenants activos → portal multisucursal.
+ * — Si no hay ninguno     → carta única (comportamiento original).
  */
 export default async function HomePage() {
   const tenants = await getTenants()
@@ -34,11 +38,19 @@ export default async function HomePage() {
     )
   }
 
-  // ── Modo multi ───────────────────────────────────────────────────────────────
-  const rootConfig = await getConfig().catch(() => ({} as Awaited<ReturnType<typeof getConfig>>))
-  const empresa    = rootConfig.empresa_nombre    || rootConfig.restaurante_nombre    || ""
-  const logoUrl    = rootConfig.empresa_logo_url  || rootConfig.restaurante_logo_url  || ""
-  const acento     = rootConfig.color_marca || ""
+  // ── Modo multi: leer config del portal ─────────────────────────────────────
+  const portalSheetId =
+    process.env.ROOT_SHEET_ID ||
+    process.env.MASTER_SHEET_ID ||
+    process.env.MENU_SHEET_ID
+
+  const rootConfig = await getConfig(portalSheetId).catch(
+    () => ({} as Awaited<ReturnType<typeof getConfig>>)
+  )
+
+  const empresa  = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
+  const logoUrl  = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
+  const acento   = rootConfig.color_marca || ""
 
   return (
     <main className="min-h-screen bg-background" style={buildCssVars(acento)}>
