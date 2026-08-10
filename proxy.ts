@@ -8,11 +8,8 @@ import { NextRequest, NextResponse } from "next/server"
  * para que layout.tsx / page.tsx lo consuma sin prop drilling.
  *
  * Si no hay match (dominio no registrado), pasa sin modificar.
- *
- * NOTA: el fetch a gviz se hace con cache de 1 h — Next.js
- * reutiliza la respuesta entre requests mientras dure el cache.
  */
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const masterId = process.env.MASTER_SHEET_ID
   if (!masterId) return NextResponse.next()
 
@@ -21,9 +18,7 @@ export async function middleware(req: NextRequest) {
 
   try {
     const url = `https://docs.google.com/spreadsheets/d/${masterId}/gviz/tq?tqx=out:json&sheet=Tenants&headers=1`
-    const res = await fetch(url, {
-      next: { revalidate: 3600 },
-    })
+    const res = await fetch(url, { next: { revalidate: 3600 } })
     if (!res.ok) return NextResponse.next()
 
     const text    = await res.text()
@@ -65,10 +60,6 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Excluir rutas internas de Next.js y archivos estáticos.
-     * El proxy solo corre en rutas de página reales.
-     */
     "/((?!_next/static|_next/image|favicon|icon|apple-icon|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff2?|ttf|otf)).*)",
   ],
 }
