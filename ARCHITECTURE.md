@@ -70,7 +70,7 @@ Orden de columnas (izquierda a derecha):
 | `platillo_en` | texto | Nombre del ítem en inglés. |
 | `descripcion` | texto | Descripción del ítem en español. |
 | `descripcion_en` | texto | Descripción del ítem en inglés. |
-| `precio` | número | Precio en moneda local (sin símbolo). |
+| `precio` | número | Precio en moneda local (sin símbolo). Ver `precio_simbolo` en Config. |
 | `disponible` | booleano | `TRUE` muestra el ítem, `FALSE` lo oculta sin borrarlo. |
 | `tags` | texto | Etiquetas en español, separadas por coma (ej. `Regional, Vegano`). |
 | `tags_en` | texto | Etiquetas en inglés, separadas por coma (ej. `Local, Vegan`). |
@@ -92,77 +92,96 @@ El código ignora cualquier fila cuya `clave` no esté definida en `defaults` �
 
 | Clave | Default | `_en` necesario |
 |---|---|---|
-| `restaurante_nombre` | `Río Lileo` | ❌ (nombre propio) |
-| `restaurante_subtitulo` | `Restaurante · Los Miches, Neuquén` | ✅ `restaurante_subtitulo_en` |
-| `restaurante_descripcion` | `Cocina regional neuquina…` | ✅ `restaurante_descripcion_en` |
+| `restaurante_nombre` | `""` | ❌ (nombre propio) |
+| `restaurante_subtitulo` | `""` | ✅ `restaurante_subtitulo_en` |
+| `restaurante_descripcion` | `""` | ✅ `restaurante_descripcion_en` |
 | `restaurante_boton_hero` | `Ver el menú` | ✅ `restaurante_boton_hero_en` |
-| `color_marca` | *(vacío)* | ❌ |
-| `theme_color` | *(vacío)* | ❌ |
-| `favicon_url` | *(vacío)* | ❌ |
-| `restaurante_logo_url` | *(vacío)* | ❌ |
+| `color_marca` | `""` | ❌ |
+| `theme_color` | `""` | ❌ |
+| `favicon_url` | `""` | ❌ |
+| `restaurante_logo_url` | `""` | ❌ |
+| `lang` | `es` | ❌ (código ISO, no texto visible) |
 
-##### Sección 2 — SEO
+> **`lang`** define el atributo `<html lang="">` del documento. Valores esperados: `es`, `en`, `pt`, etc. El código lo lee con `config.lang || "es"` — cuando llegue la ruta `[locale]` dinámica, el param de ruta tendrá precedencia sobre este valor y el campo quedará como fallback de crawlers que cachean la página raíz.
+
+##### Sección 2 — SEO / Open Graph
 
 | Clave | Default | `_en` necesario |
 |---|---|---|
-| `meta_title` | *(vacío)* | ✅ `meta_title_en` |
-| `meta_descripcion` | *(vacío)* | ✅ `meta_descripcion_en` |
+| `meta_title` | `""` | ✅ `meta_title_en` |
+| `meta_descripcion` | `""` | ✅ `meta_descripcion_en` |
+| `meta_og_image_url` | `""` | ❌ (puede ser imagen con texto, pero la URL es única) |
+| `meta_og_locale` | `es_AR` | ❌ (se computa desde `lang` en código, este campo es override) |
+| `meta_og_url` | `""` | ❌ |
+| `meta_twitter_card` | `summary_large_image` | ❌ |
+
+> **Por qué agregar estos campos ahora:** `generateMetadata()` en `layout.tsx` hoy devuelve solo `title`, `description` e `icons`. Sin `openGraph` ni `twitter`, WhatsApp, Telegram y buscadores usan fallbacks pobres al compartir el link. En multi-tenant cada negocio tiene su propia imagen de preview, URL canónica y locale de OG.
 
 ##### Sección 3 — Hero / Portada
 
 | Clave | Default | `_en` necesario |
 |---|---|---|
-| `hero_color_fondo` | *(vacío)* | ❌ |
-| `hero_imagen_fondo_url` | *(vacío)* | ❌ |
+| `hero_color_fondo` | `""` | ❌ |
+| `hero_imagen_fondo_url` | `""` | ❌ |
 | `hero_etiqueta_superior` | `Menú` | ✅ `hero_etiqueta_superior_en` |
 | `hero_etiqueta_scroll` | `Menú` | ✅ `hero_etiqueta_scroll_en` |
-| `hero_ink` | *(vacío)* | ❌ |
-| `hero_ink_noche` | *(vacío)* | ❌ |
+| `hero_ink` | `""` | ❌ |
+| `hero_ink_noche` | `""` | ❌ |
 | `hero_pos_contenido` | `center-right` | ❌ |
-| `hero_pos_contenido_mobile` | *(vacío)* | ❌ |
+| `hero_pos_contenido_mobile` | `""` | ❌ |
 | `hero_pos_logo` | `bottom-right` | ❌ |
-| `hero_pos_logo_mobile` | *(vacío)* | ❌ |
-| `color_fondo_dia` | *(vacío)* | ❌ |
-| `color_fondo_noche` | *(vacío)* | ❌ |
+| `hero_pos_logo_mobile` | `""` | ❌ |
+| `color_fondo_dia` | `""` | ❌ |
+| `color_fondo_noche` | `""` | ❌ |
 
 ##### Sección 4 — Pertenencia (marca paraguas)
 
 | Clave | Default | `_en` necesario |
 |---|---|---|
-| `mostrar_pertenencia` | *(vacío)* | ❌ |
-| `hosteria_nombre` | *(vacío)* | ❌ (nombre propio) |
-| `hosteria_url` | *(vacío)* | ❌ |
-| `hosteria_descripcion` | *(vacío)* | ✅ `hosteria_descripcion_en` |
-| `empresa_nombre` | *(vacío)* | ❌ (nombre propio) |
-| `empresa_url` | *(vacío)* | ❌ |
-| `empresa_logo_url` | *(vacío)* | ❌ |
+| `mostrar_pertenencia` | `""` | ❌ |
+| `hosteria_nombre` | `""` | ❌ (nombre propio) |
+| `hosteria_url` | `""` | ❌ |
+| `hosteria_descripcion` | `""` | ✅ `hosteria_descripcion_en` |
+| `empresa_nombre` | `""` | ❌ (nombre propio) |
+| `empresa_url` | `""` | ❌ |
+| `empresa_logo_url` | `""` | ❌ |
 
 ##### Sección 5 — Contacto / Footer
 
 | Clave | Default | `_en` necesario |
 |---|---|---|
-| `restaurante_footer_direccion` | `Ruta 43, Los Miches, Neuquén` | ❌ (dirección física) |
-| `restaurante_footer_maps_url` | *(vacío)* | ❌ |
-| `restaurante_footer_telefono` | *(vacío)* | ❌ |
-| `restaurante_footer_email` | *(vacío)* | ❌ |
-| `restaurante_footer_horarios` | *(vacío)* | ✅ `restaurante_footer_horarios_en` |
-| `restaurante_instagram` | *(vacío)* | ❌ |
-| `restaurante_facebook` | *(vacío)* | ❌ |
-| `restaurante_whatsapp` | *(vacío)* | ❌ |
+| `restaurante_footer_direccion` | `""` | ❌ (dirección física) |
+| `restaurante_footer_maps_url` | `""` | ❌ |
+| `restaurante_footer_telefono` | `""` | ❌ |
+| `restaurante_footer_email` | `""` | ❌ |
+| `restaurante_footer_horarios` | `""` | ✅ `restaurante_footer_horarios_en` |
+| `restaurante_instagram` | `""` | ❌ |
+| `restaurante_facebook` | `""` | ❌ |
+| `restaurante_whatsapp` | `""` | ❌ |
 
-##### Sección 6 — Layout de carta
+##### Sección 6 — Precios
+
+| Clave | Default | `_en` necesario |
+|---|---|---|
+| `precio_simbolo` | `$` | ❌ |
+| `precio_locale` | `es-AR` | ❌ |
+| `precio_posicion` | `izquierda` | ❌ |
+
+> **Motivación:** hoy `carta-view.tsx` renderiza `{item.price}` crudo, sin símbolo ni formato de miles/decimales. En producción el cliente escribe el número en la sheet (`1500`) y espera ver `$1.500` — eso debe computarse en código, no en la sheet. `precio_locale` alimenta `toLocaleString(locale)`, `precio_simbolo` + `precio_posicion` arman el string final (`$1.500` vs `1.500$`). Por ahora no hay multi-moneda; si en el futuro hay, este campo ya lo soporta.
+
+##### Sección 7 — Layout de carta
 
 Todos los campos de esta sección son valores de posición, tamaño o modo — sin par `_en`.
 
 `carta_pos_bloque` · `carta_pos_cta` · `carta_banda_alto_mobile` · `carta_banda_alto_desktop` · `carta_imagen_modo` · `carta_imagen_ancho_mobile` · `carta_imagen_ancho_desktop` · `carta_imagen_pos_x` · `carta_imagen_pos_y` · `carta_imagen_overlay` · `carta_imagen_opacidad`
 
-##### Sección 7 — Tipografías
+##### Sección 8 — Tipografías
 
 Todos valores CSS de tamaño de fuente — sin par `_en`.
 
 `carta_fuente_banda_etiqueta` · `carta_fuente_banda_titulo` · `carta_fuente_banda_descripcion` · `carta_fuente_item_nombre` · `carta_fuente_item_precio` · `carta_fuente_item_descripcion` · `carta_fuente_item_tags` · `carta_fuente_portada_etiqueta` · `carta_fuente_portada_nombre` · `carta_fuente_portada_subtitulo` · `carta_fuente_portada_descripcion` · `carta_fuente_portada_cta` · `carta_fuente_indice_etiqueta` · `carta_fuente_indice_titulo` · `carta_fuente_indice_numero` · `carta_fuente_indice_categoria` · `carta_fuente_indice_item`
 
-##### Sección 8 — Textos fijos
+##### Sección 9 — Textos fijos
 
 Todos los textos fijos visibles al visitante llevan par `_en`.
 
@@ -179,15 +198,15 @@ Todos los textos fijos visibles al visitante llevan par `_en`.
 | `footer_texto_tipo` | `Restaurante` | `footer_texto_tipo_en` |
 | `footer_texto_derechos` | `Todos los derechos reservados.` | `footer_texto_derechos_en` |
 
-##### Sección 9 — Fondo animado / Formato *(fuera de alcance activo — campos en sheet desde ahora)*
+##### Sección 10 — Fondo animado / Formato *(fuera de alcance activo — campos en sheet desde ahora)*
 
 | Clave | Valores válidos | Default |
 |---|---|---|
 | `hero_fondo_tipo` | `estatico` \| `gradiente` \| `particulas` \| `video` | `estatico` |
 | `hero_fondo_velocidad` | `lento` \| `medio` \| `rapido` | `medio` |
-| `hero_fondo_gradiente_colores` | lista separada por comas | *(vacío)* |
-| `hero_fondo_particulas_tipo` | `brasas` \| `hojas` \| `nieve` \| `vapor` | *(vacío)* |
-| `hero_fondo_video_url` | URL | *(vacío)* |
+| `hero_fondo_gradiente_colores` | lista separada por comas | `""` |
+| `hero_fondo_particulas_tipo` | `brasas` \| `hojas` \| `nieve` \| `vapor` | `""` |
+| `hero_fondo_video_url` | URL | `""` |
 | `carta_formato` | `scroll` \| `paginado` \| `grid` \| `tabs` | `scroll` |
 | `carta_formato_grid_columnas_desktop` | `2`–`4` | `3` |
 | `carta_formato_grid_columnas_mobile` | `1`–`2` | `1` |
@@ -240,18 +259,50 @@ Un mismo componente de selección de ítems (estado tipo carrito) con dos salida
 - **Take away** → arma texto y abre `wa.me/<numero>?text=...` usando `restaurante_whatsapp` de `Config`.
 - **Salón** → `POST` a un Apps Script Web App separado (tab `Pedidos`, no mezclado con `Menu`/`Config`), con mesa + nombre + ítems. Llega a una vista simple del mesero (polling cada 15–20s), que marca "tomado" — el mesero sigue armando la comanda para cocina como siempre. No requiere tiempo real estricto ni estado de pedido (pendiente/listo).
 
-## 4. Roadmap de implementación
+## 4. Fixes detectados en auditoría (previos al refactor multi-tenant)
 
-1. Sheet maestra (`Tenants` + `Features`) con el negocio actual cargado.
-2. `middleware.ts` + `lib/tenants.ts` — validar con un solo tenant.
-3. Migrar `getMenu`/`getConfig` para recibir `sheetId` en vez de leer env var fija.
-4. `lib/features.ts` + envolver componentes existentes.
-5. `[locale]` + columnas `_en` en `Menu`/`Config`.
-6. Reestructuración de `carta-view.tsx` y componentes relacionados en capas datos/layout (aprovechando que ya se están tocando por los puntos 2–5).
+Estos bugs/inconsistencias se aplican **antes** de arrancar la migración multi-tenant, para no cargar deuda técnica en el refactor:
 
-**Fuera de alcance por ahora** (documentado en 3.3–3.5 como referencia futura, no roadmap activo): campos de fondo animado + formato, carrito compartido (WhatsApp/mesero), feature flags por plan, librería privada.
+### 4.1 `app/layout.tsx`
 
-## 5. Decisiones abiertas
+| Fix | Estado |
+|---|---|
+| `lang="es"` hardcodeado → leer `config.lang \|\| "es"` | ⬜ Pendiente |
+| Agregar `openGraph` y `twitter` a `generateMetadata()` usando las claves nuevas de Sección 2 | ⬜ Pendiente |
+| Fallback de `themeColor` `'#E8B84B'` → `config.color_marca \|\| config.theme_color \|\| ""` (sin fallback cromático fijo) | ⬜ Pendiente |
+| Fallback de título `· Menú` hardcodeado → usar `meta_title` o fallback neutro `· Carta` sin idioma fijo (en español queda `Menú`, el campo `_en` lo traduce) | ⬜ Pendiente |
+
+### 4.2 `components/carta-view.tsx`
+
+| Fix | Estado |
+|---|---|
+| `config.restaurante_nombre ?? "Restaurante"` → `""` como fallback (no hay tenant genérico) | ⬜ Pendiente |
+| `cat.titulo_seccion ?? cat.title` → solo `cat.titulo_seccion` — `.title` desaparece del nuevo schema | ⬜ Pendiente |
+| Precio crudo `{item.price}` → formatear con `precio_simbolo` + `precio_locale` + `precio_posicion` (nueva Sección 6 de Config) | ⬜ Pendiente |
+| `<span>★</span>` de especial → agregar `aria-label="Especial"` | ⬜ Pendiente |
+| Acento fallback `"#E8B84B"` en `hero_color_fondo \|\|` → `""` | ⬜ Pendiente |
+
+### 4.3 `components/menu-footer.tsx`
+
+| Fix | Estado |
+|---|---|
+| Acento fallback `"#E8B84B"` en `color_marca \|\|` → `""` (sin acento visual fijo si no se configura) | ⬜ Pendiente |
+
+> **Criterio de fallback de acento:** quitar `#E8B84B` como fallback no rompe el layout porque el color se usa para `borderColor` y `color` en el logo-fallback del footer — si el tenant no configuró `color_marca`, esos elementos simplemente heredan el color de texto del tema. Es preferible a que un tenant nuevo aparezca con el color de Río Lileo.
+
+## 5. Roadmap de implementación
+
+1. **Fixes del punto 4** — limpiar deuda antes del refactor.
+2. Sheet maestra (`Tenants` + `Features`) con el negocio actual cargado.
+3. `middleware.ts` + `lib/tenants.ts` — validar con un solo tenant.
+4. Migrar `getMenu`/`getConfig` para recibir `sheetId` y `lang` en vez de leer env var fija.
+5. `lib/features.ts` + envolver componentes existentes.
+6. `[locale]` + columnas `_en` en `Menu`/`Config`.
+7. Reestructuración de `carta-view.tsx` y componentes relacionados en capas datos/layout (aprovechando que ya se están tocando por los puntos 3–6).
+
+**Fuera de alcance por ahora** (documentado en 3.4–3.5 como referencia futura, no roadmap activo): campos de fondo animado + formato, carrito compartido (WhatsApp/mesero), feature flags por plan, librería privada.
+
+## 6. Decisiones abiertas
 
 - `app/page.tsx` / `MenuClient`: ¿se descarta o se define su rol?
 - `carta-demo`: ¿sheet propia de demo (`DEMO_SHEET_ID`) o mismo tenant que producción en otra ruta?
