@@ -1,5 +1,5 @@
 import { Analytics } from '@vercel/analytics/next'
-import type { Viewport } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist, Playfair_Display } from 'next/font/google'
 import { getConfig } from '@/lib/get-config'
 import { resolveHeroInk } from '@/lib/hero-utils'
@@ -11,10 +11,17 @@ const playfair = Playfair_Display({
   subsets: ['latin'],
 })
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const config = await getConfig()
-  const title       = config.meta_title       || `${config.restaurante_nombre} · Menú`
-  const description = config.meta_descripcion || config.restaurante_descripcion
+
+  const siteName  = config.restaurante_nombre || undefined
+  const title     = config.meta_title       || (siteName ? `${siteName} · Menú` : 'Menú')
+  const description = config.meta_descripcion || config.restaurante_descripcion || undefined
+
+  // og:locale: usa el campo de Config si está, si no lo deriva del lang (es → es_AR, en → en_US)
+  const ogLocale = config.meta_og_locale ||
+    (config.lang === 'en' ? 'en_US' : config.lang === 'pt' ? 'pt_BR' : 'es_AR')
+
   return {
     title,
     description,
@@ -28,13 +35,31 @@ export async function generateMetadata() {
           ],
       apple: '/apple-icon.png',
     },
+    openGraph: {
+      title,
+      description,
+      siteName,
+      locale: ogLocale,
+      type: 'website',
+      ...(config.meta_og_url   && { url:   config.meta_og_url }),
+      ...(config.meta_og_image_url && {
+        images: [{ url: config.meta_og_image_url }],
+      }),
+    },
+    twitter: {
+      card: (config.meta_twitter_card as 'summary' | 'summary_large_image' | 'app' | 'player') ||
+            'summary_large_image',
+      title,
+      description,
+      ...(config.meta_og_image_url && { images: [config.meta_og_image_url] }),
+    },
   }
 }
 
 export async function generateViewport(): Promise<Viewport> {
   const config = await getConfig()
-  const color = config.theme_color || config.color_marca || '#E8B84B'
-  return { colorScheme: 'light', themeColor: color }
+  const color = config.theme_color || config.color_marca || undefined
+  return { colorScheme: 'light', ...(color && { themeColor: color }) }
 }
 
 export default async function RootLayout({
@@ -59,8 +84,10 @@ export default async function RootLayout({
       : "",
   ].filter(Boolean).join("\n")
 
+  const lang = config.lang || 'es'
+
   return (
-    <html lang="es" className={`${geistSans.variable} ${playfair.variable} bg-background`}>
+    <html lang={lang} className={`${geistSans.variable} ${playfair.variable} bg-background`}>
       {estilosDinamicos && <style>{estilosDinamicos}</style>}
       <body className="font-sans antialiased">
         {children}

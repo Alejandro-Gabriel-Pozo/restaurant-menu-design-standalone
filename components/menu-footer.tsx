@@ -46,7 +46,7 @@ export function MenuFooter({ config }: MenuFooterProps) {
   const horarios = config.restaurante_footer_horarios
     ? config.restaurante_footer_horarios.split("|").map((h) => h.trim())
     : []
-  const acento = config.color_marca || "#E8B84B"
+  const acento = config.color_marca || ""
 
   const txtHorarios         = config.footer_texto_horarios
   const txtContacto         = config.footer_texto_contacto
@@ -81,7 +81,10 @@ export function MenuFooter({ config }: MenuFooterProps) {
   const empresaLogoFallback = (
     <div
       className="h-10 w-10 rounded-full border-2 flex items-center justify-center text-xs font-bold"
-      style={{ borderColor: acento, color: acento }}
+      style={acento
+        ? { borderColor: acento, color: acento }
+        : { borderColor: "currentColor", color: "currentColor" }
+      }
     >
       {config.hosteria_nombre?.charAt(0) ?? "H"}
     </div>

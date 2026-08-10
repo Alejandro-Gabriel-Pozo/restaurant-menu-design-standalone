@@ -1,6 +1,6 @@
 import type { MenuCategory } from "@/lib/get-menu"
 import type { SiteConfig }   from "@/lib/get-config"
-import { normFuente }        from "@/lib/get-config"
+import { normFuente, formatPrecio } from "@/lib/get-config"
 import { TagIcon }           from "@/lib/tag-icons"
 import { CartaControls }     from "@/components/carta-controls"
 import { CartaSectionImage } from "@/components/carta-section-image"
@@ -12,13 +12,13 @@ interface Props {
 }
 
 export function CartaView({ menu, config }: Props) {
-  const acento      = config.hero_color_fondo || "#E8B84B"
-  const nombre      = config.restaurante_nombre ?? "Restaurante"
+  const acento      = config.hero_color_fondo || ""
+  const nombre      = config.restaurante_nombre ?? ""
   const subtitulo   = config.restaurante_subtitulo ?? ""
   const descripcion = config.restaurante_descripcion ?? ""
   const logoUrl     = config.restaurante_logo_url ?? ""
   const bgUrl       = config.hero_imagen_fondo_url ?? ""
-  const bgSolido: React.CSSProperties = !bgUrl ? { backgroundColor: acento } : {}
+  const bgSolido: React.CSSProperties = !bgUrl && acento ? { backgroundColor: acento } : {}
 
   const bloqueTop = `${config.carta_pos_bloque || "50"}%`
   const ctaBottom = `${config.carta_pos_cta   || "18"}%`
@@ -71,14 +71,14 @@ export function CartaView({ menu, config }: Props) {
   const txtIndiceEtiqueta   = config.carta_texto_indice_etiqueta
   const txtIndiceTitulo     = config.carta_texto_indice_titulo
 
-  const logoFallback = (
+  const logoFallback = nombre ? (
     <div
       className="flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-bold"
-      style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}
+      style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento || "currentColor" }}
     >
       {nombre.charAt(0)}
     </div>
-  )
+  ) : null
 
   return (
     <CartaControls menu={menu} config={config}>
@@ -90,7 +90,7 @@ export function CartaView({ menu, config }: Props) {
             className="absolute inset-0 z-0 h-full w-full object-cover" />
         )}
         {bgUrl && (
-          <div className="absolute inset-0 z-[1]" style={{ backgroundColor: `${acento}BF` }} aria-hidden />
+          <div className="absolute inset-0 z-[1]" style={acento ? { backgroundColor: `${acento}BF` } : {}} aria-hidden />
         )}
         <div className="absolute inset-0 z-[1] opacity-[0.06]" aria-hidden
           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")` }} />
@@ -106,10 +106,12 @@ export function CartaView({ menu, config }: Props) {
               {config.hero_etiqueta_superior}
             </p>
           )}
-          <h1 className="font-serif font-medium leading-tight text-balance"
-            style={{ fontSize: fPortadaNombre, color: "var(--hero-ink)" }}>
-            {nombre}
-          </h1>
+          {nombre && (
+            <h1 className="font-serif font-medium leading-tight text-balance"
+              style={{ fontSize: fPortadaNombre, color: "var(--hero-ink)" }}>
+              {nombre}
+            </h1>
+          )}
           {subtitulo && (
             <p className="font-sans font-light uppercase tracking-[0.3em]"
               style={{ fontSize: fPortadaSubtitulo, color: "oklch(from var(--hero-ink) l c h / 0.6)" }}>
@@ -156,10 +158,12 @@ export function CartaView({ menu, config }: Props) {
           {logoUrl && (
             <LogoWithFallback src={logoUrl} alt={nombre} className="mb-3 h-10 w-10 object-contain"
               fallback={
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold"
-                  style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento }}>
-                  {nombre.charAt(0)}
-                </div>
+                nombre ? (
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold"
+                    style={{ backgroundColor: "oklch(0.18 0.02 40)", color: acento || "currentColor" }}>
+                    {nombre.charAt(0)}
+                  </div>
+                ) : null
               }
             />
           )}
@@ -169,10 +173,12 @@ export function CartaView({ menu, config }: Props) {
               {config.hero_etiqueta_superior}
             </p>
           )}
-          <h1 className="text-center font-serif font-medium leading-tight"
-            style={{ fontSize: fPortadaNombre, color: "var(--hero-ink)" }}>
-            {nombre}
-          </h1>
+          {nombre && (
+            <h1 className="text-center font-serif font-medium leading-tight"
+              style={{ fontSize: fPortadaNombre, color: "var(--hero-ink)" }}>
+              {nombre}
+            </h1>
+          )}
           {subtitulo && (
             <p className="mt-0.5 text-center font-sans font-light uppercase tracking-[0.22em]"
               style={{ fontSize: fPortadaSubtitulo, color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
@@ -235,7 +241,7 @@ export function CartaView({ menu, config }: Props) {
                     )}
                     <span className="block font-serif font-medium leading-snug text-foreground transition-colors group-hover:text-primary"
                       style={{ fontSize: fIndiceItem }}>
-                      {cat.titulo_seccion ?? cat.title}
+                      {cat.titulo_seccion}
                     </span>
                   </span>
                 </button>
@@ -282,7 +288,7 @@ export function CartaView({ menu, config }: Props) {
                 </p>
                 <h2 className="font-serif font-medium leading-tight tracking-tight text-foreground"
                   style={{ fontSize: fBandaTitulo }}>
-                  {category.titulo_seccion ?? category.title}
+                  {category.titulo_seccion}
                 </h2>
                 {category.description && (
                   <p className="mt-0.5 font-sans font-light leading-snug text-muted-foreground"
@@ -301,7 +307,7 @@ export function CartaView({ menu, config }: Props) {
                   </p>
                   <h2 className="font-serif font-medium leading-none tracking-tight text-foreground"
                     style={{ fontSize: fBandaTitulo }}>
-                    {category.titulo_seccion ?? category.title}
+                    {category.titulo_seccion}
                   </h2>
                   {category.description && (
                     <p className="font-sans font-light leading-none text-muted-foreground"
@@ -321,11 +327,14 @@ export function CartaView({ menu, config }: Props) {
                   <div className="flex items-baseline justify-between gap-3">
                     <h3 className={`font-serif font-semibold leading-tight ${item.especial ? "text-primary" : "text-foreground"}`}
                       style={{ fontSize: fItemNombre }}>
-                      {item.name}{item.especial && <span className="ml-1 text-[8px] text-primary"> ★</span>}
+                      {item.name}
+                      {item.especial && (
+                        <span className="ml-1 text-[8px] text-primary" aria-label="Especial"> ★</span>
+                      )}
                     </h3>
                     <span className="shrink-0 font-serif font-semibold text-primary"
                       style={{ fontSize: fItemPrecio }}>
-                      {item.price}
+                      {formatPrecio(item.price, config)}
                     </span>
                   </div>
                   {item.description && (
