@@ -218,15 +218,19 @@ export function normFuente(val: string): string {
 
 /**
  * Formatea un precio según la configuración del tenant.
- * - Si el valor no es numérico lo devuelve tal cual.
+ * - Acepta string o number como `raw` (Google Sheets puede devolver ambos).
+ * - Si el valor no es numérico lo devuelve tal cual como string.
  * - precio_posicion: "izquierda" → "$1.500" | "derecha" → "1.500$"
  */
 export function formatPrecio(
-  raw: string,
+  raw: string | number,
   config: Pick<SiteConfig, "precio_simbolo" | "precio_locale" | "precio_posicion">,
 ): string {
-  const num = Number(raw.replace(/[^0-9.,-]/g, "").replace(",", "."))
-  if (isNaN(num) || raw.trim() === "") return raw
+  // Normalizar siempre a string antes de cualquier operación
+  const str = String(raw ?? "").trim()
+  if (!str) return ""
+  const num = Number(str.replace(/[^0-9.,-]/g, "").replace(",", "."))
+  if (isNaN(num)) return str
   const formatted = num.toLocaleString(config.precio_locale || "es-AR", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
