@@ -9,7 +9,8 @@ export type SheetMenuItem = {
   orden: number
   platillo: string
   descripcion: string
-  precio: number
+  /** Precio como string crudo de la sheet (número o texto con símbolo) */
+  precio: string
   disponible: boolean
   tags: string[]
   especial: boolean
@@ -18,14 +19,16 @@ export type SheetMenuItem = {
 export type MenuCategory = {
   id: string
   label: string
+  /** @deprecated usar titulo_seccion */
   title: string
+  titulo_seccion: string
   description: string
-  /** URL opcional — imagen de portada de la sección (banner sutil en el encabezado) */
   imagen_url: string
   orden: number
   items: {
     name: string
     description: string
+    /** Precio crudo: número o string ya formateado desde la sheet */
     price: string
     tags?: string[]
     especial: boolean
@@ -59,14 +62,14 @@ function rowToItem(cols: string[], row: GvizRow): SheetMenuItem | null {
   if (typeof categoria !== "string" || !categoria.trim()) return null
   if (typeof platillo  !== "string" || !platillo.trim())  return null
 
-  const precio = get("precio")
-  const priceNumber =
-    typeof precio === "number"
-      ? precio
-      : typeof precio === "string"
-      ? Number(String(precio).replace(/[^\d]/g, ""))
-      : NaN
-  if (Number.isNaN(priceNumber)) return null
+  // Guardamos el precio como string crudo para que formatPrecio() lo procese
+  const precioRaw = get("precio")
+  const precio =
+    precioRaw == null
+      ? ""
+      : typeof precioRaw === "number"
+      ? String(precioRaw)
+      : String(precioRaw).trim()
 
   const disponibleRaw = get("disponible")
   const disponible =
@@ -99,7 +102,7 @@ function rowToItem(cols: string[], row: GvizRow): SheetMenuItem | null {
     orden,
     platillo: platillo.trim(),
     descripcion: String(get("descripcion") ?? "").trim(),
-    precio: priceNumber,
+    precio,
     disponible,
     tags,
     especial,
@@ -117,7 +120,8 @@ function buildCategories(items: SheetMenuItem[]): MenuCategory[] {
       map.set(id, {
         id,
         label: item.categoria,
-        title: item.titulo_seccion,
+        title: item.titulo_seccion,         // backward-compat
+        titulo_seccion: item.titulo_seccion,
         description: item.descripcion_seccion,
         imagen_url: item.imagen_seccion_url,
         orden: item.orden,
@@ -127,7 +131,7 @@ function buildCategories(items: SheetMenuItem[]): MenuCategory[] {
     map.get(id)!.items.push({
       name: item.platillo,
       description: item.descripcion,
-      price: `$${item.precio.toLocaleString("es-AR")}`,
+      price: item.precio,                   // crudo → formatPrecio() en CartaView
       tags: item.tags.length ? item.tags : undefined,
       especial: item.especial,
     })
@@ -135,14 +139,23 @@ function buildCategories(items: SheetMenuItem[]): MenuCategory[] {
   return Array.from(map.values()).sort((a, b) => a.orden - b.orden)
 }
 
-export async function getMenu(): Promise<MenuCategory[]> {
-  const sheetId   = process.env.MENU_SHEET_ID
-  const sheetName = process.env.MENU_SHEET_NAME ?? "MenuMiches"
+/**
+ * Descarga el menú de Google Sheets.
+ *
+ * @param sheetId   - ID del spreadsheet (default: MENU_SHEET_ID)
+ * @param sheetName - Nombre de la hoja  (default: MENU_SHEET_NAME o "Menu")
+ */
+export async function getMenu(
+  sheetId?: string,
+  sheetName?: string,
+): Promise<MenuCategory[]> {
+  const id   = sheetId   ?? process.env.MENU_SHEET_ID
+  const name = sheetName ?? process.env.MENU_SHEET_NAME ?? "Menu"
 
-  if (!sheetId) return buildCategories(fallbackMenu)
+  if (!id) return buildCategories(fallbackMenu)
 
   try {
-    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`
+    const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(name)}`
     const res = await fetch(url, { cache: "no-store" })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const table = parseGviz(await res.text())

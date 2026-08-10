@@ -1,24 +1,25 @@
-import { getMenu }   from "@/lib/get-menu"
-import { getConfig } from "@/lib/get-config"
-import { CartaView } from "@/components/carta-view"
+import { getMenu }        from "@/lib/get-menu"
+import { getConfig }      from "@/lib/get-config"
+import { CartaView }      from "@/components/carta-view"
+import { MenuFooter }     from "@/components/menu-footer"
 
+// Revalida cada hora (ISR)
 export const revalidate = 3600
 
-function buildCssVars(color_marca?: string): React.CSSProperties {
-  if (!color_marca) return {}
-  return {
-    ["--primary"]: color_marca,
-    ["--ring"]:    color_marca,
-  } as React.CSSProperties
-}
-
-export default async function CartaPage() {
-  const [menu, config] = await Promise.all([getMenu(), getConfig()])
-  const cssVars = buildCssVars(config.color_marca)
+/**
+ * Ruta por defecto: usa MENU_SHEET_ID + MENU_SHEET_NAME del entorno.
+ * Es la sucursal principal / sin slug.
+ */
+export default async function CartaDefaultPage() {
+  const [menu, config] = await Promise.all([
+    getMenu(),
+    getConfig(),
+  ])
 
   return (
-    <main className="min-h-screen bg-background" style={cssVars}>
+    <main className="min-h-screen bg-background">
       <CartaView menu={menu} config={config} />
+      <MenuFooter config={config} />
     </main>
   )
 }
