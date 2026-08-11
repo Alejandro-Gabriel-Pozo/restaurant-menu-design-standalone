@@ -2,7 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Geist, Playfair_Display } from 'next/font/google'
 import { getConfig } from '@/lib/get-config'
-import { resolveHeroInk } from '@/lib/hero-utils'
+import { resolveHeroInk, resolvePrimaryForeground } from '@/lib/hero-utils'
 import './globals.css'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
@@ -74,9 +74,10 @@ export async function generateViewport(): Promise<Viewport> {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const config   = await getConfig(portalSheetId())
-  const inkDia   = resolveHeroInk(config.hero_ink)
-  const inkNoche = resolveHeroInk(config.hero_ink_noche)
+  const config      = await getConfig(portalSheetId())
+  const inkDia      = resolveHeroInk(config.hero_ink)
+  const inkNoche    = resolveHeroInk(config.hero_ink_noche)
+  const primaryFg   = resolvePrimaryForeground(config.color_marca)
 
   const estilosDinamicos = [
     config.color_fondo_dia
@@ -87,6 +88,9 @@ export default async function RootLayout({
       : "",
     config.color_marca
       ? `:root { --primary: ${config.color_marca} !important; --ring: ${config.color_marca} !important; }`
+      : "",
+    primaryFg
+      ? `:root { --primary-foreground: ${primaryFg} !important; }`
       : "",
     inkDia
       ? `:root:not(.dark) { --hero-ink: ${inkDia} !important; }`
