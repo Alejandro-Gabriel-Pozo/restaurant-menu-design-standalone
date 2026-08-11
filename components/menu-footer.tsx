@@ -90,6 +90,16 @@ export function MenuFooter({ config }: MenuFooterProps) {
     </div>
   )
 
+  // Columna de horarios: solo se renderiza si hay etiqueta O datos O fallback
+  const tieneBloquHorarios = txtHorarios || horarios.length > 0 || txtHorariosFallback
+
+  // Columna de contacto: solo se renderiza si hay etiqueta O al menos un dato
+  const tieneDatosContacto =
+    config.restaurante_footer_direccion ||
+    config.restaurante_footer_telefono  ||
+    config.restaurante_footer_email
+  const tieneBloquContacto = txtContacto || tieneDatosContacto
+
   return (
     <footer className="border-t border-border bg-background">
 
@@ -98,7 +108,7 @@ export function MenuFooter({ config }: MenuFooterProps) {
         <div className="border-b border-border">
           <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-8 py-6">
             <span className="font-sans text-xs font-light uppercase tracking-[0.3em] text-muted-foreground">
-              {config.restaurante_nombre} {txtTipo}
+              {config.restaurante_nombre}{txtTipo ? ` ${txtTipo}` : ""}
             </span>
             {config.empresa_logo_url ? (
               <LogoWithFallback
@@ -109,7 +119,7 @@ export function MenuFooter({ config }: MenuFooterProps) {
               />
             ) : empresaLogoFallback}
             <span className="font-sans text-xs font-light uppercase tracking-[0.3em] text-muted-foreground">
-              {txtParteDe} {config.hosteria_nombre}
+              {txtParteDe ? `${txtParteDe} ` : ""}{config.hosteria_nombre}
             </span>
           </div>
         </div>
@@ -146,69 +156,77 @@ export function MenuFooter({ config }: MenuFooterProps) {
           )}
         </div>
 
-        {/* Col 2: horarios */}
-        <div>
-          <h3 className="font-sans text-xs font-light uppercase tracking-[0.3em] text-primary">
-            {txtHorarios}
-          </h3>
-          {horarios.length > 0 ? (
-            <ul className="mt-4 space-y-1 text-sm text-muted-foreground">
-              {horarios.map((h, i) => <li key={i}>{h}</li>)}
-            </ul>
-          ) : (
-            <p className="mt-4 text-sm text-muted-foreground">{txtHorariosFallback}</p>
-          )}
-        </div>
+        {/* Col 2: horarios — no renderiza si no hay nada que mostrar */}
+        {tieneBloquHorarios && (
+          <div>
+            {txtHorarios && (
+              <h3 className="font-sans text-xs font-light uppercase tracking-[0.3em] text-primary">
+                {txtHorarios}
+              </h3>
+            )}
+            {horarios.length > 0 ? (
+              <ul className="mt-4 space-y-1 text-sm text-muted-foreground">
+                {horarios.map((h, i) => <li key={i}>{h}</li>)}
+              </ul>
+            ) : txtHorariosFallback ? (
+              <p className="mt-4 text-sm text-muted-foreground">{txtHorariosFallback}</p>
+            ) : null}
+          </div>
+        )}
 
-        {/* Col 3: contacto */}
-        <div>
-          <h3 className="font-sans text-xs font-light uppercase tracking-[0.3em] text-primary">
-            {txtContacto}
-          </h3>
-          <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-            {config.restaurante_footer_direccion && (
-              <li>
-                {mapsUrl ? (
+        {/* Col 3: contacto — no renderiza si no hay nada que mostrar */}
+        {tieneBloquContacto && (
+          <div>
+            {txtContacto && (
+              <h3 className="font-sans text-xs font-light uppercase tracking-[0.3em] text-primary">
+                {txtContacto}
+              </h3>
+            )}
+            <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+              {config.restaurante_footer_direccion && (
+                <li>
+                  {mapsUrl ? (
+                    <a
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-start gap-1.5 hover:text-primary transition-colors group"
+                    >
+                      <span className="mt-0.5 shrink-0 text-primary/60 group-hover:text-primary transition-colors">
+                        <IconMapPin />
+                      </span>
+                      <span className="underline underline-offset-2 decoration-dotted">
+                        {config.restaurante_footer_direccion}
+                      </span>
+                    </a>
+                  ) : (
+                    config.restaurante_footer_direccion
+                  )}
+                </li>
+              )}
+              {config.restaurante_footer_telefono && (
+                <li>
                   <a
-                    href={mapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-start gap-1.5 hover:text-primary transition-colors group"
+                    href={`tel:${config.restaurante_footer_telefono.replace(/\s/g, "")}`}
+                    className="hover:text-foreground transition-colors"
                   >
-                    <span className="mt-0.5 shrink-0 text-primary/60 group-hover:text-primary transition-colors">
-                      <IconMapPin />
-                    </span>
-                    <span className="underline underline-offset-2 decoration-dotted">
-                      {config.restaurante_footer_direccion}
-                    </span>
+                    {config.restaurante_footer_telefono}
                   </a>
-                ) : (
-                  config.restaurante_footer_direccion
-                )}
-              </li>
-            )}
-            {config.restaurante_footer_telefono && (
-              <li>
-                <a
-                  href={`tel:${config.restaurante_footer_telefono.replace(/\s/g, "")}`}
-                  className="hover:text-foreground transition-colors"
-                >
-                  {config.restaurante_footer_telefono}
-                </a>
-              </li>
-            )}
-            {config.restaurante_footer_email && (
-              <li>
-                <a
-                  href={`mailto:${config.restaurante_footer_email}`}
-                  className="hover:text-foreground transition-colors"
-                >
-                  {config.restaurante_footer_email}
-                </a>
-              </li>
-            )}
-          </ul>
-        </div>
+                </li>
+              )}
+              {config.restaurante_footer_email && (
+                <li>
+                  <a
+                    href={`mailto:${config.restaurante_footer_email}`}
+                    className="hover:text-foreground transition-colors"
+                  >
+                    {config.restaurante_footer_email}
+                  </a>
+                </li>
+              )}
+            </ul>
+          </div>
+        )}
       </div>
 
       {/* Copyright */}
@@ -224,7 +242,7 @@ export function MenuFooter({ config }: MenuFooterProps) {
             ) : config.empresa_nombre}
           </span>
         )}
-        . {txtDerechos}
+        {txtDerechos ? `. ${txtDerechos}` : ""}
       </div>
     </footer>
   )
