@@ -31,23 +31,24 @@ export default async function HomePage() {
     () => ({} as Awaited<ReturnType<typeof getConfig>>)
   )
 
-  const empresa    = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
-  const logoUrl    = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
-  const acento     = rootConfig.color_marca || ""
-  const etiqueta   = rootConfig.portal_etiqueta || ""
-  const titulo     = rootConfig.portal_titulo   || ""
+  const empresa         = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
+  const logoUrl         = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
+  const acento          = rootConfig.color_marca || ""
+  const etiqueta        = rootConfig.portal_etiqueta || ""
+  const titulo          = rootConfig.portal_titulo   || ""
   const tituloColor     = sanitizeCssColor(rootConfig.portal_titulo_color || "")
   const cardColor       = sanitizeCssColor(rootConfig.portal_card_color || "")
   const cardColorHover  = sanitizeCssColor(rootConfig.portal_card_color_hover || "")
+  const headerBg        = sanitizeCssColor(rootConfig.portal_header_bg || "")
+  const cardBg          = sanitizeCssColor(rootConfig.portal_card_bg || "")
+  const cardBorder      = sanitizeCssColor(rootConfig.portal_card_border || "")
 
   const copyright = rootConfig.footer_texto_derechos
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
     : ""
 
-  // CSS vars para hover dinámico en las cards: no se puede hacer con Tailwind
-  // cuando el valor viene de la hoja, así que usamos --portal-card-hover en el
-  // contenedor y [&:hover_p]:text-[--portal-card-hover] no funciona en SSR.
-  // Solución: inyectar una <style> acotada solo si hay valor.
+  // Hover dinámico: no manejable con Tailwind en SSR cuando el valor viene de la hoja.
+  // Inyectamos una <style> acotada solo si hay valor definido.
   const cardHoverStyle = cardColorHover
     ? `.portal-card:hover .portal-card-label { color: ${cardColorHover} !important; }`
     : ""
@@ -58,7 +59,10 @@ export default async function HomePage() {
       {cardHoverStyle && <style>{cardHoverStyle}</style>}
 
       {/* Header */}
-      <header className="border-b border-border/50 px-8 py-6">
+      <header
+        className="border-b border-border/50 px-8 py-6"
+        style={headerBg ? { backgroundColor: headerBg } : undefined}
+      >
         <div className="mx-auto flex max-w-4xl items-center gap-4">
           {logoUrl && (
             <img
@@ -107,29 +111,39 @@ export default async function HomePage() {
             <li key={t.tenant_id}>
               <Link
                 href={`/carta/${t.tenant_id}`}
-                className="portal-card group flex items-center justify-between rounded-xl border border-border bg-card px-6 py-5 shadow-sm transition-all hover:border-primary/40 hover:shadow-md active:scale-[0.98]"
+                className="portal-card group flex items-center justify-between rounded-xl border shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
+                style={{
+                  backgroundColor: cardBg     || undefined,
+                  borderColor:     cardBorder || undefined,
+                  // si no hay cardBg/cardBorder, Tailwind toma bg-card y border-border
+                  ...(cardBg     ? {} : { backgroundColor: "" }),
+                  ...(cardBorder ? {} : { borderColor: "" }),
+                }}
               >
-                <div>
-                  <p
-                    className="portal-card-label font-serif text-lg font-medium transition-colors"
-                    style={cardColor ? { color: cardColor } : undefined}
+                {/* padding en div interior para no afectar el border */}
+                <div className="flex flex-1 items-center justify-between px-6 py-5">
+                  <div>
+                    <p
+                      className="portal-card-label font-serif text-lg font-medium transition-colors"
+                      style={cardColor ? { color: cardColor } : undefined}
+                    >
+                      {t.label}
+                    </p>
+                    {t.notas && (
+                      <p className="mt-0.5 text-xs text-muted-foreground">{t.notas}</p>
+                    )}
+                  </div>
+                  <svg
+                    width="18" height="18"
+                    viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth="1.75"
+                    strokeLinecap="round" strokeLinejoin="round"
+                    className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary"
+                    aria-hidden
                   >
-                    {t.label}
-                  </p>
-                  {t.notas && (
-                    <p className="mt-0.5 text-xs text-muted-foreground">{t.notas}</p>
-                  )}
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
                 </div>
-                <svg
-                  width="18" height="18"
-                  viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="1.75"
-                  strokeLinecap="round" strokeLinejoin="round"
-                  className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary"
-                  aria-hidden
-                >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
               </Link>
             </li>
           ))}
