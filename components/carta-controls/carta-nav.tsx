@@ -83,14 +83,14 @@ export function CartaNav({
           </svg>
         </button>
 
-        <div className="flex flex-col items-center gap-0.5">
+        <div className="flex flex-col items-center gap-1">
           {isPortada ? (
             hasSocial && (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 {socialLinks.map(({ href, label, icon }) => (
                   <a key={label} href={href} target="_blank" rel="noopener noreferrer"
                     aria-label={label}
-                    className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/55 transition-colors hover:bg-primary/10 hover:text-primary"
+                    className="flex h-10 w-10 items-center justify-center rounded-full text-foreground/55 transition-colors hover:bg-primary/10 hover:text-primary"
                   >
                     {icon}
                   </a>
@@ -102,16 +102,16 @@ export function CartaNav({
               {isCategory && (
                 <button
                   onClick={() => onGoToId("indice-0")}
-                  className="flex h-7 items-center gap-1 rounded-full bg-primary/10 px-3 font-sans text-[9px] font-medium uppercase tracking-[0.35em] text-primary transition-colors hover:bg-primary/20"
+                  className="flex h-9 min-w-[80px] items-center justify-center gap-1.5 rounded-full bg-primary/10 px-4 font-sans text-xs font-medium uppercase tracking-[0.3em] text-primary transition-colors hover:bg-primary/20 active:bg-primary/30"
                 >
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                     <polyline points="9 22 9 12 15 12 15 22" />
                   </svg>
                   Índice
                 </button>
               )}
-              <p className="font-sans text-[9px] font-light text-muted-foreground">
+              <p className="font-sans text-[10px] font-light text-muted-foreground">
                 {current + 1} / {total}
               </p>
             </>
@@ -133,13 +133,13 @@ export function CartaNav({
       {/* Franja social compacta en páginas internas */}
       {!isPortada && hasSocial && (
         <div
-          className="flex items-center justify-center gap-5 py-1.5"
+          className="flex items-center justify-center gap-6 py-2"
           style={{ borderTop: "1px solid oklch(from var(--border) l c h / 0.18)" }}
         >
           {socialLinks.map(({ href, label, icon }) => (
             <a key={label} href={href} target="_blank" rel="noopener noreferrer"
               aria-label={label}
-              className="flex h-7 w-7 items-center justify-center text-foreground/28 transition-colors hover:text-primary"
+              className="flex h-8 w-8 items-center justify-center text-foreground/40 transition-colors hover:text-primary"
             >
               {icon}
             </a>

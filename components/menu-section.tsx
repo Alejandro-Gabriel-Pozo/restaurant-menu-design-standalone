@@ -1,18 +1,48 @@
+"use client"
+
+import { useRef, useState, useEffect } from "react"
 import type { MenuCategory } from "@/lib/get-menu"
 import { Reveal } from "@/components/reveal"
 import { TagIcon } from "@/lib/tag-icons"
 
 export function MenuSection({ category }: { category: MenuCategory }) {
+  const listRef    = useRef<HTMLUListElement>(null)
+  const sentinelRef = useRef<HTMLLIElement>(null)
+  const [showFade, setShowFade] = useState(false)
+
+  useEffect(() => {
+    const list     = listRef.current
+    const sentinel = sentinelRef.current
+    if (!list || !sentinel) return
+
+    // Muestra el fade solo si hay overflow vertical real
+    const checkOverflow = () => {
+      setShowFade(list.scrollHeight > list.clientHeight + 8)
+    }
+    checkOverflow()
+    window.addEventListener("resize", checkOverflow)
+
+    // Oculta el fade cuando el último ítem es visible
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowFade(!entry.isIntersecting),
+      { root: null, threshold: 0.5 }
+    )
+    observer.observe(sentinel)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener("resize", checkOverflow)
+    }
+  }, [])
+
   return (
     <section
       id={category.id}
-      className="scroll-mt-28 py-14 md:py-20"
+      className="relative scroll-mt-28 py-14 md:py-20"
     >
       {/* ── Encabezado ──────────────────────────────────────────────────── */}
       <Reveal>
         <div className="mb-10 flex items-stretch gap-6 md:gap-10">
-
-          {/* Texto: mínimo 55% del ancho en desktop */}
           <div className="flex-1 min-w-0 md:min-w-[55%]">
             <p className="font-sans text-xs font-light uppercase tracking-[0.4em] text-primary">{category.label}</p>
             <h2 className="mt-3 font-serif text-4xl font-medium text-foreground text-balance md:text-5xl">{category.title}</h2>
@@ -20,8 +50,6 @@ export function MenuSection({ category }: { category: MenuCategory }) {
               <p className="mt-3 text-pretty leading-relaxed text-muted-foreground">{category.description}</p>
             )}
           </div>
-
-          {/* Imagen: ancho fijo en desktop, 1/3 en mobile, altura igual al texto */}
           {category.imagen_url && (
             <div className="shrink-0 w-1/3 md:w-[280px]">
               <img
@@ -34,49 +62,63 @@ export function MenuSection({ category }: { category: MenuCategory }) {
         </div>
       </Reveal>
 
-      {/* ── Lista de platos ───────────────────────────────────────────────── */}
-      <ul className="grid gap-x-12 gap-y-8 md:grid-cols-2">
-        {category.items.map((item, idx) => (
-          <Reveal key={item.name} delay={idx * 40}>
-            <li
-              data-tags={item.tags?.join(",") ?? ""}
-              className={`border-b pb-6 ${
-                item.especial ? "border-primary/40 border-dashed" : "border-dashed border-border"
-              }`}
-            >
-              <div className="flex items-baseline justify-between gap-3">
-                <h3 className={`font-serif text-xl font-medium ${
-                  item.especial ? "text-primary" : "text-foreground"
-                }`}>
-                  {item.name}
-                  {item.especial && (
-                    <span className="ml-2 font-sans text-xs font-light uppercase tracking-widest text-primary">★</span>
-                  )}
-                </h3>
-                <span className="shrink-0 font-serif text-lg font-medium text-primary" aria-label={`Precio ${item.price}`}>
-                  {item.price}
-                </span>
-              </div>
-              {item.description && (
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
-              )}
-              {item.tags && item.tags.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {item.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center gap-1.5 rounded-none border border-primary/30 px-2 py-0.5 text-xs font-light uppercase tracking-wider text-primary"
-                    >
-                      <TagIcon tag={tag} />
-                      {tag}
-                    </span>
-                  ))}
+      {/* ── Lista de platos ─────────────────────────────────────────────── */}
+      <div className="relative">
+        <ul ref={listRef} className="grid gap-x-12 gap-y-8 md:grid-cols-2">
+          {category.items.map((item, idx) => (
+            <Reveal key={item.name} delay={idx * 40}>
+              <li
+                data-tags={item.tags?.join(",") ?? ""}
+                className={`border-b pb-6 ${
+                  item.especial ? "border-primary/40 border-dashed" : "border-dashed border-border"
+                }`}
+              >
+                <div className="flex items-baseline justify-between gap-3">
+                  <h3 className={`font-serif text-xl font-medium ${
+                    item.especial ? "text-primary" : "text-foreground"
+                  }`}>
+                    {item.name}
+                    {item.especial && (
+                      <span className="ml-2 font-sans text-xs font-light uppercase tracking-widest text-primary">★</span>
+                    )}
+                  </h3>
+                  <span className="shrink-0 font-serif text-lg font-medium text-primary" aria-label={`Precio ${item.price}`}>
+                    {item.price}
+                  </span>
                 </div>
-              )}
-            </li>
-          </Reveal>
-        ))}
-      </ul>
+                {item.description && (
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+                )}
+                {item.tags && item.tags.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {item.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="inline-flex items-center gap-1.5 rounded-none border border-primary/30 px-2 py-0.5 text-xs font-light uppercase tracking-wider text-primary"
+                      >
+                        <TagIcon tag={tag} />
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </li>
+            </Reveal>
+          ))}
+          {/* Sentinel: cuando es visible, el fade desaparece */}
+          <li ref={sentinelRef} aria-hidden="true" className="h-px" />
+        </ul>
+
+        {/* Fade gradient — desaparece cuando el sentinel es visible */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 transition-opacity duration-300"
+          style={{
+            opacity: showFade ? 1 : 0,
+            background: "linear-gradient(to bottom, transparent, var(--background))",
+          }}
+        />
+      </div>
     </section>
   )
 }
