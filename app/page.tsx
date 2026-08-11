@@ -14,17 +14,6 @@ function buildCssVars(color_marca?: string): React.CSSProperties {
   }
 }
 
-/**
- * Página raíz.
- *
- * Configuración del portal (nombre empresa, logo, color, footer):
- *   1. ROOT_SHEET_ID  → sheet dedicada al portal (recomendado)
- *   2. MASTER_SHEET_ID con tab "Config" → misma planilla maestra
- *   3. MENU_SHEET_ID  → fallback original
- *
- * — Si hay tenants activos → portal multisucursal.
- * — Si no hay ninguno     → carta única (comportamiento original).
- */
 export default async function HomePage() {
   const tenants = await getTenants()
 
@@ -52,14 +41,13 @@ export default async function HomePage() {
   const logoUrl = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
   const acento  = rootConfig.color_marca || ""
 
-  // Textos del hero — configurables desde la hoja, sin fallback hardcodeado
-  // Claves sugeridas en ROOT CONFIG:
+  // Textos del hero — configurables desde la hoja ROOT CONFIG
   //   portal_etiqueta  → ej: "Nuestros restaurantes"
   //   portal_titulo    → ej: "¿Dónde estás hoy?"
-  const etiqueta = (rootConfig as Record<string, string>)["portal_etiqueta"] || ""
-  const titulo   = (rootConfig as Record<string, string>)["portal_titulo"]   || ""
+  const etiqueta = rootConfig.portal_etiqueta || ""
+  const titulo   = rootConfig.portal_titulo   || ""
 
-  // Copyright — solo se muestra si footer_texto_derechos está definido explicitamente
+  // Copyright — solo se muestra si footer_texto_derechos está definido en la hoja
   const copyright = rootConfig.footer_texto_derechos
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
     : ""
