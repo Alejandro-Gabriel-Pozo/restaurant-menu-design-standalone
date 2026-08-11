@@ -31,7 +31,6 @@ export function CartaView({ menu, config }: Props) {
     : "90px"
   const bandaAltoDesktop = config.carta_banda_alto_desktop || "clamp(80px, 18vh, 140px)"
 
-  // Usados en CartaSectionImage (como px para el componente hijo)
   const bandaAltoMobilePx  = config.carta_banda_alto_mobile  || "90"
   const bandaAltoDesktopPx = config.carta_banda_alto_desktop || "120"
 
@@ -68,7 +67,7 @@ export function CartaView({ menu, config }: Props) {
   const fIndiceCategoria = normFuente(config.carta_fuente_indice_categoria)
   const fIndiceItem      = normFuente(config.carta_fuente_indice_item)
 
-  // Textos editables desde Config
+  // Textos editables desde Config — solo se renderizan si tienen valor en la hoja
   const txtPortadaCta       = config.carta_texto_portada_cta
   const txtPortadaSeparador = config.carta_texto_portada_separador
   const txtIndiceEtiqueta   = config.carta_texto_indice_etiqueta
@@ -124,15 +123,19 @@ export function CartaView({ menu, config }: Props) {
           {descripcion}
         </p>
       )}
-      <div className="flex items-center gap-4">
-        <span className="block h-px w-10" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.3)" }} />
-        <span style={{ fontSize: "9px", color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>{txtPortadaSeparador}</span>
-        <span className="block h-px w-10" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.3)" }} />
-      </div>
-      <p className="font-sans font-light uppercase tracking-[0.4em]"
-        style={{ fontSize: fPortadaCta, color: "oklch(from var(--hero-ink) l c h / 0.5)" }}>
-        {txtPortadaCta}
-      </p>
+      {txtPortadaSeparador && (
+        <div className="flex items-center gap-4">
+          <span className="block h-px w-10" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.3)" }} />
+          <span style={{ fontSize: "9px", color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>{txtPortadaSeparador}</span>
+          <span className="block h-px w-10" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.3)" }} />
+        </div>
+      )}
+      {txtPortadaCta && (
+        <p className="font-sans font-light uppercase tracking-[0.4em]"
+          style={{ fontSize: fPortadaCta, color: "oklch(from var(--hero-ink) l c h / 0.5)" }}>
+          {txtPortadaCta}
+        </p>
+      )}
     </div>
   )
 
@@ -189,21 +192,25 @@ export function CartaView({ menu, config }: Props) {
             {descripcion}
           </p>
         )}
-        <div className="mt-3 flex items-center gap-2">
-          <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.18)" }} />
-          <span style={{ fontSize: "7px", color: "oklch(from var(--hero-ink) l c h / 0.25)" }}>{txtPortadaSeparador}</span>
-          <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.18)" }} />
-        </div>
+        {txtPortadaSeparador && (
+          <div className="mt-3 flex items-center gap-2">
+            <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.18)" }} />
+            <span style={{ fontSize: "7px", color: "oklch(from var(--hero-ink) l c h / 0.25)" }}>{txtPortadaSeparador}</span>
+            <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.18)" }} />
+          </div>
+        )}
       </div>
       {/* CTA */}
-      <div className="absolute z-10 flex flex-col items-center sm:hidden"
-        style={{ left: "50%", transform: "translateX(-50%)", bottom: ctaBottom }}
-      >
-        <p className="whitespace-nowrap text-center font-sans font-light uppercase tracking-[0.35em]"
-          style={{ fontSize: fPortadaCta, color: "oklch(from var(--hero-ink) l c h / 0.45)" }}>
-          {txtPortadaCta}
-        </p>
-      </div>
+      {txtPortadaCta && (
+        <div className="absolute z-10 flex flex-col items-center sm:hidden"
+          style={{ left: "50%", transform: "translateX(-50%)", bottom: ctaBottom }}
+        >
+          <p className="whitespace-nowrap text-center font-sans font-light uppercase tracking-[0.35em]"
+            style={{ fontSize: fPortadaCta, color: "oklch(from var(--hero-ink) l c h / 0.45)" }}>
+            {txtPortadaCta}
+          </p>
+        </div>
+      )}
     </>
   )
 
@@ -226,14 +233,18 @@ export function CartaView({ menu, config }: Props) {
       <div data-page="indice-0" className="carta-page bg-background">
         <div className="flex h-full flex-col px-6 pb-16 pt-12 sm:px-10">
           <div className="mb-4 shrink-0">
-            <p className="mb-0.5 font-sans font-light uppercase tracking-[0.5em] text-primary"
-              style={{ fontSize: fIndiceEtiqueta }}>
-              {txtIndiceEtiqueta}
-            </p>
-            <h1 className="font-serif font-medium text-foreground"
-              style={{ fontSize: fIndiceTitulo }}>
-              {txtIndiceTitulo}
-            </h1>
+            {txtIndiceEtiqueta && (
+              <p className="mb-0.5 font-sans font-light uppercase tracking-[0.5em] text-primary"
+                style={{ fontSize: fIndiceEtiqueta }}>
+                {txtIndiceEtiqueta}
+              </p>
+            )}
+            {txtIndiceTitulo && (
+              <h1 className="font-serif font-medium text-foreground"
+                style={{ fontSize: fIndiceTitulo }}>
+                {txtIndiceTitulo}
+              </h1>
+            )}
           </div>
           <ol className="flex-1 overflow-y-auto"
             style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", alignContent: "start", gap: "0" }}>
