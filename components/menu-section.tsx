@@ -15,14 +15,12 @@ export function MenuSection({ category }: { category: MenuCategory }) {
     const sentinel = sentinelRef.current
     if (!list || !sentinel) return
 
-    // Muestra el fade solo si hay overflow vertical real
     const checkOverflow = () => {
       setShowFade(list.scrollHeight > list.clientHeight + 8)
     }
     checkOverflow()
     window.addEventListener("resize", checkOverflow)
 
-    // Oculta el fade cuando el último ítem es visible
     const observer = new IntersectionObserver(
       ([entry]) => setShowFade(!entry.isIntersecting),
       { root: null, threshold: 0.5 }
@@ -44,7 +42,12 @@ export function MenuSection({ category }: { category: MenuCategory }) {
       <Reveal>
         <div className="mb-10 flex items-stretch gap-6 md:gap-10">
           <div className="flex-1 min-w-0 md:min-w-[55%]">
-            <p className="font-sans text-xs font-light uppercase tracking-[0.4em] text-primary">{category.label}</p>
+            <p
+              className="font-sans text-xs font-light uppercase tracking-[0.4em]"
+              style={{ color: "var(--color-seccion)" }}
+            >
+              {category.label}
+            </p>
             <h2 className="mt-3 font-serif text-4xl font-medium text-foreground text-balance md:text-5xl">{category.title}</h2>
             {category.description && (
               <p className="mt-3 text-pretty leading-relaxed text-muted-foreground">{category.description}</p>
@@ -69,20 +72,31 @@ export function MenuSection({ category }: { category: MenuCategory }) {
             <Reveal key={item.name} delay={idx * 40}>
               <li
                 data-tags={item.tags?.join(",") ?? ""}
-                className={`border-b pb-6 ${
-                  item.especial ? "border-primary/40 border-dashed" : "border-dashed border-border"
-                }`}
+                className="border-b pb-6 border-dashed"
+                style={item.especial ? {
+                  borderColor: "color-mix(in srgb, var(--color-especial) 40%, transparent)",
+                } : undefined}
               >
                 <div className="flex items-baseline justify-between gap-3">
-                  <h3 className={`font-serif text-xl font-medium ${
-                    item.especial ? "text-primary" : "text-foreground"
-                  }`}>
+                  <h3
+                    className="font-serif text-xl font-medium"
+                    style={{ color: item.especial ? "var(--color-especial)" : "var(--foreground)" }}
+                  >
                     {item.name}
                     {item.especial && (
-                      <span className="ml-2 font-sans text-xs font-light uppercase tracking-widest text-primary">★</span>
+                      <span
+                        className="ml-2 font-sans text-xs font-light uppercase tracking-widest"
+                        style={{ color: "var(--color-especial)" }}
+                      >
+                        ★
+                      </span>
                     )}
                   </h3>
-                  <span className="shrink-0 font-serif text-lg font-medium text-primary" aria-label={`Precio ${item.price}`}>
+                  <span
+                    className="shrink-0 font-serif text-lg font-medium"
+                    style={{ color: "var(--color-precio)" }}
+                    aria-label={`Precio ${item.price}`}
+                  >
                     {item.price}
                   </span>
                 </div>
@@ -94,7 +108,13 @@ export function MenuSection({ category }: { category: MenuCategory }) {
                     {item.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="inline-flex items-center gap-1.5 rounded-none border border-primary/30 px-2 py-0.5 text-xs font-light uppercase tracking-wider text-primary"
+                        className="inline-flex items-center gap-1.5 rounded-none px-2 py-0.5 text-xs font-light uppercase tracking-wider"
+                        style={{
+                          borderWidth: "1px",
+                          borderStyle: "solid",
+                          borderColor: "color-mix(in srgb, var(--color-tags) 30%, transparent)",
+                          color: "var(--color-tags)",
+                        }}
                       >
                         <TagIcon tag={tag} />
                         {tag}
@@ -105,11 +125,9 @@ export function MenuSection({ category }: { category: MenuCategory }) {
               </li>
             </Reveal>
           ))}
-          {/* Sentinel: cuando es visible, el fade desaparece */}
           <li ref={sentinelRef} aria-hidden="true" className="h-px" />
         </ul>
 
-        {/* Fade gradient — desaparece cuando el sentinel es visible */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 transition-opacity duration-300"

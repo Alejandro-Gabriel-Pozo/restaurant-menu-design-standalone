@@ -70,6 +70,18 @@
   --sidebar-border:     oklch(0.88 0.018 78);
   --sidebar-ring:       oklch(0.76 0.14 80);
   --hero-ink: oklch(0.18 0.02 40);
+
+  /* ── Variables semánticas por zona ────────────────────────────────
+     Cada una toma color_marca como fallback si no se configura.
+     buildCssVars las inyecta desde la hoja de Config.
+  ────────────────────────────────────────────────────────────────── */
+  --color-acento:    var(--primary);
+  --color-nav:       var(--color-acento);
+  --color-seccion:   var(--color-acento);
+  --color-especial:  var(--color-acento);
+  --color-cta:       var(--color-acento);
+  --color-tags:      var(--color-acento);
+  --color-precio:    var(--color-acento);
 }
 
 @layer base {

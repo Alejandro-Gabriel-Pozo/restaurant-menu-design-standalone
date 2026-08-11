@@ -70,7 +70,12 @@ export function MenuNav({
         <div className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-background to-transparent z-10" aria-hidden="true" />
         <div className="pointer-events-none absolute left-0 top-0 h-full w-8 bg-gradient-to-r from-background to-transparent z-10" aria-hidden="true" />
         <div className="mx-auto flex max-w-4xl items-center gap-0.5 overflow-x-auto px-4 py-3 scrollbar-none">
-          <span className="mr-3 shrink-0 font-sans text-xs font-light uppercase tracking-[0.3em] text-primary">Menú</span>
+          <span
+            className="mr-3 shrink-0 font-sans text-xs font-light uppercase tracking-[0.3em]"
+            style={{ color: "var(--color-nav)" }}
+          >
+            Menú
+          </span>
           {categories.map((category) => {
             const isActive = activeId === category.id
             return (
@@ -114,12 +119,15 @@ export function MenuNav({
                   key={tag}
                   onClick={() => onToggleTag?.(tag)}
                   aria-pressed={isActive}
-                  className={[
-                    "shrink-0 rounded-none border px-3 py-1 font-sans text-xs font-light uppercase tracking-wider transition-colors duration-200",
-                    isActive
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-primary/30 text-primary hover:border-primary hover:bg-primary/10",
-                  ].join(" ")}
+                  className="shrink-0 rounded-none border px-3 py-1 font-sans text-xs font-light uppercase tracking-wider transition-colors duration-200"
+                  style={isActive ? {
+                    backgroundColor: "var(--color-tags)",
+                    borderColor: "var(--color-tags)",
+                    color: "var(--primary-foreground)",
+                  } : {
+                    borderColor: "color-mix(in srgb, var(--color-tags) 30%, transparent)",
+                    color: "var(--color-tags)",
+                  }}
                 >
                   {tag}
                 </button>
