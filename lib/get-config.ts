@@ -30,6 +30,13 @@ export type SiteConfig = {
   hero_pos_logo:                string
   hero_pos_logo_mobile:         string
   color_fondo_dia:              string
+  // Colores semánticos por zona (todos con fallback a color_marca)
+  color_nav:                    string
+  color_seccion:                string
+  color_especial:               string
+  color_cta:                    string
+  color_tags:                   string
+  color_precio:                 string
   // Pertenencia
   mostrar_pertenencia:          string
   hosteria_nombre:              string
@@ -143,6 +150,12 @@ const defaults: SiteConfig = {
   hero_pos_logo:                "bottom-right",
   hero_pos_logo_mobile:         "",
   color_fondo_dia:              "",
+  color_nav:                    "",
+  color_seccion:                "",
+  color_especial:               "",
+  color_cta:                    "",
+  color_tags:                   "",
+  color_precio:                 "",
   mostrar_pertenencia:          "",
   hosteria_nombre:              "",
   hosteria_url:                 "",

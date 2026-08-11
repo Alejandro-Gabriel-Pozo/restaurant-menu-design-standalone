@@ -18,14 +18,10 @@ export function SignatureDish({ item }: SignatureDishProps) {
     <Reveal>
       <section
         aria-label="Especialidad de la casa"
-        className="
-          relative isolate overflow-hidden
-          -mx-6 sm:-mx-8
-          my-12
-          bg-primary
-        "
+        className="relative isolate overflow-hidden -mx-6 sm:-mx-8 my-12"
+        style={{ backgroundColor: "var(--color-especial)" }}
       >
-        {/* ── Textura de papel ────────────────────────────────────────── */}
+        {/* ── Textura de papel ─────────────────────────────────────────── */}
         <div
           className="pointer-events-none absolute inset-0 z-0 opacity-[0.07]"
           aria-hidden="true"
@@ -34,7 +30,7 @@ export function SignatureDish({ item }: SignatureDishProps) {
           }}
         />
 
-        {/* ── Líneas decorativas ─────────────────────────────────────── */}
+        {/* ── Líneas decorativas ──────────────────────────────────────── */}
         <div
           className="pointer-events-none absolute inset-x-0 top-5 border-t border-primary-foreground/20"
           aria-hidden="true"
@@ -44,38 +40,23 @@ export function SignatureDish({ item }: SignatureDishProps) {
           aria-hidden="true"
         />
 
-        {/* ── Contenido ─────────────────────────────────────────────── */}
+        {/* ── Contenido ───────────────────────────────────────────────── */}
         <div className="relative z-10 mx-auto max-w-2xl px-8 py-14 text-center sm:py-20">
-
-          {/* Eyebrow label */}
           <p className="font-sans text-xs font-light uppercase tracking-[0.5em] text-primary-foreground/70">
             Especialidad de la casa
           </p>
-
-          {/* Ornamento tipográfico */}
-          <div
-            className="mx-auto mt-5 mb-6 h-px w-16 bg-primary-foreground/30"
-            aria-hidden="true"
-          />
-
-          {/* Nombre del plato */}
+          <div className="mx-auto mt-5 mb-6 h-px w-16 bg-primary-foreground/30" aria-hidden="true" />
           <h2 className="font-serif text-4xl font-medium leading-tight text-balance text-primary-foreground sm:text-5xl">
             {item.name}
           </h2>
-
-          {/* Descripción */}
           {item.description && (
             <p className="mx-auto mt-5 max-w-md text-pretty leading-relaxed text-primary-foreground/80">
               {item.description}
             </p>
           )}
-
-          {/* Precio */}
           <p className="mt-7 font-serif text-3xl font-medium text-primary-foreground">
             {item.price}
           </p>
-
-          {/* Tags */}
           {item.tags && item.tags.length > 0 && (
             <div className="mt-5 flex flex-wrap justify-center gap-2">
               {item.tags.map((tag) => (
