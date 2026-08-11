@@ -1,8 +1,8 @@
-import Link           from "next/link"
-import { getTenants } from "@/lib/tenants"
-import { getConfig }  from "@/lib/get-config"
-import { getMenu }    from "@/lib/get-menu"
-import { MenuClient } from "@/components/menu-client"
+import Link             from "next/link"
+import { getTenants }   from "@/lib/tenants"
+import { getConfig }    from "@/lib/get-config"
+import { getMenu }      from "@/lib/get-menu"
+import { MenuClient }   from "@/components/menu-client"
 import { buildCssVars } from "@/lib/utils"
 import { sanitizeCssColor } from "@/lib/hero-utils"
 
@@ -31,20 +31,31 @@ export default async function HomePage() {
     () => ({} as Awaited<ReturnType<typeof getConfig>>)
   )
 
-  const empresa      = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
-  const logoUrl      = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
-  const acento       = rootConfig.color_marca || ""
-  const etiqueta     = rootConfig.portal_etiqueta || ""
-  const titulo       = rootConfig.portal_titulo   || ""
-  // portal_titulo_color: color CSS validado, fallback a text-foreground
-  const tituloColor  = sanitizeCssColor(rootConfig.portal_titulo_color || "")
+  const empresa    = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
+  const logoUrl    = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
+  const acento     = rootConfig.color_marca || ""
+  const etiqueta   = rootConfig.portal_etiqueta || ""
+  const titulo     = rootConfig.portal_titulo   || ""
+  const tituloColor     = sanitizeCssColor(rootConfig.portal_titulo_color || "")
+  const cardColor       = sanitizeCssColor(rootConfig.portal_card_color || "")
+  const cardColorHover  = sanitizeCssColor(rootConfig.portal_card_color_hover || "")
 
   const copyright = rootConfig.footer_texto_derechos
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
     : ""
 
+  // CSS vars para hover dinámico en las cards: no se puede hacer con Tailwind
+  // cuando el valor viene de la hoja, así que usamos --portal-card-hover en el
+  // contenedor y [&:hover_p]:text-[--portal-card-hover] no funciona en SSR.
+  // Solución: inyectar una <style> acotada solo si hay valor.
+  const cardHoverStyle = cardColorHover
+    ? `.portal-card:hover .portal-card-label { color: ${cardColorHover} !important; }`
+    : ""
+
   return (
     <main className="min-h-screen bg-background" style={buildCssVars(acento)}>
+
+      {cardHoverStyle && <style>{cardHoverStyle}</style>}
 
       {/* Header */}
       <header className="border-b border-border/50 px-8 py-6">
@@ -96,10 +107,13 @@ export default async function HomePage() {
             <li key={t.tenant_id}>
               <Link
                 href={`/carta/${t.tenant_id}`}
-                className="group flex items-center justify-between rounded-xl border border-border bg-card px-6 py-5 shadow-sm transition-all hover:border-primary/40 hover:shadow-md active:scale-[0.98]"
+                className="portal-card group flex items-center justify-between rounded-xl border border-border bg-card px-6 py-5 shadow-sm transition-all hover:border-primary/40 hover:shadow-md active:scale-[0.98]"
               >
                 <div>
-                  <p className="font-serif text-lg font-medium text-foreground transition-colors group-hover:text-primary">
+                  <p
+                    className="portal-card-label font-serif text-lg font-medium transition-colors"
+                    style={cardColor ? { color: cardColor } : undefined}
+                  >
                     {t.label}
                   </p>
                   {t.notas && (

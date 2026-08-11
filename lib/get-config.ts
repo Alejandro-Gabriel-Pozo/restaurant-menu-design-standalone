@@ -44,6 +44,8 @@ export type SiteConfig = {
   portal_etiqueta:              string
   portal_titulo:                string
   portal_titulo_color:          string
+  portal_card_color:            string
+  portal_card_color_hover:      string
   // Contacto / Footer
   mostrar_footer:               string
   restaurante_footer_direccion: string
@@ -105,18 +107,7 @@ export type SiteConfig = {
   footer_texto_derechos:          string
 }
 
-// ---------------------------------------------------------------------------
-// defaults — dos categorías bien separadas:
-//
-// TÉCNICOS (con valor): parámetros de layout/render que necesitan un valor
-//   para funcionar. Sin ellos algo se rompe o queda en blanco de forma rara.
-//
-// TEXTOS VISIBLES (""): etiquetas y títulos del UI. Si la hoja no los define,
-//   el componente simplemente no los renderiza. El "fallback" correcto es
-//   que el template de la hoja tenga el ejemplo precargado.
-// ---------------------------------------------------------------------------
 const defaults: SiteConfig = {
-  // — Identidad (técnicos)
   restaurante_nombre:           "",
   restaurante_subtitulo:        "",
   restaurante_descripcion:      "",
@@ -126,14 +117,12 @@ const defaults: SiteConfig = {
   favicon_url:                  "",
   restaurante_logo_url:         "",
   lang:                         "es",
-  // — SEO
   meta_title:                   "",
   meta_descripcion:             "",
   meta_og_image_url:            "",
   meta_og_locale:               "",
   meta_og_url:                  "",
   meta_twitter_card:            "summary_large_image",
-  // — Hero (técnicos — posiciones y colores)
   hero_color_fondo:             "",
   hero_imagen_fondo_url:        "",
   hero_etiqueta_superior:       "",
@@ -146,7 +135,6 @@ const defaults: SiteConfig = {
   hero_pos_logo_mobile:         "",
   color_fondo_dia:              "",
   color_fondo_noche:            "",
-  // — Pertenencia
   mostrar_pertenencia:          "",
   hosteria_nombre:              "",
   hosteria_url:                 "",
@@ -154,11 +142,11 @@ const defaults: SiteConfig = {
   empresa_nombre:               "",
   empresa_url:                  "",
   empresa_logo_url:             "",
-  // — Portal multisucursal (textos visibles — "" = no renderizar)
   portal_etiqueta:              "",
   portal_titulo:                "",
   portal_titulo_color:          "",
-  // — Contacto / Footer
+  portal_card_color:            "",
+  portal_card_color_hover:      "",
   mostrar_footer:               "",
   restaurante_footer_direccion: "",
   restaurante_footer_maps_url:  "",
@@ -168,11 +156,9 @@ const defaults: SiteConfig = {
   restaurante_instagram:        "",
   restaurante_facebook:         "",
   restaurante_whatsapp:         "",
-  // — Precios (técnicos — necesitan un valor por defecto funcional)
   precio_simbolo:               "$",
   precio_locale:                "es-AR",
   precio_posicion:              "izquierda",
-  // — Layout carta (técnicos)
   carta_pos_bloque:             "50",
   carta_pos_cta:                "18",
   carta_banda_alto_mobile:      "90",
@@ -184,7 +170,6 @@ const defaults: SiteConfig = {
   carta_imagen_pos_y:           "top",
   carta_imagen_overlay:         "si",
   carta_imagen_opacidad:        "38",
-  // — Fuentes (técnicos)
   carta_fuente_banda_etiqueta:    "0.55rem",
   carta_fuente_banda_titulo:      "0.95rem",
   carta_fuente_banda_descripcion: "0.6rem",
@@ -202,7 +187,6 @@ const defaults: SiteConfig = {
   carta_fuente_indice_numero:    "0.6rem",
   carta_fuente_indice_categoria: "0.58rem",
   carta_fuente_indice_item:      "clamp(0.82rem, 2.5vw, 0.95rem)",
-  // — Textos visibles ("" — solo se renderizan si la hoja los define)
   carta_texto_portada_cta:        "",
   carta_texto_portada_separador:  "",
   carta_texto_indice_etiqueta:    "",
@@ -237,12 +221,6 @@ export function formatPrecio(
     : `${simbolo}${formatted}`
 }
 
-/**
- * Descarga la configuración del tenant desde Google Sheets (ISR 1h).
- *
- * @param sheetId     - ID del spreadsheet (default: MENU_SHEET_ID)
- * @param configSheet - Nombre de la hoja de config (default: "Config")
- */
 export async function getConfig(
   sheetId?: string,
   configSheet = "Config",
