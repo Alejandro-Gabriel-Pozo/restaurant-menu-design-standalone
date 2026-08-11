@@ -1,10 +1,16 @@
 import Link from "next/link"
+import type { SiteConfig } from "@/lib/get-config"
+import { normFuente } from "@/lib/get-config"
 
 interface CartaTopbarProps {
   onPrint: () => void
+  config: Pick<SiteConfig, "topbar_back_label" | "topbar_back_size">
 }
 
-export function CartaTopbar({ onPrint }: CartaTopbarProps) {
+export function CartaTopbar({ onPrint, config }: CartaTopbarProps) {
+  const label    = config.topbar_back_label || "← Menú"
+  const fontSize = normFuente(config.topbar_back_size || "10px")
+
   return (
     <header
       id="carta-topbar"
@@ -13,9 +19,10 @@ export function CartaTopbar({ onPrint }: CartaTopbarProps) {
     >
       <Link
         href="/"
-        className="flex h-10 min-w-[44px] items-center font-sans text-[10px] font-light uppercase tracking-[0.35em] text-foreground/60 hover:text-foreground transition-colors"
+        className="flex h-10 min-w-[44px] items-center font-sans font-light uppercase tracking-[0.35em] text-foreground/60 hover:text-foreground transition-colors"
+        style={{ fontSize }}
       >
-        ← Menú
+        {label}
       </Link>
       <div className="flex items-center gap-3">
         <button

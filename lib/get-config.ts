@@ -62,6 +62,9 @@ export type SiteConfig = {
   portal_card_border:           string
   portal_card_notas_color:      string
   portal_card_flecha_color:     string
+  // Topbar carta
+  topbar_back_label:            string
+  topbar_back_size:             string
   // Contacto / Footer
   mostrar_footer:               string
   restaurante_footer_direccion: string
@@ -181,6 +184,8 @@ const defaults: SiteConfig = {
   portal_card_border:           "",
   portal_card_notas_color:      "",
   portal_card_flecha_color:     "",
+  topbar_back_label:            "← Menú",
+  topbar_back_size:             "10px",
   mostrar_footer:               "",
   restaurante_footer_direccion: "",
   restaurante_footer_maps_url:  "",
