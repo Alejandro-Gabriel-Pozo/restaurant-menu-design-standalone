@@ -1,5 +1,4 @@
 import Link from "next/link"
-import { DarkToggle } from "@/components/dark-toggle"
 
 interface CartaTopbarProps {
   onPrint: () => void
@@ -31,7 +30,6 @@ export function CartaTopbar({ onPrint }: CartaTopbarProps) {
           </svg>
           <span className="hidden sm:inline">Imprimir</span>
         </button>
-        <DarkToggle />
       </div>
     </header>
   )

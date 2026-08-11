@@ -1,7 +1,6 @@
 import type { SiteConfig } from "@/lib/get-config"
 import { resolvePosClasses, isTruthy } from "@/lib/hero-utils"
 import { LogoWithFallback } from "@/components/logo-with-fallback"
-import { DarkToggle } from "@/components/dark-toggle"
 
 interface MenuHeroProps {
   config: SiteConfig
@@ -216,7 +215,6 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
           />
         )}
         {overlayYTextura}
-        <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
         <div className={`absolute inset-0 z-10 flex px-6 pt-16 pb-8 pointer-events-none ${posContenidoMobile}`}>
           <div className="pointer-events-auto">{grupoTextoMobile}</div>
         </div>
@@ -237,7 +235,6 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
           />
         )}
         {overlayYTextura}
-        <div className="absolute right-4 top-4 z-20"><DarkToggle /></div>
 
         <div className={`absolute inset-0 z-10 flex px-8 py-16 pointer-events-none ${posContenidoDesktop}`}>
           <div className="pointer-events-auto">{grupoTextoDesktop}</div>
