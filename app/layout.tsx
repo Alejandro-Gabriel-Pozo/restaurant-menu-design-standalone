@@ -85,6 +85,9 @@ export default async function RootLayout({
     config.color_fondo_noche
       ? `.dark { --background: ${config.color_fondo_noche} !important; --card: ${config.color_fondo_noche} !important; }`
       : "",
+    config.color_marca
+      ? `:root { --primary: ${config.color_marca} !important; --ring: ${config.color_marca} !important; }`
+      : "",
     inkDia
       ? `:root:not(.dark) { --hero-ink: ${inkDia} !important; }`
       : "",
