@@ -1,0 +1,115 @@
+# HOJA CARTA (sheet_id de cada tenant)
+# Contiene 2 tabs: Menu | Config
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# TAB: Menu
+# Fila 1 = encabezados. Columnas mínimas requeridas.
+# ─────────────────────────────────────────────────────────────────────────────
+nombre,precio,descripcion,categoria,tags,disponible,destacado,imagen_url
+Empanadas de carne,1800,Rellenas con carne cortada a cuchillo,Entradas,"carne, horno",TRUE,FALSE,
+Especialidad del chef,3500,Descripción del plato estrella,Principales,"sin tacc",TRUE,TRUE,
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# TAB: Config  (col A = clave, col B = valor)
+# Todas las claves son opcionales salvo restaurante_nombre y color_marca.
+# Vacío = usa el default del código.
+# ─────────────────────────────────────────────────────────────────────────────
+clave,valor
+# ── Identidad ─────────────────────────────────────────────────────────────────
+restaurante_nombre,La Parrilla
+restaurante_subtitulo,Desde 1985
+restaurante_descripcion,Cocina de autor en el corazón de Neuquén
+restaurante_boton_hero,Ver carta
+restaurante_logo_url,
+color_marca,#8B4513
+theme_color,#8B4513
+favicon_url,
+lang,es
+# ── Colores semánticos por zona (todos heredan color_marca si están vacíos) ───
+color_nav,
+color_seccion,
+color_especial,
+color_cta,
+color_tags,
+color_precio,
+# ── Hero / Portada ────────────────────────────────────────────────────────────
+hero_color_fondo,#1a1a1a
+hero_imagen_fondo_url,
+hero_etiqueta_superior,Menú 2026
+hero_etiqueta_scroll,Deslizá
+hero_ink,light
+hero_pos_contenido,center-right
+hero_pos_contenido_mobile,
+hero_pos_logo,bottom-right
+hero_pos_logo_mobile,
+color_fondo_dia,#f5f0eb
+# ── SEO / Open Graph ──────────────────────────────────────────────────────────
+meta_title,La Parrilla — Carta 2026
+meta_descripcion,Cocina de autor en Neuquén
+meta_og_image_url,
+meta_og_locale,es_AR
+meta_og_url,
+meta_twitter_card,summary_large_image
+# ── Precios ───────────────────────────────────────────────────────────────────
+precio_simbolo,$
+precio_locale,es-AR
+precio_posicion,izquierda
+# ── Footer ────────────────────────────────────────────────────────────────────
+mostrar_footer,true
+restaurante_footer_direccion,Av. Argentina 123, Neuquén
+restaurante_footer_maps_url,
+restaurante_footer_telefono,+54 299 123-4567
+restaurante_footer_email,
+restaurante_footer_horarios,Lun–Vie 12–23 / Sáb–Dom 12–00
+restaurante_instagram,
+restaurante_facebook,
+restaurante_whatsapp,
+footer_bg,#1a1a1a
+footer_color,#f5f0eb
+footer_color_acento,#D4A853
+# ── Pertenencia (para el badge "Parte de NQNTUR") ────────────────────────────
+mostrar_pertenencia,
+hosteria_nombre,
+hosteria_url,
+hosteria_descripcion,
+# ── Layout carta ──────────────────────────────────────────────────────────────
+carta_pos_bloque,50
+carta_pos_cta,18
+carta_banda_alto_mobile,90
+carta_banda_alto_desktop,clamp(80px, 18vh, 140px)
+carta_imagen_modo,fondo
+carta_imagen_ancho_mobile,160
+carta_imagen_ancho_desktop,auto 100%
+carta_imagen_pos_x,left
+carta_imagen_pos_y,top
+carta_imagen_overlay,si
+carta_imagen_opacidad,38
+# ── Fuentes ───────────────────────────────────────────────────────────────────
+carta_fuente_banda_etiqueta,0.55rem
+carta_fuente_banda_titulo,0.95rem
+carta_fuente_banda_descripcion,0.6rem
+carta_fuente_item_nombre,0.88rem
+carta_fuente_item_precio,0.88rem
+carta_fuente_item_descripcion,0.68rem
+carta_fuente_item_tags,0.6rem
+carta_fuente_portada_etiqueta,0.58rem
+carta_fuente_portada_nombre,clamp(1.7rem, 7vw, 2.1rem)
+carta_fuente_portada_subtitulo,0.6rem
+carta_fuente_portada_descripcion,0.75rem
+carta_fuente_portada_cta,0.5rem
+carta_fuente_indice_etiqueta,0.5rem
+carta_fuente_indice_titulo,clamp(1.2rem, 4vw, 1.75rem)
+carta_fuente_indice_numero,0.6rem
+carta_fuente_indice_categoria,0.58rem
+carta_fuente_indice_item,clamp(0.82rem, 2.5vw, 0.95rem)
+# ── Textos UI ─────────────────────────────────────────────────────────────────
+carta_texto_portada_cta,
+carta_texto_portada_separador,
+carta_texto_indice_etiqueta,
+carta_texto_indice_titulo,
+footer_texto_horarios,
+footer_texto_contacto,
+footer_texto_horarios_fallback,
+footer_texto_parte_de,
+footer_texto_tipo,
+footer_texto_derechos,

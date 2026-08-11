@@ -1,0 +1,39 @@
+# HOJA RAÍZ (MASTER_SHEET_ID)
+# Contiene 3 tabs: Tenants | Config | (opcional) Menu si modo single
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# TAB: Tenants
+# Columna A = tenant_id  |  fila 1 = encabezados
+# ─────────────────────────────────────────────────────────────────────────────
+tenant_id,label,dominio,sheet_id,sheet_name,activo,notas
+miches,Miches,,1abc...xyz,Menu,TRUE,
+centro,Centro,,1def...uvw,Menu,TRUE,
+# ─────────────────────────────────────────────────────────────────────────────
+# TAB: Config  (col A = clave, col B = valor)
+# Solo las claves portal_* y empresa_* se usan en la hoja raíz.
+# Las claves de carta (color_nav, color_seccion, etc.) van en cada tenant.
+# ─────────────────────────────────────────────────────────────────────────────
+clave,valor
+# -- Identidad empresa --
+empresa_nombre,NQNTUR
+empresa_url,https://nqntur.com
+empresa_logo_url,
+restaurante_nombre,
+restaurante_logo_url,
+color_marca,#8B6F4E
+# -- Portal --
+portal_etiqueta,Nuestros restaurantes
+portal_titulo,Elegí tu destino
+portal_titulo_color,#1a1a1a
+portal_etiqueta_color,#555555
+portal_header_bg,#f5f0eb
+portal_header_color,#1a1a1a
+portal_card_bg,#ffffff
+portal_card_color,#1a1a1a
+portal_card_color_hover,#8B6F4E
+portal_card_border,#e5e5e5
+portal_card_border_hover,#8B6F4E
+portal_card_notas_color,#888888
+portal_card_flecha_color,#aaaaaa
+# -- Footer --
+footer_texto_derechos,NQNTUR S.A.
