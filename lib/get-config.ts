@@ -37,6 +37,9 @@ export type SiteConfig = {
   color_cta:                    string
   color_tags:                   string
   color_precio:                 string
+  // Colores portada
+  color_portada_textos:         string
+  color_portada_cta:            string
   // Pertenencia
   mostrar_pertenencia:          string
   hosteria_nombre:              string
@@ -156,6 +159,8 @@ const defaults: SiteConfig = {
   color_cta:                    "",
   color_tags:                   "",
   color_precio:                 "",
+  color_portada_textos:         "",
+  color_portada_cta:            "",
   mostrar_pertenencia:          "",
   hosteria_nombre:              "",
   hosteria_url:                 "",

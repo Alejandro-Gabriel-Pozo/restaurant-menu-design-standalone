@@ -101,38 +101,38 @@ export function CartaView({ menu, config }: Props) {
         : logoFallback}
       {config.hero_etiqueta_superior && (
         <p className="font-sans font-light uppercase tracking-[0.5em]"
-          style={{ fontSize: fPortadaEtiqueta, color: "oklch(from var(--hero-ink) l c h / 0.7)" }}>
+          style={{ fontSize: fPortadaEtiqueta, color: "oklch(from var(--portada-textos, var(--hero-ink)) l c h / 0.7)" }}>
           {config.hero_etiqueta_superior}
         </p>
       )}
       {nombre && (
         <h1 className="font-serif font-medium leading-tight text-balance"
-          style={{ fontSize: fPortadaNombre, color: "var(--hero-ink)" }}>
+          style={{ fontSize: fPortadaNombre, color: "var(--portada-textos, var(--hero-ink))" }}>
           {nombre}
         </h1>
       )}
       {subtitulo && (
         <p className="font-sans font-light uppercase tracking-[0.3em]"
-          style={{ fontSize: fPortadaSubtitulo, color: "oklch(from var(--hero-ink) l c h / 0.6)" }}>
+          style={{ fontSize: fPortadaSubtitulo, color: "oklch(from var(--portada-textos, var(--hero-ink)) l c h / 0.6)" }}>
           {subtitulo}
         </p>
       )}
       {descripcion && (
         <p className="max-w-xs text-pretty leading-relaxed"
-          style={{ fontSize: fPortadaDesc, color: "oklch(from var(--hero-ink) l c h / 0.75)" }}>
+          style={{ fontSize: fPortadaDesc, color: "oklch(from var(--portada-textos, var(--hero-ink)) l c h / 0.75)" }}>
           {descripcion}
         </p>
       )}
       {txtPortadaSeparador && (
         <div className="flex items-center gap-4">
-          <span className="block h-px w-10" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.3)" }} />
-          <span style={{ fontSize: "9px", color: "oklch(from var(--hero-ink) l c h / 0.4)" }}>{txtPortadaSeparador}</span>
-          <span className="block h-px w-10" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.3)" }} />
+          <span className="block h-px w-10" style={{ backgroundColor: "oklch(from var(--portada-textos, var(--hero-ink)) l c h / 0.3)" }} />
+          <span style={{ fontSize: "9px", color: "oklch(from var(--portada-textos, var(--hero-ink)) l c h / 0.4)" }}>{txtPortadaSeparador}</span>
+          <span className="block h-px w-10" style={{ backgroundColor: "oklch(from var(--portada-textos, var(--hero-ink)) l c h / 0.3)" }} />
         </div>
       )}
       {txtPortadaCta && (
         <p className="font-sans font-light uppercase tracking-[0.4em]"
-          style={{ fontSize: fPortadaCta, color: "oklch(from var(--hero-ink) l c h / 0.5)" }}>
+          style={{ fontSize: fPortadaCta, color: "oklch(from var(--portada-cta, var(--hero-ink)) l c h / 0.5)" }}>
           {txtPortadaCta}
         </p>
       )}
@@ -170,33 +170,33 @@ export function CartaView({ menu, config }: Props) {
         )}
         {config.hero_etiqueta_superior && (
           <p className="text-center font-sans font-light uppercase tracking-[0.45em]"
-            style={{ fontSize: fPortadaEtiqueta, color: "oklch(from var(--hero-ink) l c h / 0.6)" }}>
+            style={{ fontSize: fPortadaEtiqueta, color: "oklch(from var(--portada-textos, var(--hero-ink)) l c h / 0.6)" }}>
             {config.hero_etiqueta_superior}
           </p>
         )}
         {nombre && (
           <h1 className="text-center font-serif font-medium leading-tight"
-            style={{ fontSize: fPortadaNombre, color: "var(--hero-ink)" }}>
+            style={{ fontSize: fPortadaNombre, color: "var(--portada-textos, var(--hero-ink))" }}>
             {nombre}
           </h1>
         )}
         {subtitulo && (
           <p className="mt-0.5 text-center font-sans font-light uppercase tracking-[0.22em]"
-            style={{ fontSize: fPortadaSubtitulo, color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
+            style={{ fontSize: fPortadaSubtitulo, color: "oklch(from var(--portada-textos, var(--hero-ink)) l c h / 0.55)" }}>
             {subtitulo}
           </p>
         )}
         {descripcion && (
           <p className="mt-1 text-center font-sans font-light leading-snug"
-            style={{ fontSize: fPortadaDesc, color: "oklch(from var(--hero-ink) l c h / 0.7)" }}>
+            style={{ fontSize: fPortadaDesc, color: "oklch(from var(--portada-textos, var(--hero-ink)) l c h / 0.7)" }}>
             {descripcion}
           </p>
         )}
         {txtPortadaSeparador && (
           <div className="mt-3 flex items-center gap-2">
-            <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.18)" }} />
-            <span style={{ fontSize: "7px", color: "oklch(from var(--hero-ink) l c h / 0.25)" }}>{txtPortadaSeparador}</span>
-            <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--hero-ink) l c h / 0.18)" }} />
+            <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--portada-textos, var(--hero-ink)) l c h / 0.18)" }} />
+            <span style={{ fontSize: "7px", color: "oklch(from var(--portada-textos, var(--hero-ink)) l c h / 0.25)" }}>{txtPortadaSeparador}</span>
+            <span className="block h-px w-8" style={{ backgroundColor: "oklch(from var(--portada-textos, var(--hero-ink)) l c h / 0.18)" }} />
           </div>
         )}
       </div>
@@ -206,7 +206,7 @@ export function CartaView({ menu, config }: Props) {
           style={{ left: "50%", transform: "translateX(-50%)", bottom: ctaBottom }}
         >
           <p className="whitespace-nowrap text-center font-sans font-light uppercase tracking-[0.35em]"
-            style={{ fontSize: fPortadaCta, color: "oklch(from var(--hero-ink) l c h / 0.45)" }}>
+            style={{ fontSize: fPortadaCta, color: "oklch(from var(--portada-cta, var(--hero-ink)) l c h / 0.45)" }}>
             {txtPortadaCta}
           </p>
         </div>

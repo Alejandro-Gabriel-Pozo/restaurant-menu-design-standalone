@@ -20,6 +20,8 @@ export function cn(...inputs: ClassValue[]) {
  *   --primary-foreground                 → calculado desde color_marca
  *   --hero-ink                           → hero_ink (o calculado desde color_fondo_dia)
  *   --background / --card                → color_fondo_dia
+ *   --portada-textos                     → color_portada_textos (fallback: --hero-ink)
+ *   --portada-cta                        → color_portada_cta    (fallback: --hero-ink)
  *   --color-nav / --color-seccion / ...  → colores semánticos por zona
  *
  * Variables de portal (solo en modo multi):
@@ -65,6 +67,10 @@ export function buildCssVars(configOrMarca: SiteConfig | string | undefined): Re
       vars["--background"] = z("color_fondo_dia")!
       vars["--card"]       = z("color_fondo_dia")!
     }
+
+    // Colores portada — fallback a --hero-ink en el componente
+    if (z("color_portada_textos")) vars["--portada-textos"] = z("color_portada_textos")!
+    if (z("color_portada_cta"))    vars["--portada-cta"]    = z("color_portada_cta")!
 
     // Colores semánticos por zona (carta)
     if (z("color_nav"))      vars["--color-nav"]      = z("color_nav")!
