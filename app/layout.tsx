@@ -11,7 +11,6 @@ const playfair = Playfair_Display({
   subsets: ['latin'],
 })
 
-/** ID de la hoja raíz del portal (ROOT > MASTER > MENU como fallback). */
 function portalSheetId(): string | undefined {
   return (
     process.env.ROOT_SHEET_ID ||
@@ -30,7 +29,6 @@ export async function generateMetadata(): Promise<Metadata> {
   const ogLocale = config.meta_og_locale ||
     (config.lang === 'en' ? 'en_US' : config.lang === 'pt' ? 'pt_BR' : 'es_AR')
 
-  // favicon_url → empresa_logo_url → archivos estáticos
   const faviconUrl = config.favicon_url || config.empresa_logo_url || config.restaurante_logo_url
 
   return {
@@ -40,9 +38,8 @@ export async function generateMetadata(): Promise<Metadata> {
       icon: faviconUrl
         ? [{ url: faviconUrl }]
         : [
-            { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
-            { url: '/icon-dark-32x32.png',  media: '(prefers-color-scheme: dark)'  },
-            { url: '/icon.svg',             type: 'image/svg+xml'                  },
+            { url: '/icon-light-32x32.png' },
+            { url: '/icon.svg', type: 'image/svg+xml' },
           ],
       apple: faviconUrl || '/apple-icon.png',
     },
@@ -76,18 +73,13 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const config    = await getConfig(portalSheetId())
   const inkDia    = resolveHeroInk(config.hero_ink)
-  const inkNoche  = resolveHeroInk(config.hero_ink_noche)
   const primaryFg = resolvePrimaryForeground(config.color_marca)
   const fondoDia  = sanitizeCssColor(config.color_fondo_dia)
-  const fondoNoche = sanitizeCssColor(config.color_fondo_noche)
   const marca     = sanitizeCssColor(config.color_marca)
 
   const estilosDinamicos = [
     fondoDia
-      ? `:root:not(.dark) { --background: ${fondoDia} !important; --card: ${fondoDia} !important; }`
-      : "",
-    fondoNoche
-      ? `.dark { --background: ${fondoNoche} !important; --card: ${fondoNoche} !important; }`
+      ? `:root { --background: ${fondoDia} !important; --card: ${fondoDia} !important; }`
       : "",
     marca
       ? `:root { --primary: ${marca} !important; --ring: ${marca} !important; }`
@@ -96,10 +88,7 @@ export default async function RootLayout({
       ? `:root { --primary-foreground: ${primaryFg} !important; }`
       : "",
     inkDia
-      ? `:root:not(.dark) { --hero-ink: ${inkDia} !important; }`
-      : "",
-    inkNoche
-      ? `.dark { --hero-ink: ${inkNoche} !important; }`
+      ? `:root { --hero-ink: ${inkDia} !important; }`
       : "",
   ].filter(Boolean).join("\n")
 
