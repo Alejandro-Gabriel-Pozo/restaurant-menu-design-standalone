@@ -1,4 +1,5 @@
 import type { SiteConfig } from "@/lib/get-config"
+import { sanitizeCssColor } from "@/lib/hero-utils"
 import { LogoWithFallback } from "@/components/logo-with-fallback"
 
 interface MenuFooterProps {
@@ -53,6 +54,26 @@ export function MenuFooter({ config }: MenuFooterProps) {
   const txtHorariosFallback = config.footer_texto_horarios_fallback
   const txtParteDe          = config.footer_texto_parte_de
   const txtTipo             = config.footer_texto_tipo
+  const txtDerechos         = config.footer_texto_derechos
+
+  // Colores del footer — con fallback transparente para no pisar el tema
+  const footerBg     = sanitizeCssColor(config.footer_bg)
+  const footerColor  = sanitizeCssColor(config.footer_color)
+  const footerAcento = sanitizeCssColor(config.footer_color_acento)
+
+  // Estilo base del <footer>
+  const footerStyle: React.CSSProperties = {
+    ...(footerBg    ? { backgroundColor: footerBg } : {}),
+    ...(footerColor ? { color: footerColor }         : {}),
+  }
+
+  // Color de los headings h3 ("Horarios", "Contacto")
+  // Si no hay footer_color_acento, usa color_marca como acento o cae en text-primary de Tailwind
+  const acentoStyle: React.CSSProperties = footerAcento
+    ? { color: footerAcento }
+    : acento
+    ? { color: acento }
+    : {}
 
   const mapsUrl = config.restaurante_footer_maps_url
     || (config.restaurante_footer_direccion
@@ -89,10 +110,7 @@ export function MenuFooter({ config }: MenuFooterProps) {
     </div>
   )
 
-  // Columna de horarios: solo se renderiza si hay etiqueta O datos O fallback
   const tieneBloquHorarios = txtHorarios || horarios.length > 0 || txtHorariosFallback
-
-  // Columna de contacto: solo se renderiza si hay etiqueta O al menos un dato
   const tieneDatosContacto =
     config.restaurante_footer_direccion ||
     config.restaurante_footer_telefono  ||
@@ -100,7 +118,7 @@ export function MenuFooter({ config }: MenuFooterProps) {
   const tieneBloquContacto = txtContacto || tieneDatosContacto
 
   return (
-    <footer className="border-t border-border bg-background">
+    <footer className="border-t border-border bg-background" style={footerStyle}>
 
       {/* Banda de pertenencia */}
       {mostrarParteDe && tienePertenencia && (
@@ -155,11 +173,14 @@ export function MenuFooter({ config }: MenuFooterProps) {
           )}
         </div>
 
-        {/* Col 2: horarios — no renderiza si no hay nada que mostrar */}
+        {/* Col 2: horarios */}
         {tieneBloquHorarios && (
           <div>
             {txtHorarios && (
-              <h3 className="font-sans text-xs font-light uppercase tracking-[0.3em] text-primary">
+              <h3
+                className="font-sans text-xs font-light uppercase tracking-[0.3em] text-primary"
+                style={Object.keys(acentoStyle).length ? acentoStyle : undefined}
+              >
                 {txtHorarios}
               </h3>
             )}
@@ -173,11 +194,14 @@ export function MenuFooter({ config }: MenuFooterProps) {
           </div>
         )}
 
-        {/* Col 3: contacto — no renderiza si no hay nada que mostrar */}
+        {/* Col 3: contacto */}
         {tieneBloquContacto && (
           <div>
             {txtContacto && (
-              <h3 className="font-sans text-xs font-light uppercase tracking-[0.3em] text-primary">
+              <h3
+                className="font-sans text-xs font-light uppercase tracking-[0.3em] text-primary"
+                style={Object.keys(acentoStyle).length ? acentoStyle : undefined}
+              >
                 {txtContacto}
               </h3>
             )}
@@ -227,6 +251,16 @@ export function MenuFooter({ config }: MenuFooterProps) {
           </div>
         )}
       </div>
+
+      {/* Barra de derechos — solo si está definida */}
+      {txtDerechos && (
+        <div className="border-t border-border/40 px-8 py-4 text-center">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} {txtDerechos}
+          </p>
+        </div>
+      )}
+
     </footer>
   )
 }

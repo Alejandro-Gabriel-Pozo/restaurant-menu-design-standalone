@@ -64,6 +64,10 @@ export type SiteConfig = {
   restaurante_instagram:        string
   restaurante_facebook:         string
   restaurante_whatsapp:         string
+  // Colores footer
+  footer_bg:                    string
+  footer_color:                 string
+  footer_color_acento:          string
   // Precios
   precio_simbolo:               string
   precio_locale:                string
@@ -172,6 +176,9 @@ const defaults: SiteConfig = {
   restaurante_instagram:        "",
   restaurante_facebook:         "",
   restaurante_whatsapp:         "",
+  footer_bg:                    "",
+  footer_color:                 "",
+  footer_color_acento:          "",
   precio_simbolo:               "$",
   precio_locale:                "es-AR",
   precio_posicion:              "izquierda",
