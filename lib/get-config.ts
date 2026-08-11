@@ -43,6 +43,7 @@ export type SiteConfig = {
   // Portal multisucursal
   portal_etiqueta:              string
   portal_titulo:                string
+  portal_titulo_color:          string
   // Contacto / Footer
   mostrar_footer:               string
   restaurante_footer_direccion: string
@@ -156,6 +157,7 @@ const defaults: SiteConfig = {
   // — Portal multisucursal (textos visibles — "" = no renderizar)
   portal_etiqueta:              "",
   portal_titulo:                "",
+  portal_titulo_color:          "",
   // — Contacto / Footer
   mostrar_footer:               "",
   restaurante_footer_direccion: "",

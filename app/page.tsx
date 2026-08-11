@@ -4,6 +4,7 @@ import { getConfig }  from "@/lib/get-config"
 import { getMenu }    from "@/lib/get-menu"
 import { MenuClient } from "@/components/menu-client"
 import { buildCssVars } from "@/lib/utils"
+import { sanitizeCssColor } from "@/lib/hero-utils"
 
 export const revalidate = 3600
 
@@ -30,17 +31,14 @@ export default async function HomePage() {
     () => ({} as Awaited<ReturnType<typeof getConfig>>)
   )
 
-  const empresa = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
-  const logoUrl = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
-  const acento  = rootConfig.color_marca || ""
+  const empresa      = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
+  const logoUrl      = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
+  const acento       = rootConfig.color_marca || ""
+  const etiqueta     = rootConfig.portal_etiqueta || ""
+  const titulo       = rootConfig.portal_titulo   || ""
+  // portal_titulo_color: color CSS validado, fallback a text-foreground
+  const tituloColor  = sanitizeCssColor(rootConfig.portal_titulo_color || "")
 
-  // Textos del hero — configurables desde la hoja ROOT CONFIG
-  //   portal_etiqueta  → ej: "Nuestros restaurantes"
-  //   portal_titulo    → ej: "¿Dónde estás hoy?"
-  const etiqueta = rootConfig.portal_etiqueta || ""
-  const titulo   = rootConfig.portal_titulo   || ""
-
-  // Copyright — solo se muestra si footer_texto_derechos está definido en la hoja
   const copyright = rootConfig.footer_texto_derechos
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
     : ""
@@ -77,7 +75,10 @@ export default async function HomePage() {
             </p>
           )}
           {titulo && (
-            <h1 className="font-serif text-3xl font-medium leading-tight text-foreground sm:text-4xl">
+            <h1
+              className="font-serif text-3xl font-medium leading-tight sm:text-4xl"
+              style={tituloColor ? { color: tituloColor } : undefined}
+            >
               {titulo}
             </h1>
           )}
