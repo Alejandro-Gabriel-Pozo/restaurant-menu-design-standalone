@@ -39,7 +39,10 @@ export default async function HomePage() {
   const tituloColor     = sanitizeCssColor(rootConfig.portal_titulo_color || "")
   const cardColor       = sanitizeCssColor(rootConfig.portal_card_color || "")
   const cardColorHover  = sanitizeCssColor(rootConfig.portal_card_color_hover || "")
+  const cardBorderHover = sanitizeCssColor(rootConfig.portal_card_border_hover || "")
   const headerBg        = sanitizeCssColor(rootConfig.portal_header_bg || "")
+  const headerColor     = sanitizeCssColor(rootConfig.portal_header_color || "")
+  const etiquetaColor   = sanitizeCssColor(rootConfig.portal_etiqueta_color || "")
   const cardBg          = sanitizeCssColor(rootConfig.portal_card_bg || "")
   const cardBorder      = sanitizeCssColor(rootConfig.portal_card_border || "")
 
@@ -47,21 +50,25 @@ export default async function HomePage() {
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
     : ""
 
-  // Hover dinámico: no manejable con Tailwind en SSR cuando el valor viene de la hoja.
-  // Inyectamos una <style> acotada solo si hay valor definido.
-  const cardHoverStyle = cardColorHover
-    ? `.portal-card:hover .portal-card-label { color: ${cardColorHover} !important; }`
-    : ""
+  // Estilos de hover dinámicos consolidados en un solo bloque <style>.
+  // Solo se renderiza si al menos uno tiene valor.
+  const hoverStyles = [
+    cardColorHover  && `.portal-card:hover .portal-card-label { color: ${cardColorHover} !important; }`,
+    cardBorderHover && `.portal-card:hover { border-color: ${cardBorderHover} !important; }`,
+  ].filter(Boolean).join("\n")
 
   return (
     <main className="min-h-screen bg-background" style={buildCssVars(acento)}>
 
-      {cardHoverStyle && <style>{cardHoverStyle}</style>}
+      {hoverStyles && <style>{hoverStyles}</style>}
 
       {/* Header */}
       <header
         className="border-b border-border/50 px-8 py-6"
-        style={headerBg ? { backgroundColor: headerBg } : undefined}
+        style={{
+          ...(headerBg    ? { backgroundColor: headerBg } : {}),
+          ...(headerColor ? { color: headerColor }         : {}),
+        }}
       >
         <div className="mx-auto flex max-w-4xl items-center gap-4">
           {logoUrl && (
@@ -74,7 +81,10 @@ export default async function HomePage() {
             />
           )}
           {empresa && (
-            <span className="font-serif text-xl font-medium text-foreground">
+            <span
+              className="font-serif text-xl font-medium"
+              style={headerColor ? { color: headerColor } : undefined}
+            >
               {empresa}
             </span>
           )}
@@ -85,7 +95,10 @@ export default async function HomePage() {
       {(etiqueta || titulo) && (
         <section className="mx-auto max-w-4xl px-8 pb-4 pt-16">
           {etiqueta && (
-            <p className="mb-2 font-sans text-xs font-light uppercase tracking-[0.4em] text-primary">
+            <p
+              className="mb-2 font-sans text-xs font-light uppercase tracking-[0.4em]"
+              style={{ color: etiquetaColor || "var(--color-primary)" }}
+            >
               {etiqueta}
             </p>
           )}
@@ -113,14 +126,10 @@ export default async function HomePage() {
                 href={`/carta/${t.tenant_id}`}
                 className="portal-card group flex items-center justify-between rounded-xl border shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
                 style={{
-                  backgroundColor: cardBg     || undefined,
-                  borderColor:     cardBorder || undefined,
-                  // si no hay cardBg/cardBorder, Tailwind toma bg-card y border-border
-                  ...(cardBg     ? {} : { backgroundColor: "" }),
-                  ...(cardBorder ? {} : { borderColor: "" }),
+                  ...(cardBg     ? { backgroundColor: cardBg }  : {}),
+                  ...(cardBorder ? { borderColor: cardBorder }   : {}),
                 }}
               >
-                {/* padding en div interior para no afectar el border */}
                 <div className="flex flex-1 items-center justify-between px-6 py-5">
                   <div>
                     <p
