@@ -3,16 +3,9 @@ import { getTenants } from "@/lib/tenants"
 import { getConfig }  from "@/lib/get-config"
 import { getMenu }    from "@/lib/get-menu"
 import { MenuClient } from "@/components/menu-client"
+import { buildCssVars } from "@/lib/utils"
 
 export const revalidate = 3600
-
-function buildCssVars(color_marca?: string): React.CSSProperties {
-  if (!color_marca) return {}
-  return {
-    ["--primary" as string]: color_marca,
-    ["--ring" as string]:    color_marca,
-  }
-}
 
 export default async function HomePage() {
   const tenants = await getTenants()

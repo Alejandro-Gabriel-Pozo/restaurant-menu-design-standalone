@@ -5,6 +5,7 @@ import { getMenu }         from "@/lib/get-menu"
 import { getConfig }       from "@/lib/get-config"
 import { CartaView }       from "@/components/carta-view"
 import { MenuFooter }      from "@/components/menu-footer"
+import { buildCssVars }    from "@/lib/utils"
 
 // ISR: regenerar cada hora
 export const revalidate = 3600
@@ -45,15 +46,8 @@ export default async function CartaSucursalPage({ params }: Props) {
     getConfig(tenant.sheet_id),
   ])
 
-  const cssVars = config.color_marca
-    ? ({
-        "--primary": config.color_marca,
-        "--ring":    config.color_marca,
-      } as React.CSSProperties)
-    : {}
-
   return (
-    <main className="min-h-screen bg-background" style={cssVars}>
+    <main className="min-h-screen bg-background" style={buildCssVars(config.color_marca)}>
       <CartaView menu={menu} config={config} />
       {config.mostrar_footer === "true" && <MenuFooter config={config} />}
     </main>
