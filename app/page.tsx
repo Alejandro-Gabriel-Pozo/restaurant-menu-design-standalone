@@ -52,6 +52,14 @@ export default async function HomePage() {
   const logoUrl  = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
   const acento   = rootConfig.color_marca || ""
 
+  // footer_texto_derechos reemplaza el texto completo de copyright si está definido;
+  // si no, se construye automáticamente con el año y el nombre de empresa.
+  const copyrightText = rootConfig.footer_texto_derechos
+    ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
+    : empresa
+    ? `© ${new Date().getFullYear()} ${empresa}`
+    : ""
+
   return (
     <main className="min-h-screen bg-background" style={buildCssVars(acento)}>
 
@@ -123,12 +131,11 @@ export default async function HomePage() {
       </section>
 
       {/* Footer mínimo */}
-      <footer className="border-t border-border/40 py-6 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} {empresa}
-        {rootConfig.footer_texto_derechos
-          ? ` · ${rootConfig.footer_texto_derechos}`
-          : ""}
-      </footer>
+      {copyrightText && (
+        <footer className="border-t border-border/40 py-6 text-center text-xs text-muted-foreground">
+          {copyrightText}
+        </footer>
+      )}
 
     </main>
   )
