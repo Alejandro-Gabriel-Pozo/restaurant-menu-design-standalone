@@ -1,4 +1,5 @@
 import "server-only"
+import { fetchGviz, colGetter } from "./gviz"
 
 export type SiteConfig = {
   // Identidad
@@ -100,7 +101,6 @@ export type SiteConfig = {
 }
 
 const defaults: SiteConfig = {
-  // Identidad
   restaurante_nombre:           "",
   restaurante_subtitulo:        "",
   restaurante_descripcion:      "",
@@ -110,14 +110,12 @@ const defaults: SiteConfig = {
   favicon_url:                  "",
   restaurante_logo_url:         "",
   lang:                         "es",
-  // SEO / Open Graph
   meta_title:                   "",
   meta_descripcion:             "",
   meta_og_image_url:            "",
   meta_og_locale:               "",
   meta_og_url:                  "",
   meta_twitter_card:            "summary_large_image",
-  // Hero / Portada
   hero_color_fondo:             "",
   hero_imagen_fondo_url:        "",
   hero_etiqueta_superior:       "Menú",
@@ -130,7 +128,6 @@ const defaults: SiteConfig = {
   hero_pos_logo_mobile:         "",
   color_fondo_dia:              "",
   color_fondo_noche:            "",
-  // Pertenencia
   mostrar_pertenencia:          "",
   hosteria_nombre:              "",
   hosteria_url:                 "",
@@ -138,7 +135,6 @@ const defaults: SiteConfig = {
   empresa_nombre:               "",
   empresa_url:                  "",
   empresa_logo_url:             "",
-  // Contacto / Footer
   restaurante_footer_direccion: "",
   restaurante_footer_maps_url:  "",
   restaurante_footer_telefono:  "",
@@ -147,11 +143,9 @@ const defaults: SiteConfig = {
   restaurante_instagram:        "",
   restaurante_facebook:         "",
   restaurante_whatsapp:         "",
-  // Precios
   precio_simbolo:               "$",
   precio_locale:                "es-AR",
   precio_posicion:              "izquierda",
-  // Layout carta
   carta_pos_bloque:             "50",
   carta_pos_cta:                "18",
   carta_banda_alto_mobile:      "90",
@@ -163,33 +157,27 @@ const defaults: SiteConfig = {
   carta_imagen_pos_y:           "top",
   carta_imagen_overlay:         "si",
   carta_imagen_opacidad:        "38",
-  // Fuentes banda
   carta_fuente_banda_etiqueta:    "0.55rem",
   carta_fuente_banda_titulo:      "0.95rem",
   carta_fuente_banda_descripcion: "0.6rem",
-  // Fuentes items
   carta_fuente_item_nombre:       "0.88rem",
   carta_fuente_item_precio:       "0.88rem",
   carta_fuente_item_descripcion:  "0.68rem",
   carta_fuente_item_tags:         "0.6rem",
-  // Fuentes portada
   carta_fuente_portada_etiqueta:    "0.58rem",
   carta_fuente_portada_nombre:      "clamp(1.7rem, 7vw, 2.1rem)",
   carta_fuente_portada_subtitulo:   "0.6rem",
   carta_fuente_portada_descripcion: "0.75rem",
   carta_fuente_portada_cta:         "0.5rem",
-  // Fuentes índice
   carta_fuente_indice_etiqueta:  "0.5rem",
   carta_fuente_indice_titulo:    "clamp(1.2rem, 4vw, 1.75rem)",
   carta_fuente_indice_numero:    "0.6rem",
   carta_fuente_indice_categoria: "0.58rem",
   carta_fuente_indice_item:      "clamp(0.82rem, 2.5vw, 0.95rem)",
-  // Textos portada / índice
   carta_texto_portada_cta:        "Deslizá para ver la carta",
   carta_texto_portada_separador:  "✦",
   carta_texto_indice_etiqueta:    "Índice",
   carta_texto_indice_titulo:      "La carta",
-  // Textos footer
   footer_texto_horarios:          "Horarios",
   footer_texto_contacto:          "Contacto",
   footer_texto_horarios_fallback: "Consultar horarios",
@@ -198,35 +186,14 @@ const defaults: SiteConfig = {
   footer_texto_derechos:          "Todos los derechos reservados.",
 }
 
-type GvizCell = { v: string | number | boolean | null }
-type GvizRow  = { c: (GvizCell | null)[] }
-type GvizTable = { cols: { label: string }[]; rows: GvizRow[] }
-type GvizResponse = { table: GvizTable }
-
-function parseGviz(text: string): GvizTable {
-  const cleaned = text
-    .replace("/*O_o*/", "")
-    .replace("google.visualization.Query.setResponse(", "")
-    .slice(0, -2)
-  const json: GvizResponse = JSON.parse(cleaned)
-  return json.table
-}
-
 export function normFuente(val: string): string {
   return /^\d+(\.\d+)?$/.test(val.trim()) ? `${val.trim()}px` : val.trim()
 }
 
-/**
- * Formatea un precio según la configuración del tenant.
- * - Acepta string o number como `raw` (Google Sheets puede devolver ambos).
- * - Si el valor no es numérico lo devuelve tal cual como string.
- * - precio_posicion: "izquierda" → "$1.500" | "derecha" → "1.500$"
- */
 export function formatPrecio(
   raw: string | number,
   config: Pick<SiteConfig, "precio_simbolo" | "precio_locale" | "precio_posicion">,
 ): string {
-  // Normalizar siempre a string antes de cualquier operación
   const str = String(raw ?? "").trim()
   if (!str) return ""
   const num = Number(str.replace(/[^0-9.,-]/g, "").replace(",", "."))
@@ -242,7 +209,7 @@ export function formatPrecio(
 }
 
 /**
- * Descarga la configuración del tenant desde Google Sheets con ISR (revalidate: 3600).
+ * Descarga la configuración del tenant desde Google Sheets (ISR 1h).
  *
  * @param sheetId     - ID del spreadsheet (default: MENU_SHEET_ID)
  * @param configSheet - Nombre de la hoja de config (default: "Config")
@@ -255,15 +222,13 @@ export async function getConfig(
   if (!id) return defaults
 
   try {
-    const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(configSheet)}&headers=0`
-    const res = await fetch(url, { next: { revalidate: 3600 } })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    const table = parseGviz(await res.text())
-
+    const table  = await fetchGviz(id, configSheet, 0)
     const config: SiteConfig = { ...defaults }
     for (const row of table.rows) {
       if (!row.c) continue
-      const key = row.c[0]?.v != null ? String(row.c[0].v).trim() as keyof SiteConfig : undefined
+      const key = row.c[0]?.v != null
+        ? String(row.c[0].v).trim() as keyof SiteConfig
+        : undefined
       const raw = row.c[1]?.v
       const val = raw != null ? String(raw).trim() : ""
       if (key && key in defaults && raw != null && val !== "") {

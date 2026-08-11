@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server"
+import { parseGviz } from "@/lib/gviz"
 
 /**
  * Proxy multitenant (Next.js 16+).
  *
- * Lee la tab Tenants de la sheet maestra y resuelve el tenant
- * por dominio. Si hay match, inyecta x-tenant-id en los headers
- * para que layout.tsx / page.tsx lo consuma sin prop drilling.
+ * Resuelve el tenant por dominio inyectando x-tenant-id en los headers.
+ * Si no hay match, pasa sin modificar.
  *
- * Si no hay match (dominio no registrado), pasa sin modificar.
+ * NOTA: el fetch aquí NO usa fetchGviz() de lib/gviz porque el Edge
+ * Runtime no soporta "server-only". parseGviz() sí es reutilizable
+ * porque es una función pura sin imports de Node.
  */
 export async function proxy(req: NextRequest) {
   const masterId = process.env.MASTER_SHEET_ID
@@ -21,16 +23,8 @@ export async function proxy(req: NextRequest) {
     const res = await fetch(url, { next: { revalidate: 3600 } })
     if (!res.ok) return NextResponse.next()
 
-    const text    = await res.text()
-    const cleaned = text
-      .replace("/*O_o*/", "")
-      .replace("google.visualization.Query.setResponse(", "")
-      .slice(0, -2)
-    const data  = JSON.parse(cleaned)
-    const table = data.table
-    const cols: string[] = table.cols.map((c: { label: string }) =>
-      c.label.toLowerCase().trim()
-    )
+    const table = parseGviz(await res.text())
+    const cols  = table.cols.map((c) => c.label.toLowerCase().trim())
     const domIdx    = cols.indexOf("dominio")
     const idIdx     = cols.indexOf("tenant_id")
     const activoIdx = cols.indexOf("activo")
