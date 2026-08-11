@@ -40,6 +40,9 @@ export type SiteConfig = {
   empresa_nombre:               string
   empresa_url:                  string
   empresa_logo_url:             string
+  // Portal multisucursal
+  portal_etiqueta:              string
+  portal_titulo:                string
   // Contacto / Footer
   mostrar_footer:               string
   restaurante_footer_direccion: string
@@ -150,6 +153,9 @@ const defaults: SiteConfig = {
   empresa_nombre:               "",
   empresa_url:                  "",
   empresa_logo_url:             "",
+  // — Portal multisucursal (textos visibles — "" = no renderizar)
+  portal_etiqueta:              "",
+  portal_titulo:                "",
   // — Contacto / Footer
   mostrar_footer:               "",
   restaurante_footer_direccion: "",
