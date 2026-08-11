@@ -31,27 +31,27 @@ export default async function HomePage() {
     () => ({} as Awaited<ReturnType<typeof getConfig>>)
   )
 
-  const empresa         = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
-  const logoUrl         = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
-  const acento          = rootConfig.color_marca || ""
-  const etiqueta        = rootConfig.portal_etiqueta || ""
-  const titulo          = rootConfig.portal_titulo   || ""
-  const tituloColor     = sanitizeCssColor(rootConfig.portal_titulo_color || "")
-  const cardColor       = sanitizeCssColor(rootConfig.portal_card_color || "")
-  const cardColorHover  = sanitizeCssColor(rootConfig.portal_card_color_hover || "")
-  const cardBorderHover = sanitizeCssColor(rootConfig.portal_card_border_hover || "")
-  const headerBg        = sanitizeCssColor(rootConfig.portal_header_bg || "")
-  const headerColor     = sanitizeCssColor(rootConfig.portal_header_color || "")
-  const etiquetaColor   = sanitizeCssColor(rootConfig.portal_etiqueta_color || "")
-  const cardBg          = sanitizeCssColor(rootConfig.portal_card_bg || "")
-  const cardBorder      = sanitizeCssColor(rootConfig.portal_card_border || "")
+  const empresa           = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
+  const logoUrl           = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
+  const acento            = rootConfig.color_marca || ""
+  const etiqueta          = rootConfig.portal_etiqueta || ""
+  const titulo            = rootConfig.portal_titulo   || ""
+  const tituloColor       = sanitizeCssColor(rootConfig.portal_titulo_color || "")
+  const cardColor         = sanitizeCssColor(rootConfig.portal_card_color || "")
+  const cardColorHover    = sanitizeCssColor(rootConfig.portal_card_color_hover || "")
+  const cardBorderHover   = sanitizeCssColor(rootConfig.portal_card_border_hover || "")
+  const headerBg          = sanitizeCssColor(rootConfig.portal_header_bg || "")
+  const headerColor       = sanitizeCssColor(rootConfig.portal_header_color || "")
+  const etiquetaColor     = sanitizeCssColor(rootConfig.portal_etiqueta_color || "")
+  const cardBg            = sanitizeCssColor(rootConfig.portal_card_bg || "")
+  const cardBorder        = sanitizeCssColor(rootConfig.portal_card_border || "")
+  const cardNotasColor    = sanitizeCssColor(rootConfig.portal_card_notas_color || "")
+  const cardFlechaColor   = sanitizeCssColor(rootConfig.portal_card_flecha_color || "")
 
   const copyright = rootConfig.footer_texto_derechos
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
     : ""
 
-  // Estilos de hover dinámicos consolidados en un solo bloque <style>.
-  // Solo se renderiza si al menos uno tiene valor.
   const hoverStyles = [
     cardColorHover  && `.portal-card:hover .portal-card-label { color: ${cardColorHover} !important; }`,
     cardBorderHover && `.portal-card:hover { border-color: ${cardBorderHover} !important; }`,
@@ -139,7 +139,12 @@ export default async function HomePage() {
                       {t.label}
                     </p>
                     {t.notas && (
-                      <p className="mt-0.5 text-xs text-muted-foreground">{t.notas}</p>
+                      <p
+                        className="mt-0.5 text-xs"
+                        style={{ color: cardNotasColor || "var(--color-muted-foreground)" }}
+                      >
+                        {t.notas}
+                      </p>
                     )}
                   </div>
                   <svg
@@ -147,7 +152,8 @@ export default async function HomePage() {
                     viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth="1.75"
                     strokeLinecap="round" strokeLinejoin="round"
-                    className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary"
+                    className="shrink-0 transition-transform group-hover:translate-x-1 group-hover:text-primary"
+                    style={cardFlechaColor ? { color: cardFlechaColor } : undefined}
                     aria-hidden
                   >
                     <path d="M5 12h14M12 5l7 7-7 7" />

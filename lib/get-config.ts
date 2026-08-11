@@ -52,6 +52,8 @@ export type SiteConfig = {
   portal_etiqueta_color:        string
   portal_card_bg:               string
   portal_card_border:           string
+  portal_card_notas_color:      string
+  portal_card_flecha_color:     string
   // Contacto / Footer
   mostrar_footer:               string
   restaurante_footer_direccion: string
@@ -159,6 +161,8 @@ const defaults: SiteConfig = {
   portal_etiqueta_color:        "",
   portal_card_bg:               "",
   portal_card_border:           "",
+  portal_card_notas_color:      "",
+  portal_card_flecha_color:     "",
   mostrar_footer:               "",
   restaurante_footer_direccion: "",
   restaurante_footer_maps_url:  "",
