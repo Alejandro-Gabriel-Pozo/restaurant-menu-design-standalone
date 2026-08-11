@@ -48,16 +48,20 @@ export default async function HomePage() {
     () => ({} as Awaited<ReturnType<typeof getConfig>>)
   )
 
-  const empresa  = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
-  const logoUrl  = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
-  const acento   = rootConfig.color_marca || ""
+  const empresa = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
+  const logoUrl = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
+  const acento  = rootConfig.color_marca || ""
 
-  // footer_texto_derechos reemplaza el texto completo de copyright si está definido;
-  // si no, se construye automáticamente con el año y el nombre de empresa.
-  const copyrightText = rootConfig.footer_texto_derechos
+  // Textos del hero — configurables desde la hoja, sin fallback hardcodeado
+  // Claves sugeridas en ROOT CONFIG:
+  //   portal_etiqueta  → ej: "Nuestros restaurantes"
+  //   portal_titulo    → ej: "¿Dónde estás hoy?"
+  const etiqueta = (rootConfig as Record<string, string>)["portal_etiqueta"] || ""
+  const titulo   = (rootConfig as Record<string, string>)["portal_titulo"]   || ""
+
+  // Copyright — solo se muestra si footer_texto_derechos está definido explicitamente
+  const copyright = rootConfig.footer_texto_derechos
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
-    : empresa
-    ? `© ${new Date().getFullYear()} ${empresa}`
     : ""
 
   return (
@@ -84,14 +88,20 @@ export default async function HomePage() {
       </header>
 
       {/* Hero */}
-      <section className="mx-auto max-w-4xl px-8 pb-4 pt-16">
-        <p className="mb-2 font-sans text-xs font-light uppercase tracking-[0.4em] text-primary">
-          Nuestros restaurantes
-        </p>
-        <h1 className="font-serif text-3xl font-medium leading-tight text-foreground sm:text-4xl">
-          ¿Dónde estás hoy?
-        </h1>
-      </section>
+      {(etiqueta || titulo) && (
+        <section className="mx-auto max-w-4xl px-8 pb-4 pt-16">
+          {etiqueta && (
+            <p className="mb-2 font-sans text-xs font-light uppercase tracking-[0.4em] text-primary">
+              {etiqueta}
+            </p>
+          )}
+          {titulo && (
+            <h1 className="font-serif text-3xl font-medium leading-tight text-foreground sm:text-4xl">
+              {titulo}
+            </h1>
+          )}
+        </section>
+      )}
 
       {/* Grid de sucursales */}
       <section className="mx-auto max-w-4xl px-8 py-10">
@@ -130,10 +140,10 @@ export default async function HomePage() {
         </ul>
       </section>
 
-      {/* Footer mínimo */}
-      {copyrightText && (
+      {/* Footer — solo si hay texto de derechos explicitamente definido */}
+      {copyright && (
         <footer className="border-t border-border/40 py-6 text-center text-xs text-muted-foreground">
-          {copyrightText}
+          {copyright}
         </footer>
       )}
 
