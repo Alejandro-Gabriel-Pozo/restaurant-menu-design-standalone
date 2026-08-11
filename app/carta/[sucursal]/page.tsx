@@ -7,22 +7,10 @@ import { CartaView }       from "@/components/carta-view"
 import { MenuFooter }      from "@/components/menu-footer"
 import { buildCssVars }    from "@/lib/utils"
 
-// ISR: regenerar cada hora
 export const revalidate = 3600
 
-/**
- * CRÍTICO: permite que slugs no pre-generados en build
- * se resuelvan on-demand en vez de devolver 404.
- * Sin esto, cualquier tenant agregado después del último build
- * da 404 hasta el próximo deploy.
- */
 export const dynamicParams = true
 
-/**
- * Pre-genera rutas estáticas para todos los tenants activos.
- * Si MASTER_SHEET_ID no está disponible en build, devuelve []
- * y dynamicParams=true se encarga del resto.
- */
 export async function generateStaticParams() {
   try {
     const tenants = await getTenants()
@@ -47,7 +35,7 @@ export default async function CartaSucursalPage({ params }: Props) {
   ])
 
   return (
-    <main className="min-h-screen bg-background" style={buildCssVars(config.color_marca)}>
+    <main className="min-h-screen bg-background" style={buildCssVars(config)}>
       <CartaView menu={menu} config={config} />
       {config.mostrar_footer === "true" && <MenuFooter config={config} />}
     </main>

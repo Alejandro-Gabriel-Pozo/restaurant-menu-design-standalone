@@ -9,7 +9,7 @@ export default async function CartaDemoPage() {
   const [menu, config] = await Promise.all([getMenu(), getConfig()])
 
   return (
-    <main className="min-h-screen bg-background" style={buildCssVars(config.color_marca)}>
+    <main className="min-h-screen bg-background" style={buildCssVars(config)}>
       <CartaView menu={menu} config={config} />
     </main>
   )
