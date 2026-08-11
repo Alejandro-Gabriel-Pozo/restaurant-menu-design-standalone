@@ -31,7 +31,6 @@ export function MenuClient({ menu, config }: { menu: MenuCategory[]; config: Sit
 
   return (
     <>
-      {/* DarkToggle vive dentro de MenuHero */}
       <MenuHero config={config} firstCategoryId={firstCategoryId} />
 
       <MenuNav
