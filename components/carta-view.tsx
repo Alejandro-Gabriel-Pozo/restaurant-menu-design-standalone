@@ -231,7 +231,15 @@ export function CartaView({ menu, config }: Props) {
 
       {/* ÍNDICE */}
       <div data-page="indice-0" className="carta-page bg-background">
-        <div className="flex h-full flex-col px-6 pb-16 pt-12 sm:px-10">
+        {/*
+          El slider tiene h-svh. La topbar (40px) y la CartaNav (56px base,
+          ~96px con franja social) flotan encima con position:absolute.
+          Usamos pt/pb con los valores exactos para que el <ol> nunca quede
+          tapado sin importar cuántas secciones tenga el menú.
+        */}
+        <div className="flex h-full flex-col px-6 sm:px-10"
+          style={{ paddingTop: "52px", paddingBottom: "100px" }}
+        >
           <div className="mb-4 shrink-0">
             {txtIndiceEtiqueta && (
               <p className="mb-0.5 font-sans font-light uppercase tracking-[0.5em] text-primary"
@@ -246,7 +254,7 @@ export function CartaView({ menu, config }: Props) {
               </h1>
             )}
           </div>
-          <ol className="flex-1 overflow-y-auto"
+          <ol className="min-h-0 flex-1 overflow-y-auto"
             style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", alignContent: "start", gap: "0" }}>
             {menu.map((cat, i) => (
               <li key={cat.id}>

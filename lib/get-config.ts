@@ -184,8 +184,9 @@ const defaults: SiteConfig = {
   portal_card_border:           "",
   portal_card_notas_color:      "",
   portal_card_flecha_color:     "",
+  // Default 12px (legible sin config explícita); se sobreescribe desde la hoja
   topbar_back_label:            "← Menú",
-  topbar_back_size:             "10px",
+  topbar_back_size:             "12px",
   mostrar_footer:               "",
   restaurante_footer_direccion: "",
   restaurante_footer_maps_url:  "",
