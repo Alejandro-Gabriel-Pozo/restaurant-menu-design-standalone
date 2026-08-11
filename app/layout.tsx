@@ -2,7 +2,6 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Geist, Playfair_Display } from 'next/font/google'
 import { getConfig } from '@/lib/get-config'
-import { resolveHeroInk, resolvePrimaryForeground, sanitizeCssColor } from '@/lib/hero-utils'
 import './globals.css'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
@@ -68,33 +67,13 @@ export async function generateViewport(): Promise<Viewport> {
   return { colorScheme: 'light', ...(color && { themeColor: color }) }
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const config    = await getConfig(portalSheetId())
-  const inkDia    = resolveHeroInk(config.hero_ink)
-  const primaryFg = resolvePrimaryForeground(config.color_marca)
-  const marca     = sanitizeCssColor(config.color_marca)
-
-  // color_fondo_dia ya NO se aplica aquí — cada página lo inyecta via
-  // buildCssVars en su propio <main>, permitiendo fondos distintos por sucursal.
-  const estilosDinamicos = [
-    marca
-      ? `:root { --primary: ${marca} !important; --ring: ${marca} !important; }`
-      : "",
-    primaryFg
-      ? `:root { --primary-foreground: ${primaryFg} !important; }`
-      : "",
-    inkDia
-      ? `:root { --hero-ink: ${inkDia} !important; }`
-      : "",
-  ].filter(Boolean).join("\n")
-
-  const lang = config.lang || 'es'
+  const lang = 'es' // fallback; cada página puede sobreescribir via generateMetadata
 
   return (
     <html lang={lang} className={`${geistSans.variable} ${playfair.variable} bg-background`}>
-      {estilosDinamicos && <style>{estilosDinamicos}</style>}
       <body className="font-sans antialiased">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}

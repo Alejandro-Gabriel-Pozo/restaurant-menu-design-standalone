@@ -1,7 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { resolvePrimaryForeground } from "./hero-utils"
-import { sanitizeCssColor } from "./hero-utils"
+import { resolvePrimaryForeground, resolveHeroInk, sanitizeCssColor } from "./hero-utils"
 import type React from "react"
 import type { SiteConfig } from "./get-config"
 
@@ -13,30 +12,22 @@ export function cn(...inputs: ClassValue[]) {
  * Genera CSS vars de acento para un tenant.
  * Usado en app/page.tsx, app/carta-demo/page.tsx y app/carta/[sucursal]/page.tsx.
  *
- * Inyecta --primary (Tailwind) + variables semánticas por zona:
- *   --color-acento          → base (color_marca)
- *   --color-nav             → nav de categorías  (color_nav ?? color_marca)
- *   --color-seccion         → labels de sección  (color_seccion ?? color_marca)
- *   --color-especial        → plato destacado    (color_especial ?? color_marca)
- *   --color-cta             → botón CTA portada  (color_cta ?? color_marca)
- *   --color-tags            → tags activos       (color_tags ?? color_marca)
- *   --color-precio          → precios en carta   (color_precio ?? color_marca)
+ * Todas las variables quedan scoped al <main> de cada página, permitiendo
+ * que portal y cada sucursal tengan su propia identidad visual sin pisarse.
  *
- * Fondo de carta:
- *   --background / --card   → color_fondo_dia (scoped al <main> de cada página)
+ * Variables de carta:
+ *   --primary / --ring / --color-acento  → color_marca
+ *   --primary-foreground                 → calculado desde color_marca
+ *   --hero-ink                           → hero_ink (o calculado desde color_fondo_dia)
+ *   --background / --card                → color_fondo_dia
+ *   --color-nav / --color-seccion / ...  → colores semánticos por zona
  *
  * Variables de portal (solo en modo multi):
- *   --portal-header-bg          portal_header_bg
- *   --portal-header-color       portal_header_color
- *   --portal-etiqueta-color     portal_etiqueta_color
- *   --portal-titulo-color       portal_titulo_color
- *   --portal-card-bg            portal_card_bg
- *   --portal-card-color         portal_card_color
- *   --portal-card-color-hover   portal_card_color_hover
- *   --portal-card-border        portal_card_border
- *   --portal-card-border-hover  portal_card_border_hover
- *   --portal-card-notas-color   portal_card_notas_color
- *   --portal-card-flecha-color  portal_card_flecha_color
+ *   --portal-header-bg, --portal-header-color, --portal-etiqueta-color,
+ *   --portal-titulo-color, --portal-card-bg, --portal-card-color,
+ *   --portal-card-color-hover, --portal-card-border,
+ *   --portal-card-border-hover, --portal-card-notas-color,
+ *   --portal-card-flecha-color
  *
  * @example
  * <main style={buildCssVars(config)}>
@@ -65,7 +56,11 @@ export function buildCssVars(configOrMarca: SiteConfig | string | undefined): Re
       return val || undefined
     }
 
-    // Fondo de carta — scoped al <main> de cada página, no global
+    // Hero ink — scoped al <main> de cada página
+    const inkDia = resolveHeroInk(c.hero_ink)
+    if (inkDia) vars["--hero-ink"] = inkDia
+
+    // Fondo de carta — scoped al <main> de cada página
     if (z("color_fondo_dia")) {
       vars["--background"] = z("color_fondo_dia")!
       vars["--card"]       = z("color_fondo_dia")!
