@@ -29,7 +29,8 @@ export function parseGviz(text: string): GvizTable {
 
 /**
  * Hace fetch a una hoja de Google Sheets y devuelve la tabla parseada.
- * Revalida cada hora por ISR.
+ * Revalida cada 5 minutos por ISR.
+ * Para flush inmediato usar /api/revalidate?secret=...&path=...
  *
  * @param sheetId   - ID del Google Spreadsheet
  * @param sheetName - Nombre exacto de la hoja (tab)
@@ -41,7 +42,7 @@ export async function fetchGviz(
   headers: 0 | 1 = 1,
 ): Promise<GvizTable> {
   const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&headers=${headers}`
-  const res = await fetch(url, { next: { revalidate: 3600 } })
+  const res = await fetch(url, { next: { revalidate: 300 } })
   if (!res.ok) throw new Error(`gviz HTTP ${res.status} — sheet: ${sheetName}`)
   return parseGviz(await res.text())
 }
