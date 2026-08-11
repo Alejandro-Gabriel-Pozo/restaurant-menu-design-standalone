@@ -11,14 +11,22 @@ const playfair = Playfair_Display({
   subsets: ['latin'],
 })
 
-export async function generateMetadata(): Promise<Metadata> {
-  const config = await getConfig()
+/** ID de la hoja raíz del portal (ROOT > MASTER > MENU como fallback). */
+function portalSheetId(): string | undefined {
+  return (
+    process.env.ROOT_SHEET_ID ||
+    process.env.MASTER_SHEET_ID ||
+    process.env.MENU_SHEET_ID
+  )
+}
 
-  const siteName  = config.restaurante_nombre || undefined
-  const title     = config.meta_title       || (siteName ? `${siteName} · Menú` : 'Menú')
+export async function generateMetadata(): Promise<Metadata> {
+  const config = await getConfig(portalSheetId())
+
+  const siteName   = config.empresa_nombre || config.restaurante_nombre || undefined
+  const title      = config.meta_title     || (siteName ? `${siteName} · Menú` : 'Menú')
   const description = config.meta_descripcion || config.restaurante_descripcion || undefined
 
-  // og:locale: usa el campo de Config si está, si no lo deriva del lang (es → es_AR, en → en_US)
   const ogLocale = config.meta_og_locale ||
     (config.lang === 'en' ? 'en_US' : config.lang === 'pt' ? 'pt_BR' : 'es_AR')
 
@@ -41,10 +49,8 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName,
       locale: ogLocale,
       type: 'website',
-      ...(config.meta_og_url   && { url:   config.meta_og_url }),
-      ...(config.meta_og_image_url && {
-        images: [{ url: config.meta_og_image_url }],
-      }),
+      ...(config.meta_og_url       && { url:    config.meta_og_url }),
+      ...(config.meta_og_image_url && { images: [{ url: config.meta_og_image_url }] }),
     },
     twitter: {
       card: (config.meta_twitter_card as 'summary' | 'summary_large_image' | 'app' | 'player') ||
@@ -57,7 +63,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export async function generateViewport(): Promise<Viewport> {
-  const config = await getConfig()
+  const config = await getConfig(portalSheetId())
   const color = config.theme_color || config.color_marca || undefined
   return { colorScheme: 'light', ...(color && { themeColor: color }) }
 }
@@ -65,7 +71,7 @@ export async function generateViewport(): Promise<Viewport> {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const config = await getConfig()
+  const config   = await getConfig(portalSheetId())
   const inkDia   = resolveHeroInk(config.hero_ink)
   const inkNoche = resolveHeroInk(config.hero_ink_noche)
 
