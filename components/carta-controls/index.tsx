@@ -68,7 +68,7 @@ export function CartaControls({ children, menu: _menu, config }: Props) {
         printing ? " carta-printing" : ""
       }`}
     >
-      <CartaTopbar onPrint={handlePrint} />
+      <CartaTopbar onPrint={handlePrint} config={config} />
 
       {/* Slider */}
       <div
