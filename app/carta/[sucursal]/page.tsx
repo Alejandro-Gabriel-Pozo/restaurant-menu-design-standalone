@@ -53,9 +53,7 @@ export default async function CartaSucursalPage({ params }: Props) {
     : {}
 
   return (
-    // pb-[96px]: compensa la nav flotante (h-14 fila + ~36px franja social)
-    // sin esto el último ítem queda tapado por CartaNav en mobile
-    <main className="min-h-screen bg-background pb-[96px]" style={cssVars}>
+    <main className="min-h-screen bg-background" style={cssVars}>
       <CartaView menu={menu} config={config} />
       {config.mostrar_footer === "true" && <MenuFooter config={config} />}
     </main>
