@@ -23,25 +23,28 @@ function portalSheetId(): string | undefined {
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getConfig(portalSheetId())
 
-  const siteName   = config.empresa_nombre || config.restaurante_nombre || undefined
-  const title      = config.meta_title     || (siteName ? `${siteName} · Menú` : 'Menú')
+  const siteName    = config.empresa_nombre || config.restaurante_nombre || undefined
+  const title       = config.meta_title     || (siteName ? `${siteName} · Menú` : 'Menú')
   const description = config.meta_descripcion || config.restaurante_descripcion || undefined
 
   const ogLocale = config.meta_og_locale ||
     (config.lang === 'en' ? 'en_US' : config.lang === 'pt' ? 'pt_BR' : 'es_AR')
 
+  // favicon_url → empresa_logo_url → archivos estáticos
+  const faviconUrl = config.favicon_url || config.empresa_logo_url || config.restaurante_logo_url
+
   return {
     title,
     description,
     icons: {
-      icon: config.favicon_url
-        ? [{ url: config.favicon_url }]
+      icon: faviconUrl
+        ? [{ url: faviconUrl }]
         : [
             { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
             { url: '/icon-dark-32x32.png',  media: '(prefers-color-scheme: dark)'  },
             { url: '/icon.svg',             type: 'image/svg+xml'                  },
           ],
-      apple: '/apple-icon.png',
+      apple: faviconUrl || '/apple-icon.png',
     },
     openGraph: {
       title,
