@@ -57,7 +57,7 @@ export default async function CartaSucursalPage({ params }: Props) {
     // sin esto el último ítem queda tapado por CartaNav en mobile
     <main className="min-h-screen bg-background pb-[96px]" style={cssVars}>
       <CartaView menu={menu} config={config} />
-      <MenuFooter config={config} />
+      {config.mostrar_footer === "true" && <MenuFooter config={config} />}
     </main>
   )
 }

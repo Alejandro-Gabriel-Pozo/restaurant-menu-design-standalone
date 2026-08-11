@@ -53,7 +53,6 @@ export function MenuFooter({ config }: MenuFooterProps) {
   const txtHorariosFallback = config.footer_texto_horarios_fallback
   const txtParteDe          = config.footer_texto_parte_de
   const txtTipo             = config.footer_texto_tipo
-  const txtDerechos         = config.footer_texto_derechos
 
   const mapsUrl = config.restaurante_footer_maps_url
     || (config.restaurante_footer_direccion
@@ -227,22 +226,6 @@ export function MenuFooter({ config }: MenuFooterProps) {
             </ul>
           </div>
         )}
-      </div>
-
-      {/* Copyright */}
-      <div className="border-t border-border py-5 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} {config.restaurante_nombre}
-        {config.empresa_nombre && (
-          <span>
-            {" · "}
-            {config.empresa_url ? (
-              <a href={config.empresa_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground">
-                {config.empresa_nombre}
-              </a>
-            ) : config.empresa_nombre}
-          </span>
-        )}
-        {txtDerechos ? `. ${txtDerechos}` : ""}
       </div>
     </footer>
   )

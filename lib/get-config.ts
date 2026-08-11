@@ -41,6 +41,7 @@ export type SiteConfig = {
   empresa_url:                  string
   empresa_logo_url:             string
   // Contacto / Footer
+  mostrar_footer:               string
   restaurante_footer_direccion: string
   restaurante_footer_maps_url:  string
   restaurante_footer_telefono:  string
@@ -150,6 +151,7 @@ const defaults: SiteConfig = {
   empresa_url:                  "",
   empresa_logo_url:             "",
   // — Contacto / Footer
+  mostrar_footer:               "",
   restaurante_footer_direccion: "",
   restaurante_footer_maps_url:  "",
   restaurante_footer_telefono:  "",
