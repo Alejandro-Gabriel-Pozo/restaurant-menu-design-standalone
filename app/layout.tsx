@@ -74,13 +74,11 @@ export default async function RootLayout({
   const config    = await getConfig(portalSheetId())
   const inkDia    = resolveHeroInk(config.hero_ink)
   const primaryFg = resolvePrimaryForeground(config.color_marca)
-  const fondoDia  = sanitizeCssColor(config.color_fondo_dia)
   const marca     = sanitizeCssColor(config.color_marca)
 
+  // color_fondo_dia ya NO se aplica aquí — cada página lo inyecta via
+  // buildCssVars en su propio <main>, permitiendo fondos distintos por sucursal.
   const estilosDinamicos = [
-    fondoDia
-      ? `:root { --background: ${fondoDia} !important; --card: ${fondoDia} !important; }`
-      : "",
     marca
       ? `:root { --primary: ${marca} !important; --ring: ${marca} !important; }`
       : "",

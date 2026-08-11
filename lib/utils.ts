@@ -22,6 +22,9 @@ export function cn(...inputs: ClassValue[]) {
  *   --color-tags            → tags activos       (color_tags ?? color_marca)
  *   --color-precio          → precios en carta   (color_precio ?? color_marca)
  *
+ * Fondo de carta:
+ *   --background / --card   → color_fondo_dia (scoped al <main> de cada página)
+ *
  * Variables de portal (solo en modo multi):
  *   --portal-header-bg          portal_header_bg
  *   --portal-header-color       portal_header_color
@@ -60,6 +63,12 @@ export function buildCssVars(configOrMarca: SiteConfig | string | undefined): Re
     const z = (key: keyof SiteConfig) => {
       const val = sanitizeCssColor((c[key] as string) ?? "")
       return val || undefined
+    }
+
+    // Fondo de carta — scoped al <main> de cada página, no global
+    if (z("color_fondo_dia")) {
+      vars["--background"] = z("color_fondo_dia")!
+      vars["--card"]       = z("color_fondo_dia")!
     }
 
     // Colores semánticos por zona (carta)
