@@ -1,10 +1,9 @@
-import Link             from "next/link"
-import { getTenants }   from "@/lib/tenants"
-import { getConfig }    from "@/lib/get-config"
-import { getMenu }      from "@/lib/get-menu"
-import { MenuClient }   from "@/components/menu-client"
+import Link           from "next/link"
+import { getTenants } from "@/lib/tenants"
+import { getConfig }  from "@/lib/get-config"
+import { getMenu }    from "@/lib/get-menu"
+import { MenuClient } from "@/components/menu-client"
 import { buildCssVars } from "@/lib/utils"
-import { sanitizeCssColor } from "@/lib/hero-utils"
 
 export const revalidate = 3600
 
@@ -15,7 +14,7 @@ export default async function HomePage() {
   if (tenants.length === 0) {
     const [menu, config] = await Promise.all([getMenu(), getConfig()])
     return (
-      <main className="min-h-screen bg-background" style={buildCssVars(config.color_marca)}>
+      <main className="min-h-screen bg-background" style={buildCssVars(config)}>
         <MenuClient menu={menu} config={config} />
       </main>
     )
@@ -31,43 +30,33 @@ export default async function HomePage() {
     () => ({} as Awaited<ReturnType<typeof getConfig>>)
   )
 
-  const empresa           = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
-  const logoUrl           = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
-  const acento            = rootConfig.color_marca || ""
-  const etiqueta          = rootConfig.portal_etiqueta || ""
-  const titulo            = rootConfig.portal_titulo   || ""
-  const tituloColor       = sanitizeCssColor(rootConfig.portal_titulo_color || "")
-  const cardColor         = sanitizeCssColor(rootConfig.portal_card_color || "")
-  const cardColorHover    = sanitizeCssColor(rootConfig.portal_card_color_hover || "")
-  const cardBorderHover   = sanitizeCssColor(rootConfig.portal_card_border_hover || "")
-  const headerBg          = sanitizeCssColor(rootConfig.portal_header_bg || "")
-  const headerColor       = sanitizeCssColor(rootConfig.portal_header_color || "")
-  const etiquetaColor     = sanitizeCssColor(rootConfig.portal_etiqueta_color || "")
-  const cardBg            = sanitizeCssColor(rootConfig.portal_card_bg || "")
-  const cardBorder        = sanitizeCssColor(rootConfig.portal_card_border || "")
-  const cardNotasColor    = sanitizeCssColor(rootConfig.portal_card_notas_color || "")
-  const cardFlechaColor   = sanitizeCssColor(rootConfig.portal_card_flecha_color || "")
-
+  const empresa   = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
+  const logoUrl   = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
+  const etiqueta  = rootConfig.portal_etiqueta  || ""
+  const titulo    = rootConfig.portal_titulo    || ""
   const copyright = rootConfig.footer_texto_derechos
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
     : ""
 
-  const hoverStyles = [
-    cardColorHover  && `.portal-card:hover .portal-card-label { color: ${cardColorHover} !important; }`,
-    cardBorderHover && `.portal-card:hover { border-color: ${cardBorderHover} !important; }`,
-  ].filter(Boolean).join("\n")
-
   return (
-    <main className="min-h-screen bg-background" style={buildCssVars(acento)}>
+    <main className="min-h-screen bg-background" style={buildCssVars(rootConfig)}>
 
-      {hoverStyles && <style>{hoverStyles}</style>}
+      {/* Hover states: no se pueden hacer con CSS vars puras, necesitan :hover selector */}
+      <style>{`
+        .portal-card:hover .portal-card-label {
+          color: var(--portal-card-color-hover, var(--portal-card-color, inherit)) !important;
+        }
+        .portal-card:hover {
+          border-color: var(--portal-card-border-hover, var(--portal-card-border, transparent)) !important;
+        }
+      `}</style>
 
       {/* Header */}
       <header
         className="border-b border-border/50 px-8 py-6"
         style={{
-          ...(headerBg    ? { backgroundColor: headerBg } : {}),
-          ...(headerColor ? { color: headerColor }         : {}),
+          backgroundColor: "var(--portal-header-bg)",
+          color:           "var(--portal-header-color)",
         }}
       >
         <div className="mx-auto flex max-w-4xl items-center gap-4">
@@ -81,10 +70,7 @@ export default async function HomePage() {
             />
           )}
           {empresa && (
-            <span
-              className="font-serif text-xl font-medium"
-              style={headerColor ? { color: headerColor } : undefined}
-            >
+            <span className="font-serif text-xl font-medium">
               {empresa}
             </span>
           )}
@@ -97,7 +83,7 @@ export default async function HomePage() {
           {etiqueta && (
             <p
               className="mb-2 font-sans text-xs font-light uppercase tracking-[0.4em]"
-              style={{ color: etiquetaColor || "var(--color-primary)" }}
+              style={{ color: "var(--portal-etiqueta-color, var(--color-primary))" }}
             >
               {etiqueta}
             </p>
@@ -105,7 +91,7 @@ export default async function HomePage() {
           {titulo && (
             <h1
               className="font-serif text-3xl font-medium leading-tight sm:text-4xl"
-              style={tituloColor ? { color: tituloColor } : undefined}
+              style={{ color: "var(--portal-titulo-color)" }}
             >
               {titulo}
             </h1>
@@ -126,22 +112,22 @@ export default async function HomePage() {
                 href={`/carta/${t.tenant_id}`}
                 className="portal-card group flex items-center justify-between rounded-xl border shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
                 style={{
-                  ...(cardBg     ? { backgroundColor: cardBg }  : {}),
-                  ...(cardBorder ? { borderColor: cardBorder }   : {}),
+                  backgroundColor: "var(--portal-card-bg)",
+                  borderColor:     "var(--portal-card-border)",
                 }}
               >
                 <div className="flex flex-1 items-center justify-between px-6 py-5">
                   <div>
                     <p
                       className="portal-card-label font-serif text-lg font-medium transition-colors"
-                      style={cardColor ? { color: cardColor } : undefined}
+                      style={{ color: "var(--portal-card-color)" }}
                     >
                       {t.label}
                     </p>
                     {t.notas && (
                       <p
                         className="mt-0.5 text-xs"
-                        style={{ color: cardNotasColor || "var(--color-muted-foreground)" }}
+                        style={{ color: "var(--portal-card-notas-color, var(--muted-foreground))" }}
                       >
                         {t.notas}
                       </p>
@@ -153,7 +139,7 @@ export default async function HomePage() {
                     stroke="currentColor" strokeWidth="1.75"
                     strokeLinecap="round" strokeLinejoin="round"
                     className="shrink-0 transition-transform group-hover:translate-x-1 group-hover:text-primary"
-                    style={cardFlechaColor ? { color: cardFlechaColor } : undefined}
+                    style={{ color: "var(--portal-card-flecha-color)" }}
                     aria-hidden
                   >
                     <path d="M5 12h14M12 5l7 7-7 7" />
@@ -165,7 +151,7 @@ export default async function HomePage() {
         </ul>
       </section>
 
-      {/* Footer — solo si hay texto de derechos explicitamente definido */}
+      {/* Footer */}
       {copyright && (
         <footer className="border-t border-border/40 py-6 text-center text-xs text-muted-foreground">
           {copyright}
