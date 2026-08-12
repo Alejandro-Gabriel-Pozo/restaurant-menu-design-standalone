@@ -1,3 +1,4 @@
+import { forwardRef } from "react"
 import type { SiteConfig } from "@/lib/get-config"
 import {
   IconInstagram,
@@ -51,9 +52,10 @@ interface CartaNavProps {
   onGoToId:   (id: string) => void
 }
 
-export function CartaNav({
-  current, total, pages, config, onPrev, onNext, onGoToId,
-}: CartaNavProps) {
+export const CartaNav = forwardRef<HTMLElement, CartaNavProps>(function CartaNav(
+  { current, total, pages, config, onPrev, onNext, onGoToId },
+  ref
+) {
   if (total <= 1) return null
 
   const socialLinks = buildSocialLinks(config)
@@ -63,16 +65,14 @@ export function CartaNav({
     !pages[current].startsWith("portada") &&
     !pages[current].startsWith("indice")
 
-  // Colores opcionales desde Config — si están vacíos no se aplica style inline
-  // y las clases Tailwind quedan activas como fallback.
   const flechaColor  = config.color_nav_flechas || null
   const iconoColor   = config.color_nav_iconos  || null
-
   const flechaStyle  = flechaColor ? { color: flechaColor } : undefined
   const iconoStyle   = iconoColor  ? { color: iconoColor  } : undefined
 
   return (
     <nav
+      ref={ref}
       id="carta-nav"
       aria-label="Navegación de carta"
       className="absolute bottom-0 left-0 right-0 z-40 backdrop-blur-sm bg-background/90"
@@ -160,4 +160,4 @@ export function CartaNav({
       )}
     </nav>
   )
-}
+})

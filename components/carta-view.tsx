@@ -12,7 +12,7 @@ interface Props {
 }
 
 export function CartaView({ menu, config }: Props) {
-  // ─── CÁLCULOS DE CONFIG ───────────────────────────────────────────────────
+  // ─── CÁLCULOS DE CONFIG ──────────────────────────────────────────────────
   const acento      = config.hero_color_fondo || ""
   const nombre      = config.restaurante_nombre ?? ""
   const subtitulo   = config.restaurante_subtitulo ?? ""
@@ -161,7 +161,7 @@ export function CartaView({ menu, config }: Props) {
     </div>
   )
 
-  // ─── PORTADA MOBILE ────────────────────────────────────────────────────
+  // ─── PORTADA MOBILE ─────────────────────────────────────────────────────
   const portadaMobile = (
     <>
       <div aria-hidden className="absolute z-[8] sm:hidden"
@@ -233,7 +233,7 @@ export function CartaView({ menu, config }: Props) {
     </>
   )
 
-  // ─── RENDER ───────────────────────────────────────────────────────────────
+  // ─── RENDER ──────────────────────────────────────────────────────────────
   return (
     <CartaControls menu={menu} config={config}>
 
@@ -251,7 +251,7 @@ export function CartaView({ menu, config }: Props) {
       {/* ÍNDICE */}
       <div data-page="indice-0" className="carta-page bg-background">
         <div className="flex h-full flex-col px-6 sm:px-10"
-          style={{ paddingTop: "52px", paddingBottom: "100px" }}
+          style={{ paddingTop: "52px", paddingBottom: "calc(var(--carta-nav-h, 56px) + 16px)" }}
         >
           <div className="mb-4 shrink-0">
             {txtIndiceEtiqueta && (
@@ -312,7 +312,9 @@ export function CartaView({ menu, config }: Props) {
       {/* PÁGINAS DE CATEGORÍAS */}
       {menu.map((category, catIdx) => (
         <div key={category.id} data-page={category.id} className="carta-page relative bg-background">
-          <div className="flex h-full flex-col overflow-y-auto pb-14">
+          <div className="flex h-full flex-col overflow-y-auto"
+            style={{ paddingBottom: "calc(var(--carta-nav-h, 56px) + 16px)" }}
+          >
 
             {/* BANDA */}
             <div className="section-header-band relative shrink-0" style={{ height: bandaAltoMobile }}>
@@ -385,9 +387,6 @@ export function CartaView({ menu, config }: Props) {
               {category.items.map((item) => {
                 const esp = item.especial
 
-                // Para cada componente: si el ítem es especial, usa color_especial_item_*
-                // (fallback var(--primary) = color_marca). Si es regular, usa color_item_*
-                // (fallback clases Tailwind de texto normal).
                 const nombreColor = esp
                   ? (espNombreColor ?? "var(--primary)")
                   : (itemNombreColor ?? undefined)
@@ -397,7 +396,7 @@ export function CartaView({ menu, config }: Props) {
                   : (itemPrecioColor ?? undefined)
 
                 const descColor = esp
-                  ? (espDescColor ?? undefined)   // especial sin override → Tailwind muted igual que regular
+                  ? (espDescColor ?? undefined)
                   : (itemDescColor ?? undefined)
 
                 const tagsColor = esp
@@ -408,8 +407,15 @@ export function CartaView({ menu, config }: Props) {
                   <li key={item.name} className="py-2.5">
                     <div className="flex items-baseline justify-between gap-3">
                       <h3
-                        className={`font-serif font-semibold leading-tight ${!nombreColor ? "text-foreground" : ""}`}
-                        style={{ fontSize: fItemNombre, ...(nombreColor ? { color: nombreColor } : {}) }}
+                        className={`min-w-0 flex-1 overflow-wrap-anywhere font-serif font-semibold leading-tight ${
+                          !nombreColor ? "text-foreground" : ""
+                        }`}
+                        style={{
+                          fontSize: fItemNombre,
+                          overflowWrap: "anywhere",
+                          wordBreak: "break-word",
+                          ...(nombreColor ? { color: nombreColor } : {}),
+                        }}
                       >
                         {item.name}
                         {esp && (

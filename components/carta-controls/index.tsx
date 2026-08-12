@@ -17,6 +17,7 @@ interface Props {
 
 export function CartaControls({ children, menu: _menu, config }: Props) {
   const sliderRef  = useRef<HTMLDivElement>(null)
+  const navRef     = useRef<HTMLElement>(null)
   const [current,  setCurrent]  = useState(0)
   const [total,    setTotal]    = useState(0)
   const [pages,    setPages]    = useState<string[]>([])
@@ -29,6 +30,19 @@ export function CartaControls({ children, menu: _menu, config }: Props) {
     setTotal(els.length)
     setPages(els.map(el => el.dataset.page ?? ""))
   }, [])
+
+  // Sincroniza --carta-nav-h con la altura real del nav (cambia según página)
+  useEffect(() => {
+    const nav = navRef.current
+    if (!nav) return
+    const root = document.documentElement
+    const update = () =>
+      root.style.setProperty("--carta-nav-h", `${nav.offsetHeight}px`)
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(nav)
+    return () => ro.disconnect()
+  }, [total]) // re-corre cuando total cambia (nav montado)
 
   const onScroll = useCallback(() => {
     const el = sliderRef.current
@@ -91,6 +105,7 @@ export function CartaControls({ children, menu: _menu, config }: Props) {
       </div>
 
       <CartaNav
+        ref={navRef}
         current={current}
         total={total}
         pages={pages}
