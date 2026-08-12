@@ -108,23 +108,24 @@ export const CartaNav = forwardRef<HTMLElement, CartaNavProps>(function CartaNav
               </div>
             )
           ) : (
-            <>
-              {isCategory && (
-                <button
-                  onClick={() => onGoToId("indice-0")}
-                  className="flex h-9 min-w-[80px] items-center justify-center gap-1.5 rounded-full bg-primary/10 px-4 font-sans text-xs font-medium uppercase tracking-[0.3em] text-primary transition-colors hover:bg-primary/20 active:bg-primary/30"
-                >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                    <polyline points="9 22 9 12 15 12 15 22" />
-                  </svg>
-                  Índice
-                </button>
-              )}
+            // En índice: muestra contador. En categorías: solo botón Índice (el
+            // número ya aparece en la banda de sección).
+            isCategory ? (
+              <button
+                onClick={() => onGoToId("indice-0")}
+                className="flex h-9 min-w-[80px] items-center justify-center gap-1.5 rounded-full bg-primary/10 px-4 font-sans text-xs font-medium uppercase tracking-[0.3em] text-primary transition-colors hover:bg-primary/20 active:bg-primary/30"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                Índice
+              </button>
+            ) : (
               <p className="font-sans text-[10px] font-light text-muted-foreground">
                 {current + 1} / {total}
               </p>
-            </>
+            )
           )}
         </div>
 

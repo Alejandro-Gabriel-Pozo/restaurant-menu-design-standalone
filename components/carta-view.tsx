@@ -233,6 +233,74 @@ export function CartaView({ menu, config }: Props) {
     </>
   )
 
+  // ─── BANDA DE SECCIÓN (helper) ──────────────────────────────────────────────
+  //
+  // Layout: flex-col justify-end con overflow-hidden.
+  // Prioridad de corte cuando la banda es baja:
+  //   1. descripción desaparece primero (line-clamp-1, luego overflow hidden)
+  //   2. etiqueta desaparece si no cabe (shrink-0 en título, etiqueta sin shrink-0)
+  //   3. título siempre visible (shrink-0, line-clamp-1)
+  //
+  function BandaContenido({
+    categoria, titulo, desc, catIdx, totalCats, mobile,
+  }: {
+    categoria: string; titulo: string; desc?: string
+    catIdx: number; totalCats: number; mobile: boolean
+  }) {
+    const px   = mobile ? "px-4" : "px-10"
+    const pb   = mobile ? "pb-2" : "pb-3"
+    const pt   = mobile ? "pt-2" : "pt-8"
+    return (
+      <div
+        className={`absolute inset-0 flex flex-col justify-end overflow-hidden ${px} ${pb} ${pt}`}
+        style={{ zIndex: 10 }}
+      >
+        {/* etiqueta: sin shrink-0 → se comprime/oculta si no hay espacio */}
+        <p
+          className="overflow-hidden font-sans font-light uppercase tracking-[0.4em] text-primary"
+          style={{
+            fontSize: fBandaEtiqueta,
+            lineHeight: 1.3,
+            maxHeight: `calc(${fBandaEtiqueta} * 1.3 * 1)`, // máximo 1 línea
+            ...(bandaEtiquetaColor ? { color: bandaEtiquetaColor } : {}),
+          }}
+        >
+          {categoria ? `${categoria} · ` : ""}
+          {String(catIdx + 1).padStart(2, "0")} / {String(totalCats).padStart(2, "0")}
+        </p>
+
+        {/* título: shrink-0, siempre visible */}
+        <h2
+          className="shrink-0 overflow-hidden font-serif font-medium leading-tight tracking-tight text-foreground"
+          style={{
+            fontSize: fBandaTitulo,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            ...(bandaTituloColor ? { color: bandaTituloColor } : {}),
+          }}
+        >
+          {titulo}
+        </h2>
+
+        {/* descripción: se oculta primero */}
+        {desc && (
+          <p
+            className="overflow-hidden font-sans font-light leading-snug text-muted-foreground"
+            style={{
+              fontSize: fBandaDesc,
+              lineHeight: 1.35,
+              maxHeight: `calc(${fBandaDesc} * 1.35 * 1)`,
+              ...(bandaDescColor ? { color: bandaDescColor } : {}),
+            }}
+          >
+            {desc}
+          </p>
+        )}
+      </div>
+    )
+  }
+
   // ─── RENDER ──────────────────────────────────────────────────────────────
   return (
     <CartaControls menu={menu} config={config}>
@@ -317,7 +385,7 @@ export function CartaView({ menu, config }: Props) {
           >
 
             {/* BANDA */}
-            <div className="section-header-band relative shrink-0" style={{ height: bandaAltoMobile }}>
+            <div className="section-header-band relative shrink-0 overflow-hidden" style={{ height: bandaAltoMobile }}>
               <style>{`
                 @media (min-width: 640px) {
                   .section-header-band { height: ${bandaAltoDesktop} !important; }
@@ -340,43 +408,27 @@ export function CartaView({ menu, config }: Props) {
               )}
 
               {/* DESKTOP */}
-              <div className="absolute inset-0 hidden flex-col justify-end overflow-hidden px-10 pb-3 pt-10 sm:flex" style={{ zIndex: 10 }}>
-                <p className="mb-0.5 font-sans font-light uppercase tracking-[0.4em] text-primary"
-                  style={{ fontSize: fBandaEtiqueta, ...(bandaEtiquetaColor ? { color: bandaEtiquetaColor } : {}) }}>
-                  {category.categoria ? `${category.categoria} · ` : ""}
-                  {String(catIdx + 1).padStart(2, "0")} / {String(menu.length).padStart(2, "0")}
-                </p>
-                <h2 className="font-serif font-medium leading-tight tracking-tight text-foreground"
-                  style={{ fontSize: fBandaTitulo, ...(bandaTituloColor ? { color: bandaTituloColor } : {}) }}>
-                  {category.titulo_seccion}
-                </h2>
-                {category.description && (
-                  <p className="mt-0.5 font-sans font-light leading-snug text-muted-foreground"
-                    style={{ fontSize: fBandaDesc, ...(bandaDescColor ? { color: bandaDescColor } : {}) }}>
-                    {category.description}
-                  </p>
-                )}
+              <div className="hidden sm:block">
+                <BandaContenido
+                  categoria={category.categoria ?? ""}
+                  titulo={category.titulo_seccion}
+                  desc={category.description}
+                  catIdx={catIdx}
+                  totalCats={menu.length}
+                  mobile={false}
+                />
               </div>
 
               {/* MOBILE */}
-              <div className="flex h-full items-center sm:hidden" style={{ position: "relative", zIndex: 10 }}>
-                <div className="flex flex-col justify-center gap-px px-4 py-2">
-                  <p className="font-sans font-light uppercase tracking-[0.4em] text-primary"
-                    style={{ fontSize: fBandaEtiqueta, ...(bandaEtiquetaColor ? { color: bandaEtiquetaColor } : {}) }}>
-                    {category.categoria ? `${category.categoria} · ` : ""}
-                    {String(catIdx + 1).padStart(2, "0")} / {String(menu.length).padStart(2, "0")}
-                  </p>
-                  <h2 className="font-serif font-medium leading-none tracking-tight text-foreground"
-                    style={{ fontSize: fBandaTitulo, ...(bandaTituloColor ? { color: bandaTituloColor } : {}) }}>
-                    {category.titulo_seccion}
-                  </h2>
-                  {category.description && (
-                    <p className="font-sans font-light leading-none text-muted-foreground"
-                      style={{ fontSize: fBandaDesc, ...(bandaDescColor ? { color: bandaDescColor } : {}) }}>
-                      {category.description}
-                    </p>
-                  )}
-                </div>
+              <div className="sm:hidden">
+                <BandaContenido
+                  categoria={category.categoria ?? ""}
+                  titulo={category.titulo_seccion}
+                  desc={category.description}
+                  catIdx={catIdx}
+                  totalCats={menu.length}
+                  mobile={true}
+                />
               </div>
 
               <div className="absolute bottom-0 left-0 right-0 h-px bg-primary/20" />
@@ -407,7 +459,7 @@ export function CartaView({ menu, config }: Props) {
                   <li key={item.name} className="py-2.5">
                     <div className="flex items-baseline justify-between gap-3">
                       <h3
-                        className={`min-w-0 flex-1 overflow-wrap-anywhere font-serif font-semibold leading-tight ${
+                        className={`min-w-0 flex-1 font-serif font-semibold leading-tight ${
                           !nombreColor ? "text-foreground" : ""
                         }`}
                         style={{
