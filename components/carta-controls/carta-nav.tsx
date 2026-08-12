@@ -63,6 +63,14 @@ export function CartaNav({
     !pages[current].startsWith("portada") &&
     !pages[current].startsWith("indice")
 
+  // Colores opcionales desde Config — si están vacíos no se aplica style inline
+  // y las clases Tailwind quedan activas como fallback.
+  const flechaColor  = config.color_nav_flechas || null
+  const iconoColor   = config.color_nav_iconos  || null
+
+  const flechaStyle  = flechaColor ? { color: flechaColor } : undefined
+  const iconoStyle   = iconoColor  ? { color: iconoColor  } : undefined
+
   return (
     <nav
       id="carta-nav"
@@ -77,6 +85,7 @@ export function CartaNav({
           disabled={current === 0}
           aria-label="Página anterior"
           className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-primary/10 hover:text-foreground disabled:opacity-20"
+          style={flechaStyle}
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M15 18l-6-6 6-6" />
@@ -91,6 +100,7 @@ export function CartaNav({
                   <a key={label} href={href} target="_blank" rel="noopener noreferrer"
                     aria-label={label}
                     className="flex h-10 w-10 items-center justify-center rounded-full text-foreground/55 transition-colors hover:bg-primary/10 hover:text-primary"
+                    style={iconoStyle}
                   >
                     {icon}
                   </a>
@@ -123,6 +133,7 @@ export function CartaNav({
           disabled={current === total - 1}
           aria-label="Página siguiente"
           className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-primary/10 hover:text-foreground disabled:opacity-20"
+          style={flechaStyle}
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M9 18l6-6-6-6" />
@@ -140,6 +151,7 @@ export function CartaNav({
             <a key={label} href={href} target="_blank" rel="noopener noreferrer"
               aria-label={label}
               className="flex h-8 w-8 items-center justify-center text-foreground/40 transition-colors hover:text-primary"
+              style={iconoStyle}
             >
               {icon}
             </a>

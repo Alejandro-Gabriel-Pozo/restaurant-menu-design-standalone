@@ -12,7 +12,7 @@ interface Props {
 }
 
 export function CartaView({ menu, config }: Props) {
-  // ─── CÁLCULOS DE CONFIG ──────────────────────────────────────────────────────
+  // ─── CÁLCULOS DE CONFIG ──────────────────────────────────────────────
   const acento      = config.hero_color_fondo || ""
   const nombre      = config.restaurante_nombre ?? ""
   const subtitulo   = config.restaurante_subtitulo ?? ""
@@ -67,11 +67,15 @@ export function CartaView({ menu, config }: Props) {
   const fIndiceCategoria = normFuente(config.carta_fuente_indice_categoria)
   const fIndiceItem      = normFuente(config.carta_fuente_indice_item)
 
-  // Textos editables desde Config — solo se renderizan si tienen valor en la hoja
+  // Textos editables desde Config
   const txtPortadaCta       = config.carta_texto_portada_cta
   const txtPortadaSeparador = config.carta_texto_portada_separador
   const txtIndiceEtiqueta   = config.carta_texto_indice_etiqueta
   const txtIndiceTitulo     = config.carta_texto_indice_titulo
+
+  // Colores índice — opcionales, fallback a clases Tailwind si vacíos
+  const indiceNumColor    = config.color_indice_numeros || null
+  const indiceTituloColor = config.color_indice_titulos || null
 
   const logoFallback = nombre ? (
     <div
@@ -82,7 +86,7 @@ export function CartaView({ menu, config }: Props) {
     </div>
   ) : null
 
-  // ─── FRAGMENTO COMPARTIDO — overlay + textura ─────────────────────────────────
+  // ─── FRAGMENTO COMPARTIDO — overlay + textura ────────────────────────
   const overlayYTextura = (
     <>
       {bgUrl && (
@@ -93,7 +97,7 @@ export function CartaView({ menu, config }: Props) {
     </>
   )
 
-  // ─── JSX PORTADA DESKTOP ─────────────────────────────────────────────────────
+  // ─── JSX PORTADA DESKTOP ─────────────────────────────────────────────
   const portadaDesktop = (
     <div className="relative z-10 hidden h-full flex-col items-center justify-center gap-5 px-8 text-center sm:flex">
       {logoUrl
@@ -139,10 +143,9 @@ export function CartaView({ menu, config }: Props) {
     </div>
   )
 
-  // ─── JSX PORTADA MOBILE ───────────────────────────────────────────────────────
+  // ─── JSX PORTADA MOBILE ──────────────────────────────────────────────
   const portadaMobile = (
     <>
-      {/* neblina radial de contraste */}
       <div aria-hidden className="absolute z-[8] sm:hidden"
         style={{
           top: bloqueTop, left: "50%",
@@ -152,7 +155,6 @@ export function CartaView({ menu, config }: Props) {
           filter: "blur(18px)", pointerEvents: "none",
         }}
       />
-      {/* bloque principal centrado */}
       <div className="absolute z-10 flex flex-col items-center sm:hidden"
         style={{ top: bloqueTop, left: "50%", transform: "translate(-50%, -50%)", width: "50vw" }}
       >
@@ -200,7 +202,6 @@ export function CartaView({ menu, config }: Props) {
           </div>
         )}
       </div>
-      {/* CTA */}
       {txtPortadaCta && (
         <div className="absolute z-10 flex flex-col items-center sm:hidden"
           style={{ left: "50%", transform: "translateX(-50%)", bottom: ctaBottom }}
@@ -214,7 +215,7 @@ export function CartaView({ menu, config }: Props) {
     </>
   )
 
-  // ─── RENDER ───────────────────────────────────────────────────────────────────
+  // ─── RENDER ──────────────────────────────────────────────────────────
   return (
     <CartaControls menu={menu} config={config}>
 
@@ -254,8 +255,13 @@ export function CartaView({ menu, config }: Props) {
               <li key={cat.id}>
                 <button data-goto={cat.id}
                   className="group flex w-full items-baseline gap-2.5 border-b border-dotted border-border/40 py-2 text-left transition-colors hover:bg-primary/5 active:bg-primary/10">
-                  <span className="w-5 shrink-0 font-sans font-light text-primary"
-                    style={{ fontSize: fIndiceNumero }}>
+                  <span
+                    className="w-5 shrink-0 font-sans font-light text-primary"
+                    style={{
+                      fontSize: fIndiceNumero,
+                      ...(indiceNumColor ? { color: indiceNumColor } : {}),
+                    }}
+                  >
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="flex-1">
@@ -265,8 +271,13 @@ export function CartaView({ menu, config }: Props) {
                         {cat.categoria}
                       </span>
                     )}
-                    <span className="block font-serif font-medium leading-snug text-foreground transition-colors group-hover:text-primary"
-                      style={{ fontSize: fIndiceItem }}>
+                    <span
+                      className="block font-serif font-medium leading-snug text-foreground transition-colors group-hover:text-primary"
+                      style={{
+                        fontSize: fIndiceItem,
+                        ...(indiceTituloColor ? { color: indiceTituloColor } : {}),
+                      }}
+                    >
                       {cat.titulo_seccion}
                     </span>
                   </span>
@@ -282,7 +293,7 @@ export function CartaView({ menu, config }: Props) {
         <div key={category.id} data-page={category.id} className="carta-page relative bg-background">
           <div className="flex h-full flex-col overflow-y-auto pb-14">
 
-            {/* ─── BANDA DE SECCIÓN ─────────────────────────────────────────── */}
+            {/* ─── BANDA DE SECCIÓN ──────────────────────────────────── */}
             <div
               className="section-header-band relative shrink-0"
               style={{ height: bandaAltoMobile }}
@@ -351,7 +362,7 @@ export function CartaView({ menu, config }: Props) {
               <div className="absolute bottom-0 left-0 right-0 h-px bg-primary/20" />
             </div>
 
-            {/* ─── ITEMS DE LA SECCIÓN ──────────────────────────────────────── */}
+            {/* ─── ITEMS DE LA SECCIÓN ───────────────────────────────── */}
             <ul className="divide-y divide-dotted divide-border/40 px-6 sm:px-10">
               {category.items.map((item) => (
                 <li key={item.name} className="py-2.5">
