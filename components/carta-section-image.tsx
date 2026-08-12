@@ -3,16 +3,14 @@
 interface Props {
   url:            string
   modo?:          "fondo" | "miniatura" | "ambos"
-  // anchoMobile: ya no se usa para el fondo (cover/no-repeat). Se mantiene como prop
-  // para miniatura (% del alto de la banda). Ignorado si modo="fondo".
-  anchoMobile?:   string   // miniatura → % del alto de la banda
-  anchoDesktop?:  string   // fondo → CSS background-size | miniatura → % del alto de la banda
-  posX?:          string   // left | center | right
-  posY?:          string   // top | center | bottom
+  anchoMobile?:   string
+  anchoDesktop?:  string
+  posX?:          string
+  posY?:          string
   overlay?:       boolean
-  opacidad?:      number   // 0-100
-  bandaAltoMobile?:  string  // px de alto de la banda mobile (para miniatura)
-  bandaAltoDesktop?: string  // px de alto de la banda desktop (para miniatura)
+  opacidad?:      number
+  bandaAltoMobile?:  string
+  bandaAltoDesktop?: string
 }
 
 export function CartaSectionImage({
@@ -37,7 +35,6 @@ export function CartaSectionImage({
   const overlayGradient =
     "radial-gradient(ellipse 55% 100% at 0% 50%, oklch(from var(--background) l c h / 0.85) 0%, oklch(from var(--background) l c h / 0.0) 100%)"
 
-  // Miniatura — calcular px reales a partir del % y la altura de la banda
   const calcHeightPx = (pctStr: string, bandaStr: string): string => {
     const pct   = Number(pctStr)
     const banda = Number(bandaStr.replace("px", ""))
@@ -79,22 +76,36 @@ export function CartaSectionImage({
 
   return (
     <>
-      {/* ── FONDO desktop — repeat-x, background-size desde config ── */}
+      {/* ── FONDO desktop — comportamiento original intacto ── */}
       {showFondo && (
         <div className="absolute inset-0 hidden sm:block" aria-hidden
-          style={{ backgroundImage: `url(${url})`, backgroundRepeat: "repeat-x", backgroundSize: sizeDesktop, backgroundPosition: bgPos, opacity }} />
+          style={{
+            backgroundImage: `url(${url})`,
+            backgroundRepeat: "repeat-x",
+            backgroundSize: sizeDesktop,
+            backgroundPosition: bgPos,
+            opacity,
+          }} />
       )}
       {showFondo && overlay && (
-        <div className="absolute inset-0 hidden sm:block" aria-hidden style={{ background: overlayGradient }} />
+        <div className="absolute inset-0 hidden sm:block" aria-hidden
+          style={{ background: overlayGradient }} />
       )}
 
-      {/* ── FONDO mobile — cover / no-repeat: imagen siempre completa, sin tiles ── */}
+      {/* ── FONDO mobile — contain+repeat-x: imagen completa, sin recorte, tila ── */}
       {showFondo && (
         <div className="absolute inset-0 sm:hidden" aria-hidden
-          style={{ backgroundImage: `url(${url})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", backgroundPosition: "center", opacity }} />
+          style={{
+            backgroundImage: `url(${url})`,
+            backgroundRepeat: "repeat-x",
+            backgroundSize: "contain",
+            backgroundPosition: bgPos,
+            opacity,
+          }} />
       )}
       {showFondo && overlay && (
-        <div className="absolute inset-0 sm:hidden" aria-hidden style={{ background: overlayGradient }} />
+        <div className="absolute inset-0 sm:hidden" aria-hidden
+          style={{ background: overlayGradient }} />
       )}
 
       {/* ── MINIATURA desktop ── */}
