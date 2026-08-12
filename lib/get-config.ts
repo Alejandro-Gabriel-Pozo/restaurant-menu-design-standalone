@@ -1,5 +1,6 @@
 import "server-only"
-import { fetchGviz, colGetter } from "./gviz"
+import { fetchGviz } from "./gviz"
+export { normFuente, formatPrecio } from "./format-utils"
 
 export type SiteConfig = {
   // Identidad
@@ -184,7 +185,6 @@ const defaults: SiteConfig = {
   portal_card_border:           "",
   portal_card_notas_color:      "",
   portal_card_flecha_color:     "",
-  // Default 12px (legible sin config explícita); se sobreescribe desde la hoja
   topbar_back_label:            "← Menú",
   topbar_back_size:             "12px",
   mostrar_footer:               "",
@@ -240,28 +240,6 @@ const defaults: SiteConfig = {
   footer_texto_parte_de:          "",
   footer_texto_tipo:              "",
   footer_texto_derechos:          "",
-}
-
-export function normFuente(val: string): string {
-  return /^\d+(\.\d+)?$/.test(val.trim()) ? `${val.trim()}px` : val.trim()
-}
-
-export function formatPrecio(
-  raw: string | number,
-  config: Pick<SiteConfig, "precio_simbolo" | "precio_locale" | "precio_posicion">,
-): string {
-  const str = String(raw ?? "").trim()
-  if (!str) return ""
-  const num = Number(str.replace(/[^0-9.,-]/g, "").replace(",", "."))
-  if (isNaN(num)) return str
-  const formatted = num.toLocaleString(config.precio_locale || "es-AR", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  })
-  const simbolo = config.precio_simbolo || "$"
-  return config.precio_posicion === "derecha"
-    ? `${formatted}${simbolo}`
-    : `${simbolo}${formatted}`
 }
 
 export async function getConfig(

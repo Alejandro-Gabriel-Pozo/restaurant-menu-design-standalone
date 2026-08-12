@@ -1,6 +1,6 @@
 import type { MenuCategory } from "@/lib/get-menu"
 import type { SiteConfig }   from "@/lib/get-config"
-import { normFuente, formatPrecio } from "@/lib/get-config"
+import { normFuente, formatPrecio } from "@/lib/format-utils"
 import { TagIcon }           from "@/lib/tag-icons"
 import { CartaControls }     from "@/components/carta-controls"
 import { CartaSectionImage } from "@/components/carta-section-image"
@@ -231,12 +231,6 @@ export function CartaView({ menu, config }: Props) {
 
       {/* ÍNDICE */}
       <div data-page="indice-0" className="carta-page bg-background">
-        {/*
-          El slider tiene h-svh. La topbar (40px) y la CartaNav (56px base,
-          ~96px con franja social) flotan encima con position:absolute.
-          Usamos pt/pb con los valores exactos para que el <ol> nunca quede
-          tapado sin importar cuántas secciones tenga el menú.
-        */}
         <div className="flex h-full flex-col px-6 sm:px-10"
           style={{ paddingTop: "52px", paddingBottom: "100px" }}
         >
