@@ -376,60 +376,74 @@ export function CartaView({ menu, config }: Props) {
 
             {/* ITEMS */}
             <ul className="divide-y divide-dotted divide-border/40 px-6 sm:px-10">
-              {category.items.map((item) => (
-                <li key={item.name} className="py-2.5">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <h3
-                      className={`font-serif font-semibold leading-tight ${!itemNombreColor && item.especial ? "text-primary" : !itemNombreColor ? "text-foreground" : ""}`}
-                      style={{
-                        fontSize: fItemNombre,
-                        ...(itemNombreColor ? { color: itemNombreColor } : {}),
-                      }}
-                    >
-                      {item.name}
-                      {item.especial && (
-                        <span className="ml-1 text-[8px] text-primary" aria-label="Especial"> ★</span>
-                      )}
-                    </h3>
-                    <span
-                      className={`shrink-0 font-serif font-semibold ${!itemPrecioColor ? "text-primary" : ""}`}
-                      style={{
-                        fontSize: fItemPrecio,
-                        ...(itemPrecioColor ? { color: itemPrecioColor } : {}),
-                      }}
-                    >
-                      {formatPrecio(item.price, config)}
-                    </span>
-                  </div>
-                  {item.description && (
-                    <p
-                      className={`mt-0.5 font-sans font-light leading-snug ${!itemDescColor ? "text-muted-foreground/75" : ""}`}
-                      style={{
-                        fontSize: fItemDesc,
-                        ...(itemDescColor ? { color: itemDescColor } : {}),
-                      }}
-                    >
-                      {item.description}
-                    </p>
-                  )}
-                  {item.tags && item.tags.length > 0 && (
-                    <div className="mt-1 flex flex-wrap gap-1.5">
-                      {item.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className={`inline-flex items-center gap-0.5 font-sans font-light uppercase tracking-wider ${!itemTagsColor ? "text-primary/50" : ""}`}
-                          style={{
-                            fontSize: fItemTags,
-                            ...(itemTagsColor ? { color: itemTagsColor } : {}),
-                          }}
-                        >
-                          <TagIcon tag={tag} />{tag}
-                        </span>
-                      ))}
+              {category.items.map((item) => {
+                // Color efectivo del nombre:
+                // 1. override del Sheet  2. especial → acento  3. foreground
+                const nombreColor: React.CSSProperties["color"] =
+                  itemNombreColor
+                    ? itemNombreColor
+                    : item.especial
+                      ? "var(--primary)"
+                      : undefined  // deja que Tailwind text-foreground actúe
+
+                return (
+                  <li key={item.name} className="py-2.5">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <h3
+                        className={`font-serif font-semibold leading-tight ${!nombreColor ? "text-foreground" : ""}`}
+                        style={{ fontSize: fItemNombre, ...(nombreColor ? { color: nombreColor } : {}) }}
+                      >
+                        {item.name}
+                        {item.especial && (
+                          <span
+                            className="ml-1 text-[8px]"
+                            style={{ color: itemNombreColor ?? "var(--primary)" }}
+                            aria-label="Especial"
+                          >
+                            {" ★"}
+                          </span>
+                        )}
+                      </h3>
+                      <span
+                        className={`shrink-0 font-serif font-semibold ${!itemPrecioColor ? "text-primary" : ""}`}
+                        style={{
+                          fontSize: fItemPrecio,
+                          ...(itemPrecioColor ? { color: itemPrecioColor } : {}),
+                        }}
+                      >
+                        {formatPrecio(item.price, config)}
+                      </span>
                     </div>
-                  )}
-                </li>
-              ))}
+                    {item.description && (
+                      <p
+                        className={`mt-0.5 font-sans font-light leading-snug ${!itemDescColor ? "text-muted-foreground/75" : ""}`}
+                        style={{
+                          fontSize: fItemDesc,
+                          ...(itemDescColor ? { color: itemDescColor } : {}),
+                        }}
+                      >
+                        {item.description}
+                      </p>
+                    )}
+                    {item.tags && item.tags.length > 0 && (
+                      <div className="mt-1 flex flex-wrap gap-1.5">
+                        {item.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className={`inline-flex items-center gap-0.5 font-sans font-light uppercase tracking-wider ${!itemTagsColor ? "text-primary/50" : ""}`}
+                            style={{
+                              fontSize: fItemTags,
+                              ...(itemTagsColor ? { color: itemTagsColor } : {}),
+                            }}
+                          >
+                            <TagIcon tag={tag} />{tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </li>
+                )
+              })}
             </ul>
           </div>
         </div>
