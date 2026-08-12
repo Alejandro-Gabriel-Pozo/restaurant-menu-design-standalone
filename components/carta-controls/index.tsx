@@ -17,7 +17,6 @@ interface Props {
 
 export function CartaControls({ children, menu: _menu, config }: Props) {
   const sliderRef  = useRef<HTMLDivElement>(null)
-  const navRef     = useRef<HTMLElement>(null)
   const [current,  setCurrent]  = useState(0)
   const [total,    setTotal]    = useState(0)
   const [pages,    setPages]    = useState<string[]>([])
@@ -31,9 +30,9 @@ export function CartaControls({ children, menu: _menu, config }: Props) {
     setPages(els.map(el => el.dataset.page ?? ""))
   }, [])
 
-  // Sincroniza --carta-nav-h con la altura real del nav (cambia según página)
-  useEffect(() => {
-    const nav = navRef.current
+  // ref callback: engancha el ResizeObserver en cuanto el nav se monta,
+  // sin depender de que `total` ya esté seteado.
+  const navRefCallback = useCallback((nav: HTMLElement | null) => {
     if (!nav) return
     const root = document.documentElement
     const update = () =>
@@ -41,8 +40,8 @@ export function CartaControls({ children, menu: _menu, config }: Props) {
     update()
     const ro = new ResizeObserver(update)
     ro.observe(nav)
-    return () => ro.disconnect()
-  }, [total]) // re-corre cuando total cambia (nav montado)
+    // cleanup implícito: cuando nav === null el componente ya se desmontó
+  }, [])
 
   const onScroll = useCallback(() => {
     const el = sliderRef.current
@@ -105,7 +104,7 @@ export function CartaControls({ children, menu: _menu, config }: Props) {
       </div>
 
       <CartaNav
-        ref={navRef}
+        ref={navRefCallback}
         current={current}
         total={total}
         pages={pages}
