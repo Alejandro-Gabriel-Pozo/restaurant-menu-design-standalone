@@ -47,6 +47,11 @@ export type SiteConfig = {
   // Colores carta — índice
   color_indice_numeros:         string
   color_indice_titulos:         string
+  color_indice_titulo:          string
+  // Colores carta — banda de sección
+  color_banda_etiqueta:         string
+  color_banda_titulo:           string
+  color_banda_descripcion:      string
   // Pertenencia
   mostrar_pertenencia:          string
   hosteria_nombre:              string
@@ -175,6 +180,10 @@ const defaults: SiteConfig = {
   color_nav_iconos:             "",
   color_indice_numeros:         "",
   color_indice_titulos:         "",
+  color_indice_titulo:          "",
+  color_banda_etiqueta:         "",
+  color_banda_titulo:           "",
+  color_banda_descripcion:      "",
   mostrar_pertenencia:          "",
   hosteria_nombre:              "",
   hosteria_url:                 "",
