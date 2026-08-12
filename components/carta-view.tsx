@@ -83,11 +83,17 @@ export function CartaView({ menu, config }: Props) {
   const bandaTituloColor   = config.color_banda_titulo      || null
   const bandaDescColor     = config.color_banda_descripcion || null
 
-  // Colores — items
+  // Colores — items regulares
   const itemNombreColor  = config.color_item_nombre      || null
   const itemPrecioColor  = config.color_item_precio      || null
   const itemDescColor    = config.color_item_descripcion || null
   const itemTagsColor    = config.color_item_tags        || null
+
+  // Colores — items especiales (fallback implícito: var(--primary) = color_marca)
+  const espNombreColor = config.color_especial_item_nombre      || null
+  const espPrecioColor = config.color_especial_item_precio      || null
+  const espDescColor   = config.color_especial_item_descripcion || null
+  const espTagsColor   = config.color_especial_item_tags        || null
 
   const logoFallback = nombre ? (
     <div
@@ -377,14 +383,26 @@ export function CartaView({ menu, config }: Props) {
             {/* ITEMS */}
             <ul className="divide-y divide-dotted divide-border/40 px-6 sm:px-10">
               {category.items.map((item) => {
-                // Color efectivo del nombre:
-                // 1. override del Sheet  2. especial → acento  3. foreground
-                const nombreColor: React.CSSProperties["color"] =
-                  itemNombreColor
-                    ? itemNombreColor
-                    : item.especial
-                      ? "var(--primary)"
-                      : undefined  // deja que Tailwind text-foreground actúe
+                const esp = item.especial
+
+                // Para cada componente: si el ítem es especial, usa color_especial_item_*
+                // (fallback var(--primary) = color_marca). Si es regular, usa color_item_*
+                // (fallback clases Tailwind de texto normal).
+                const nombreColor = esp
+                  ? (espNombreColor ?? "var(--primary)")
+                  : (itemNombreColor ?? undefined)
+
+                const precioColor = esp
+                  ? (espPrecioColor ?? "var(--primary)")
+                  : (itemPrecioColor ?? undefined)
+
+                const descColor = esp
+                  ? (espDescColor ?? undefined)   // especial sin override → Tailwind muted igual que regular
+                  : (itemDescColor ?? undefined)
+
+                const tagsColor = esp
+                  ? (espTagsColor ?? "var(--primary)")
+                  : (itemTagsColor ?? undefined)
 
                 return (
                   <li key={item.name} className="py-2.5">
@@ -394,10 +412,10 @@ export function CartaView({ menu, config }: Props) {
                         style={{ fontSize: fItemNombre, ...(nombreColor ? { color: nombreColor } : {}) }}
                       >
                         {item.name}
-                        {item.especial && (
+                        {esp && (
                           <span
                             className="ml-1 text-[8px]"
-                            style={{ color: itemNombreColor ?? "var(--primary)" }}
+                            style={{ color: espNombreColor ?? "var(--primary)" }}
                             aria-label="Especial"
                           >
                             {" ★"}
@@ -405,22 +423,16 @@ export function CartaView({ menu, config }: Props) {
                         )}
                       </h3>
                       <span
-                        className={`shrink-0 font-serif font-semibold ${!itemPrecioColor ? "text-primary" : ""}`}
-                        style={{
-                          fontSize: fItemPrecio,
-                          ...(itemPrecioColor ? { color: itemPrecioColor } : {}),
-                        }}
+                        className={`shrink-0 font-serif font-semibold ${!precioColor ? "text-primary" : ""}`}
+                        style={{ fontSize: fItemPrecio, ...(precioColor ? { color: precioColor } : {}) }}
                       >
                         {formatPrecio(item.price, config)}
                       </span>
                     </div>
                     {item.description && (
                       <p
-                        className={`mt-0.5 font-sans font-light leading-snug ${!itemDescColor ? "text-muted-foreground/75" : ""}`}
-                        style={{
-                          fontSize: fItemDesc,
-                          ...(itemDescColor ? { color: itemDescColor } : {}),
-                        }}
+                        className={`mt-0.5 font-sans font-light leading-snug ${!descColor ? "text-muted-foreground/75" : ""}`}
+                        style={{ fontSize: fItemDesc, ...(descColor ? { color: descColor } : {}) }}
                       >
                         {item.description}
                       </p>
@@ -430,11 +442,8 @@ export function CartaView({ menu, config }: Props) {
                         {item.tags.map((tag) => (
                           <span
                             key={tag}
-                            className={`inline-flex items-center gap-0.5 font-sans font-light uppercase tracking-wider ${!itemTagsColor ? "text-primary/50" : ""}`}
-                            style={{
-                              fontSize: fItemTags,
-                              ...(itemTagsColor ? { color: itemTagsColor } : {}),
-                            }}
+                            className={`inline-flex items-center gap-0.5 font-sans font-light uppercase tracking-wider ${!tagsColor ? "text-primary/50" : ""}`}
+                            style={{ fontSize: fItemTags, ...(tagsColor ? { color: tagsColor } : {}) }}
                           >
                             <TagIcon tag={tag} />{tag}
                           </span>

@@ -52,11 +52,16 @@ export type SiteConfig = {
   color_banda_etiqueta:         string
   color_banda_titulo:           string
   color_banda_descripcion:      string
-  // Colores carta — items
+  // Colores carta — items regulares
   color_item_nombre:            string
   color_item_precio:            string
   color_item_descripcion:       string
   color_item_tags:              string
+  // Colores carta — items especiales (fallback: color_marca / --primary)
+  color_especial_item_nombre:       string
+  color_especial_item_precio:       string
+  color_especial_item_descripcion:  string
+  color_especial_item_tags:         string
   // Pertenencia
   mostrar_pertenencia:          string
   hosteria_nombre:              string
@@ -193,6 +198,10 @@ const defaults: SiteConfig = {
   color_item_precio:            "",
   color_item_descripcion:       "",
   color_item_tags:              "",
+  color_especial_item_nombre:       "",
+  color_especial_item_precio:       "",
+  color_especial_item_descripcion:  "",
+  color_especial_item_tags:         "",
   mostrar_pertenencia:          "",
   hosteria_nombre:              "",
   hosteria_url:                 "",
