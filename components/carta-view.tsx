@@ -42,7 +42,7 @@ export function CartaView({ menu, config }: Props) {
   const imgOverlay      = (config.carta_imagen_overlay || "si") !== "no"
   const imgOpacidad     = Number(config.carta_imagen_opacidad) || 38
 
-  // Fuentes — banda de sección
+  // Fuentes — banda
   const fBandaEtiqueta   = normFuente(config.carta_fuente_banda_etiqueta)
   const fBandaTitulo     = normFuente(config.carta_fuente_banda_titulo)
   const fBandaDesc       = normFuente(config.carta_fuente_banda_descripcion)
@@ -67,22 +67,27 @@ export function CartaView({ menu, config }: Props) {
   const fIndiceCategoria = normFuente(config.carta_fuente_indice_categoria)
   const fIndiceItem      = normFuente(config.carta_fuente_indice_item)
 
-  // Textos editables desde Config
+  // Textos editables
   const txtPortadaCta       = config.carta_texto_portada_cta
   const txtPortadaSeparador = config.carta_texto_portada_separador
   const txtIndiceEtiqueta   = config.carta_texto_indice_etiqueta
   const txtIndiceTitulo     = config.carta_texto_indice_titulo
 
-  // Colores índice — opcionales, fallback a clases Tailwind si vacíos
-  const indiceNumColor    = config.color_indice_numeros || null
-  const indiceTituloColor = config.color_indice_titulos || null
-  // color_indice_titulo (singular) → título grande del índice
-  const indiceTituloH1Color = config.color_indice_titulo || null
+  // Colores — índice
+  const indiceNumColor      = config.color_indice_numeros || null
+  const indiceTituloColor   = config.color_indice_titulos || null
+  const indiceTituloH1Color = config.color_indice_titulo  || null
 
-  // Colores banda de sección — opcionales, fallback a clases Tailwind si vacíos
-  const bandaEtiquetaColor   = config.color_banda_etiqueta    || null
-  const bandaTituloColor     = config.color_banda_titulo      || null
-  const bandaDescColor       = config.color_banda_descripcion || null
+  // Colores — banda de sección
+  const bandaEtiquetaColor = config.color_banda_etiqueta    || null
+  const bandaTituloColor   = config.color_banda_titulo      || null
+  const bandaDescColor     = config.color_banda_descripcion || null
+
+  // Colores — items
+  const itemNombreColor  = config.color_item_nombre      || null
+  const itemPrecioColor  = config.color_item_precio      || null
+  const itemDescColor    = config.color_item_descripcion || null
+  const itemTagsColor    = config.color_item_tags        || null
 
   const logoFallback = nombre ? (
     <div
@@ -93,7 +98,7 @@ export function CartaView({ menu, config }: Props) {
     </div>
   ) : null
 
-  // ─── FRAGMENTO COMPARTIDO — overlay + textura ────────────────────────────
+  // ─── OVERLAY + TEXTURA ──────────────────────────────────────────────────
   const overlayYTextura = (
     <>
       {bgUrl && (
@@ -104,7 +109,7 @@ export function CartaView({ menu, config }: Props) {
     </>
   )
 
-  // ─── JSX PORTADA DESKTOP ─────────────────────────────────────────────────
+  // ─── PORTADA DESKTOP ────────────────────────────────────────────────────
   const portadaDesktop = (
     <div className="relative z-10 hidden h-full flex-col items-center justify-center gap-5 px-8 text-center sm:flex">
       {logoUrl
@@ -150,7 +155,7 @@ export function CartaView({ menu, config }: Props) {
     </div>
   )
 
-  // ─── JSX PORTADA MOBILE ──────────────────────────────────────────────────
+  // ─── PORTADA MOBILE ────────────────────────────────────────────────────
   const portadaMobile = (
     <>
       <div aria-hidden className="absolute z-[8] sm:hidden"
@@ -303,11 +308,8 @@ export function CartaView({ menu, config }: Props) {
         <div key={category.id} data-page={category.id} className="carta-page relative bg-background">
           <div className="flex h-full flex-col overflow-y-auto pb-14">
 
-            {/* ─── BANDA DE SECCIÓN ────────────────────────────────────── */}
-            <div
-              className="section-header-band relative shrink-0"
-              style={{ height: bandaAltoMobile }}
-            >
+            {/* BANDA */}
+            <div className="section-header-band relative shrink-0" style={{ height: bandaAltoMobile }}>
               <style>{`
                 @media (min-width: 640px) {
                   .section-header-band { height: ${bandaAltoDesktop} !important; }
@@ -332,26 +334,17 @@ export function CartaView({ menu, config }: Props) {
               {/* DESKTOP */}
               <div className="absolute inset-0 hidden flex-col justify-end overflow-hidden px-10 pb-3 pt-10 sm:flex" style={{ zIndex: 10 }}>
                 <p className="mb-0.5 font-sans font-light uppercase tracking-[0.4em] text-primary"
-                  style={{
-                    fontSize: fBandaEtiqueta,
-                    ...(bandaEtiquetaColor ? { color: bandaEtiquetaColor } : {}),
-                  }}>
+                  style={{ fontSize: fBandaEtiqueta, ...(bandaEtiquetaColor ? { color: bandaEtiquetaColor } : {}) }}>
                   {category.categoria ? `${category.categoria} · ` : ""}
                   {String(catIdx + 1).padStart(2, "0")} / {String(menu.length).padStart(2, "0")}
                 </p>
                 <h2 className="font-serif font-medium leading-tight tracking-tight text-foreground"
-                  style={{
-                    fontSize: fBandaTitulo,
-                    ...(bandaTituloColor ? { color: bandaTituloColor } : {}),
-                  }}>
+                  style={{ fontSize: fBandaTitulo, ...(bandaTituloColor ? { color: bandaTituloColor } : {}) }}>
                   {category.titulo_seccion}
                 </h2>
                 {category.description && (
                   <p className="mt-0.5 font-sans font-light leading-snug text-muted-foreground"
-                    style={{
-                      fontSize: fBandaDesc,
-                      ...(bandaDescColor ? { color: bandaDescColor } : {}),
-                    }}>
+                    style={{ fontSize: fBandaDesc, ...(bandaDescColor ? { color: bandaDescColor } : {}) }}>
                     {category.description}
                   </p>
                 )}
@@ -361,26 +354,17 @@ export function CartaView({ menu, config }: Props) {
               <div className="flex h-full items-center sm:hidden" style={{ position: "relative", zIndex: 10 }}>
                 <div className="flex flex-col justify-center gap-px px-4 py-2">
                   <p className="font-sans font-light uppercase tracking-[0.4em] text-primary"
-                    style={{
-                      fontSize: fBandaEtiqueta,
-                      ...(bandaEtiquetaColor ? { color: bandaEtiquetaColor } : {}),
-                    }}>
+                    style={{ fontSize: fBandaEtiqueta, ...(bandaEtiquetaColor ? { color: bandaEtiquetaColor } : {}) }}>
                     {category.categoria ? `${category.categoria} · ` : ""}
                     {String(catIdx + 1).padStart(2, "0")} / {String(menu.length).padStart(2, "0")}
                   </p>
                   <h2 className="font-serif font-medium leading-none tracking-tight text-foreground"
-                    style={{
-                      fontSize: fBandaTitulo,
-                      ...(bandaTituloColor ? { color: bandaTituloColor } : {}),
-                    }}>
+                    style={{ fontSize: fBandaTitulo, ...(bandaTituloColor ? { color: bandaTituloColor } : {}) }}>
                     {category.titulo_seccion}
                   </h2>
                   {category.description && (
                     <p className="font-sans font-light leading-none text-muted-foreground"
-                      style={{
-                        fontSize: fBandaDesc,
-                        ...(bandaDescColor ? { color: bandaDescColor } : {}),
-                      }}>
+                      style={{ fontSize: fBandaDesc, ...(bandaDescColor ? { color: bandaDescColor } : {}) }}>
                       {category.description}
                     </p>
                   )}
@@ -390,34 +374,55 @@ export function CartaView({ menu, config }: Props) {
               <div className="absolute bottom-0 left-0 right-0 h-px bg-primary/20" />
             </div>
 
-            {/* ─── ITEMS DE LA SECCIÓN ──────────────────────────────────── */}
+            {/* ITEMS */}
             <ul className="divide-y divide-dotted divide-border/40 px-6 sm:px-10">
               {category.items.map((item) => (
                 <li key={item.name} className="py-2.5">
                   <div className="flex items-baseline justify-between gap-3">
-                    <h3 className={`font-serif font-semibold leading-tight ${item.especial ? "text-primary" : "text-foreground"}`}
-                      style={{ fontSize: fItemNombre }}>
+                    <h3
+                      className={`font-serif font-semibold leading-tight ${!itemNombreColor && item.especial ? "text-primary" : !itemNombreColor ? "text-foreground" : ""}`}
+                      style={{
+                        fontSize: fItemNombre,
+                        ...(itemNombreColor ? { color: itemNombreColor } : {}),
+                      }}
+                    >
                       {item.name}
                       {item.especial && (
                         <span className="ml-1 text-[8px] text-primary" aria-label="Especial"> ★</span>
                       )}
                     </h3>
-                    <span className="shrink-0 font-serif font-semibold text-primary"
-                      style={{ fontSize: fItemPrecio }}>
+                    <span
+                      className={`shrink-0 font-serif font-semibold ${!itemPrecioColor ? "text-primary" : ""}`}
+                      style={{
+                        fontSize: fItemPrecio,
+                        ...(itemPrecioColor ? { color: itemPrecioColor } : {}),
+                      }}
+                    >
                       {formatPrecio(item.price, config)}
                     </span>
                   </div>
                   {item.description && (
-                    <p className="mt-0.5 font-sans font-light leading-snug text-muted-foreground/75"
-                      style={{ fontSize: fItemDesc }}>
+                    <p
+                      className={`mt-0.5 font-sans font-light leading-snug ${!itemDescColor ? "text-muted-foreground/75" : ""}`}
+                      style={{
+                        fontSize: fItemDesc,
+                        ...(itemDescColor ? { color: itemDescColor } : {}),
+                      }}
+                    >
                       {item.description}
                     </p>
                   )}
                   {item.tags && item.tags.length > 0 && (
                     <div className="mt-1 flex flex-wrap gap-1.5">
                       {item.tags.map((tag) => (
-                        <span key={tag} className="inline-flex items-center gap-0.5 font-sans font-light uppercase tracking-wider text-primary/50"
-                          style={{ fontSize: fItemTags }}>
+                        <span
+                          key={tag}
+                          className={`inline-flex items-center gap-0.5 font-sans font-light uppercase tracking-wider ${!itemTagsColor ? "text-primary/50" : ""}`}
+                          style={{
+                            fontSize: fItemTags,
+                            ...(itemTagsColor ? { color: itemTagsColor } : {}),
+                          }}
+                        >
                           <TagIcon tag={tag} />{tag}
                         </span>
                       ))}
