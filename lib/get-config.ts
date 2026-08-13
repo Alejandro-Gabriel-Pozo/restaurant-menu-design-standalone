@@ -1,5 +1,5 @@
 import "server-only"
-import { fetchGviz } from "./gviz"
+import { fetchGviz, cellText } from "./gviz"
 export { normFuente, formatPrecio } from "./format-utils"
 
 export type SiteConfig = {
@@ -37,7 +37,7 @@ export type SiteConfig = {
   color_especial:               string
   color_cta:                    string
   color_tags:                   string
-  color_precio:                 string
+  color_precio:                string
   // Colores portada
   color_portada_textos:         string
   color_portada_cta:            string
@@ -296,9 +296,9 @@ export async function getConfig(
       const key = row.c[0]?.v != null
         ? String(row.c[0].v).trim() as keyof SiteConfig
         : undefined
-      const raw = row.c[1]?.v
-      const val = raw != null ? String(raw).trim() : ""
-      if (key && key in defaults && raw != null && val !== "") {
+      const cell = row.c[1] ?? null
+      const val  = cellText(cell)
+      if (key && key in defaults && val !== "") {
         config[key] = val
       }
     }

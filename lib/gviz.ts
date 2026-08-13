@@ -9,7 +9,7 @@
  */
 import "server-only"
 
-export type GvizCell     = { v: string | number | boolean | null }
+export type GvizCell     = { v: string | number | boolean | null; f?: string }
 export type GvizRow      = { c: (GvizCell | null)[] }
 export type GvizTable    = { cols: { label: string }[]; rows: GvizRow[] }
 export type GvizResponse = { table: GvizTable }
@@ -65,4 +65,16 @@ export function colGetter(table: GvizTable) {
     if (idx === -1) return null
     return row.c?.[idx]?.v ?? null
   }
+}
+
+/**
+ * Extrae el valor de texto de una celda gviz.
+ * Cuando gviz parsea un valor como número (ej: oklch(0.9176 ...)),
+ * usa `f` (formatted string) que preserva el texto original de la celda.
+ */
+export function cellText(cell: GvizCell | null | undefined): string {
+  if (cell == null || cell.v == null) return ""
+  // Si v es número, gviz truncó el string — usar f (formatted) si existe
+  if (typeof cell.v === "number") return cell.f ?? String(cell.v)
+  return String(cell.v)
 }
