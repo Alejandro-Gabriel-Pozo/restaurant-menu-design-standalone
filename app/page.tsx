@@ -91,7 +91,7 @@ export default async function HomePage() {
           {titulo && (
             <h1
               className="font-serif text-3xl font-medium leading-tight sm:text-4xl"
-              style={{ color: "var(--portal-titulo-color)" }}
+              style={{ color: "var(--portal-titulo-color, var(--foreground))" }}
             >
               {titulo}
             </h1>
