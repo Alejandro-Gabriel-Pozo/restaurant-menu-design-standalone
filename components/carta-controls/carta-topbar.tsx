@@ -4,12 +4,13 @@ import { normFuente } from "@/lib/format-utils"
 
 interface CartaTopbarProps {
   onPrint: () => void
-  config: Pick<SiteConfig, "topbar_back_label" | "topbar_back_size">
+  config: Pick<SiteConfig, "topbar_back_label" | "topbar_back_size" | "topbar_back_color">
 }
 
 export function CartaTopbar({ onPrint, config }: CartaTopbarProps) {
   const label = config.topbar_back_label || "← Menú"
   const size  = normFuente(config.topbar_back_size || "12px")
+  const color = config.topbar_back_color || null
 
   return (
     <div
@@ -24,7 +25,7 @@ export function CartaTopbar({ onPrint, config }: CartaTopbarProps) {
       <Link
         href="/"
         className="flex items-center gap-1.5 font-sans font-light uppercase tracking-[0.3em] text-foreground/50 transition-colors hover:text-foreground/80"
-        style={{ fontSize: size }}
+        style={{ fontSize: size, ...(color ? { color } : {}) }}
       >
         {label}
       </Link>
