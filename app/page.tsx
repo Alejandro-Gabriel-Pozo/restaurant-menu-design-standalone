@@ -5,7 +5,7 @@ import { getMenu }    from "@/lib/get-menu"
 import { MenuClient } from "@/components/menu-client"
 import { buildCssVars } from "@/lib/utils"
 
-export const revalidate = 3600
+export const revalidate = 0   // DEBUG: sin cache
 
 function extractUrl(raw: string): string {
   if (!raw) return ""
@@ -51,7 +51,13 @@ export default async function HomePage() {
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
     : ""
 
-  // ¿Todos los tenants tienen coordenadas?
+  // DEBUG — ver en Vercel logs
+  console.log("[portal] bgImage:", JSON.stringify(bgImage))
+  console.log("[portal] portal_bg_image_url raw:", JSON.stringify(rootConfig.portal_bg_image_url))
+  console.log("[portal] tenants pos sample:", JSON.stringify(
+    tenants.map(t => ({ id: t.tenant_id, pos_x: t.pos_x, pos_y: t.pos_y, pos_w: t.pos_w, pos_h: t.pos_h }))
+  ))
+
   const hasCoords = tenants.every(
     (t) =>
       t.pos_x !== undefined &&
@@ -59,6 +65,8 @@ export default async function HomePage() {
       t.pos_w !== undefined &&
       t.pos_h !== undefined
   )
+
+  console.log("[portal] hasCoords:", hasCoords, "bgImage truthy:", !!bgImage)
 
   return (
     <main
@@ -119,9 +127,7 @@ export default async function HomePage() {
       {/* Mapa con cards — mismo layout mobile y desktop */}
       {bgImage && hasCoords ? (
         <section className="relative mx-auto w-full px-4 pb-10 pt-4" style={{ maxWidth: "600px" }}>
-          {/* Contenedor relativo que mantiene aspect-ratio del mapa */}
           <div className="relative w-full" style={{ aspectRatio: "1080/1533" }}>
-            {/* Imagen del mapa */}
             {bgOverlay > 0 && (
               <div
                 aria-hidden
@@ -137,8 +143,6 @@ export default async function HomePage() {
               className="absolute inset-0 h-full w-full rounded-xl object-cover"
               loading="eager"
             />
-
-            {/* Cards: posición y tamaño exactos sobre el mapa */}
             {tenants.map((t) => (
               <Link
                 key={t.tenant_id}
@@ -192,7 +196,6 @@ export default async function HomePage() {
           </div>
         </section>
       ) : (
-        /* Fallback grid cuando no hay imagen o no hay coordenadas */
         <section className="mx-auto max-w-xl px-6 py-6">
           <ul className="grid gap-3" role="list">
             {tenants.map((t) => (
