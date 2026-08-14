@@ -7,19 +7,11 @@ import { buildCssVars } from "@/lib/utils"
 
 export const revalidate = 3600
 
-/**
- * Extrae URL limpia de:
- *  - texto plano:            "https://..."
- *  - formato markdown:       "[texto](https://...)"
- *  - URL entre paréntesis:   "(https://...)"
- */
 function extractUrl(raw: string): string {
   if (!raw) return ""
   const s = raw.trim()
-  // markdown: [texto](url)
   const md = s.match(/\[.*?\]\((.+?)\)/)
   if (md) return md[1].trim()
-  // solo paréntesis: (url)
   const paren = s.match(/^\((.+)\)$/)
   if (paren) return paren[1].trim()
   return s
@@ -38,7 +30,7 @@ export default async function HomePage() {
     )
   }
 
-  // ── Modo multi: leer config del portal ─────────────────────────────────────
+  // ── Modo multi ─────────────────────────────────────────────────────────────
   const portalSheetId =
     process.env.ROOT_SHEET_ID ||
     process.env.MASTER_SHEET_ID ||
@@ -48,50 +40,34 @@ export default async function HomePage() {
     () => ({} as Awaited<ReturnType<typeof getConfig>>)
   )
 
-  const empresa    = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
-  const logoUrl    = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
-  const etiqueta   = rootConfig.portal_etiqueta  || ""
-  const titulo     = rootConfig.portal_titulo    || ""
-  const bgImage    = extractUrl(rootConfig.portal_bg_image_url || "")
-  const bgOverlay  = parseFloat(rootConfig.portal_bg_overlay || "0.35")
-  const fondoDia   = rootConfig.color_fondo_dia  || "#0f0f0f"
-  const copyright  = rootConfig.footer_texto_derechos
+  const empresa   = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
+  const logoUrl   = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
+  const etiqueta  = rootConfig.portal_etiqueta  || ""
+  const titulo    = rootConfig.portal_titulo    || ""
+  const bgImage   = extractUrl(rootConfig.portal_bg_image_url || "")
+  const bgOverlay = Math.max(0, Math.min(1, parseFloat(rootConfig.portal_bg_overlay || "0") || 0))
+  const fondoDia  = rootConfig.color_fondo_dia  || "#0f0f0f"
+  const copyright = rootConfig.footer_texto_derechos
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
     : ""
+
+  // Estilo base del <main>: imagen de fondo directo (sin z-index games)
+  const mainBg: React.CSSProperties = bgImage
+    ? {
+        backgroundImage: bgOverlay > 0
+          ? `linear-gradient(oklch(0 0 0 / ${bgOverlay}), oklch(0 0 0 / ${bgOverlay})), url(${bgImage})`
+          : `url(${bgImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "local",
+      }
+    : { backgroundColor: fondoDia }
 
   return (
     <main
       className="relative min-h-screen"
-      style={{
-        ...buildCssVars(rootConfig),
-        // Sin imagen: fondo sólido de color_fondo_dia
-        // Con imagen: transparente para dejar pasar el div fixed
-        backgroundColor: bgImage ? "transparent" : fondoDia,
-      }}
+      style={{ ...buildCssVars(rootConfig), ...mainBg }}
     >
-      {/* ─ Imagen de fondo fija ──────────────────────────────────────────── */}
-      {bgImage && (
-        <>
-          <div
-            aria-hidden
-            className="pointer-events-none fixed inset-0 -z-10"
-            style={{
-              backgroundImage: `url(${bgImage})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundAttachment: "fixed",
-            }}
-          />
-          {bgOverlay > 0 && (
-            <div
-              aria-hidden
-              className="pointer-events-none fixed inset-0 -z-10"
-              style={{ backgroundColor: `oklch(0 0 0 / ${bgOverlay})` }}
-            />
-          )}
-        </>
-      )}
-
       {/* Hover states */}
       <style>{`
         .portal-card:hover .portal-card-label {
@@ -102,12 +78,12 @@ export default async function HomePage() {
         }
       `}</style>
 
-      {/* ─ Header ────────────────────────────────────────────────────── */}
+      {/* Header */}
       <header
         className="border-b border-border/50 px-8 py-6"
         style={{
           backgroundColor: "var(--portal-header-bg, transparent)",
-          color:           "var(--portal-header-color)",
+          color: "var(--portal-header-color)",
         }}
       >
         <div className="mx-auto flex max-w-4xl items-center gap-4">
@@ -121,14 +97,12 @@ export default async function HomePage() {
             />
           )}
           {empresa && (
-            <span className="font-serif text-xl font-medium">
-              {empresa}
-            </span>
+            <span className="font-serif text-xl font-medium">{empresa}</span>
           )}
         </div>
       </header>
 
-      {/* ─ Hero ─────────────────────────────────────────────────────────── */}
+      {/* Hero */}
       {(etiqueta || titulo) && (
         <section className="mx-auto max-w-4xl px-8 pb-4 pt-16">
           {etiqueta && (
@@ -150,7 +124,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ─ Grid de sucursales ────────────────────────────────────────────── */}
+      {/* Grid */}
       <section className="mx-auto max-w-4xl px-8 py-10">
         <ul
           className="grid gap-4"
@@ -164,7 +138,7 @@ export default async function HomePage() {
                 className="portal-card group flex items-center justify-between rounded-xl border shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
                 style={{
                   backgroundColor: "var(--portal-card-bg)",
-                  borderColor:     "var(--portal-card-border)",
+                  borderColor: "var(--portal-card-border)",
                 }}
               >
                 <div className="flex flex-1 items-center justify-between px-6 py-5">
@@ -202,13 +176,12 @@ export default async function HomePage() {
         </ul>
       </section>
 
-      {/* ─ Footer ────────────────────────────────────────────────────────── */}
+      {/* Footer */}
       {copyright && (
         <footer className="border-t border-border/40 py-6 text-center text-xs text-muted-foreground">
           {copyright}
         </footer>
       )}
-
     </main>
   )
 }
