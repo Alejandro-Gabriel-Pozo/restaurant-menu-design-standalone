@@ -9,7 +9,7 @@ export type Tenant = {
   sheet_name: string
   activo:     boolean
   notas?:     string
-  /** Posición sobre el mapa: centro % (0-100). Si están definidos los 4, el card se overlay exacto. */
+  /** Posición sobre el mapa: centro % (0-100). Los 4 juntos habilitan el overlay exacto. */
   pos_x?: number
   pos_y?: number
   pos_w?: number
@@ -17,7 +17,7 @@ export type Tenant = {
 }
 
 /**
- * Lee la tab "Tenants" de la sheet maestra (MASTER_SHEET_ID).
+ * Lee la tab "tenant" de la sheet maestra (MASTER_SHEET_ID).
  * Devuelve solo los tenants activos. ISR 1h.
  */
 export async function getTenants(): Promise<Tenant[]> {
@@ -28,7 +28,7 @@ export async function getTenants(): Promise<Tenant[]> {
   }
 
   try {
-    const table = await fetchGviz(masterId, "Tenants")
+    const table = await fetchGviz(masterId, "tenant")
     const get   = colGetter(table)
 
     return table.rows
