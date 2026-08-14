@@ -7,12 +7,22 @@ import { buildCssVars } from "@/lib/utils"
 
 export const revalidate = 3600
 
-/** Extrae una URL limpia aunque venga en formato markdown [texto](url) */
+/**
+ * Extrae URL limpia de:
+ *  - texto plano:            "https://..."
+ *  - formato markdown:       "[texto](https://...)"
+ *  - URL entre paréntesis:   "(https://...)"
+ */
 function extractUrl(raw: string): string {
   if (!raw) return ""
-  const mdMatch = raw.match(/\[.*?\]\((.+?)\)/)
-  if (mdMatch) return mdMatch[1].trim()
-  return raw.trim()
+  const s = raw.trim()
+  // markdown: [texto](url)
+  const md = s.match(/\[.*?\]\((.+?)\)/)
+  if (md) return md[1].trim()
+  // solo paréntesis: (url)
+  const paren = s.match(/^\((.+)\)$/)
+  if (paren) return paren[1].trim()
+  return s
 }
 
 export default async function HomePage() {
@@ -38,13 +48,14 @@ export default async function HomePage() {
     () => ({} as Awaited<ReturnType<typeof getConfig>>)
   )
 
-  const empresa   = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
-  const logoUrl   = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
-  const etiqueta  = rootConfig.portal_etiqueta  || ""
-  const titulo    = rootConfig.portal_titulo    || ""
-  const bgImage   = extractUrl(rootConfig.portal_bg_image_url || "")
-  const bgOverlay = parseFloat(rootConfig.portal_bg_overlay || "0.35")
-  const copyright = rootConfig.footer_texto_derechos
+  const empresa    = rootConfig.empresa_nombre   || rootConfig.restaurante_nombre   || ""
+  const logoUrl    = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
+  const etiqueta   = rootConfig.portal_etiqueta  || ""
+  const titulo     = rootConfig.portal_titulo    || ""
+  const bgImage    = extractUrl(rootConfig.portal_bg_image_url || "")
+  const bgOverlay  = parseFloat(rootConfig.portal_bg_overlay || "0.35")
+  const fondoDia   = rootConfig.color_fondo_dia  || "#0f0f0f"
+  const copyright  = rootConfig.footer_texto_derechos
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
     : ""
 
@@ -53,10 +64,12 @@ export default async function HomePage() {
       className="relative min-h-screen"
       style={{
         ...buildCssVars(rootConfig),
-        backgroundColor: bgImage ? "transparent" : "var(--background, var(--color-bg))",
+        // Sin imagen: fondo sólido de color_fondo_dia
+        // Con imagen: transparente para dejar pasar el div fixed
+        backgroundColor: bgImage ? "transparent" : fondoDia,
       }}
     >
-      {/* Imagen de fondo fija */}
+      {/* ─ Imagen de fondo fija ──────────────────────────────────────────── */}
       {bgImage && (
         <>
           <div
@@ -89,7 +102,7 @@ export default async function HomePage() {
         }
       `}</style>
 
-      {/* Header */}
+      {/* ─ Header ────────────────────────────────────────────────────── */}
       <header
         className="border-b border-border/50 px-8 py-6"
         style={{
@@ -115,7 +128,7 @@ export default async function HomePage() {
         </div>
       </header>
 
-      {/* Hero */}
+      {/* ─ Hero ─────────────────────────────────────────────────────────── */}
       {(etiqueta || titulo) && (
         <section className="mx-auto max-w-4xl px-8 pb-4 pt-16">
           {etiqueta && (
@@ -137,7 +150,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Grid de sucursales */}
+      {/* ─ Grid de sucursales ────────────────────────────────────────────── */}
       <section className="mx-auto max-w-4xl px-8 py-10">
         <ul
           className="grid gap-4"
@@ -176,7 +189,7 @@ export default async function HomePage() {
                     viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth="1.75"
                     strokeLinecap="round" strokeLinejoin="round"
-                    className="shrink-0 transition-transform group-hover:translate-x-1 group-hover:text-primary"
+                    className="shrink-0 transition-transform group-hover:translate-x-1"
                     style={{ color: "var(--portal-card-flecha-color)" }}
                     aria-hidden
                   >
@@ -189,7 +202,7 @@ export default async function HomePage() {
         </ul>
       </section>
 
-      {/* Footer */}
+      {/* ─ Footer ────────────────────────────────────────────────────────── */}
       {copyright && (
         <footer className="border-t border-border/40 py-6 text-center text-xs text-muted-foreground">
           {copyright}
