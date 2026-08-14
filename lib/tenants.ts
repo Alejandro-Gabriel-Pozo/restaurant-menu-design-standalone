@@ -9,6 +9,11 @@ export type Tenant = {
   sheet_name: string
   activo:     boolean
   notas?:     string
+  /** Posición sobre el mapa: centro % (0-100). Si están definidos los 4, el card se overlay exacto. */
+  pos_x?: number
+  pos_y?: number
+  pos_w?: number
+  pos_h?: number
 }
 
 /**
@@ -33,13 +38,20 @@ export async function getTenants(): Promise<Tenant[]> {
         const sheetId  = String(get(row, "sheet_id")  ?? "").trim()
         if (!tenantId || !sheetId) return null
 
-        const activoRaw  = get(row, "activo")
+        const activoRaw = get(row, "activo")
         const activo =
           typeof activoRaw === "boolean"
             ? activoRaw
             : String(activoRaw).toLowerCase() === "true"
 
         const notasRaw = get(row, "notas")
+
+        const parsePos = (key: string) => {
+          const v = get(row, key)
+          if (v === null || v === undefined || v === "") return undefined
+          const n = parseFloat(String(v))
+          return isNaN(n) ? undefined : n
+        }
 
         return {
           tenant_id:  tenantId,
@@ -49,6 +61,10 @@ export async function getTenants(): Promise<Tenant[]> {
           sheet_name: String(get(row, "sheet_name") ?? "Menu").trim() || "Menu",
           activo,
           notas: notasRaw ? String(notasRaw).trim() : undefined,
+          pos_x: parsePos("pos_x"),
+          pos_y: parsePos("pos_y"),
+          pos_w: parsePos("pos_w"),
+          pos_h: parsePos("pos_h"),
         } satisfies Tenant
       })
       .filter((t): t is Tenant => t !== null && t.activo)
