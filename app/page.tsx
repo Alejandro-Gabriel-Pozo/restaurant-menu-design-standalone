@@ -34,14 +34,39 @@ export default async function HomePage() {
   const logoUrl   = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
   const etiqueta  = rootConfig.portal_etiqueta  || ""
   const titulo    = rootConfig.portal_titulo    || ""
+  const bgImage   = rootConfig.portal_bg_image_url || ""
+  const bgOverlay = parseFloat(rootConfig.portal_bg_overlay || "0.35")
   const copyright = rootConfig.footer_texto_derechos
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
     : ""
 
   return (
-    <main className="min-h-screen bg-background" style={buildCssVars(rootConfig)}>
+    <main
+      className="relative min-h-screen bg-background"
+      style={buildCssVars(rootConfig)}
+    >
+      {/* Imagen de fondo del portal */}
+      {bgImage && (
+        <>
+          <div
+            aria-hidden
+            className="pointer-events-none fixed inset-0 -z-10"
+            style={{
+              backgroundImage: `url(${bgImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundAttachment: "fixed",
+            }}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none fixed inset-0 -z-10"
+            style={{ backgroundColor: `oklch(0 0 0 / ${bgOverlay})` }}
+          />
+        </>
+      )}
 
-      {/* Hover states: no se pueden hacer con CSS vars puras, necesitan :hover selector */}
+      {/* Hover states */}
       <style>{`
         .portal-card:hover .portal-card-label {
           color: var(--portal-card-color-hover, var(--portal-card-color, inherit)) !important;
@@ -55,7 +80,7 @@ export default async function HomePage() {
       <header
         className="border-b border-border/50 px-8 py-6"
         style={{
-          backgroundColor: "var(--portal-header-bg)",
+          backgroundColor: bgImage ? "transparent" : "var(--portal-header-bg)",
           color:           "var(--portal-header-color)",
         }}
       >

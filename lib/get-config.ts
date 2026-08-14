@@ -74,6 +74,8 @@ export type SiteConfig = {
   portal_etiqueta:              string
   portal_titulo:                string
   portal_titulo_color:          string
+  portal_bg_image_url:          string
+  portal_bg_overlay:            string
   portal_card_color:            string
   portal_card_color_hover:      string
   portal_card_border_hover:     string
@@ -213,6 +215,8 @@ const defaults: SiteConfig = {
   portal_etiqueta:              "",
   portal_titulo:                "",
   portal_titulo_color:          "",
+  portal_bg_image_url:          "",
+  portal_bg_overlay:            "0.35",
   portal_card_color:            "",
   portal_card_color_hover:      "",
   portal_card_border_hover:     "",
