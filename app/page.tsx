@@ -7,6 +7,14 @@ import { buildCssVars } from "@/lib/utils"
 
 export const revalidate = 3600
 
+/** Extrae una URL limpia aunque venga en formato markdown [texto](url) */
+function extractUrl(raw: string): string {
+  if (!raw) return ""
+  const mdMatch = raw.match(/\[.*?\]\((.+?)\)/)
+  if (mdMatch) return mdMatch[1].trim()
+  return raw.trim()
+}
+
 export default async function HomePage() {
   const tenants = await getTenants()
 
@@ -34,7 +42,7 @@ export default async function HomePage() {
   const logoUrl   = rootConfig.empresa_logo_url || rootConfig.restaurante_logo_url || ""
   const etiqueta  = rootConfig.portal_etiqueta  || ""
   const titulo    = rootConfig.portal_titulo    || ""
-  const bgImage   = rootConfig.portal_bg_image_url || ""
+  const bgImage   = extractUrl(rootConfig.portal_bg_image_url || "")
   const bgOverlay = parseFloat(rootConfig.portal_bg_overlay || "0.35")
   const copyright = rootConfig.footer_texto_derechos
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
@@ -43,8 +51,6 @@ export default async function HomePage() {
   return (
     <main
       className="relative min-h-screen"
-      // Sin imagen: usa color_fondo_dia via --background
-      // Con imagen: transparente para que se vea el fondo
       style={{
         ...buildCssVars(rootConfig),
         backgroundColor: bgImage ? "transparent" : "var(--background, var(--color-bg))",
