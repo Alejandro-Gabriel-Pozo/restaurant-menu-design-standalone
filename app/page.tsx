@@ -51,12 +51,10 @@ export default async function HomePage() {
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
     : ""
 
-  // Tenants con coordenadas (al menos pos_x/y/w). pos_h tiene fallback 5%.
   const tenantsConPos = tenants.filter(
     (t) => t.pos_x !== undefined && t.pos_y !== undefined && t.pos_w !== undefined
   )
 
-  // Modo mapa: bgImage existe Y al menos un tenant tiene coordenadas
   const useMapLayout = !!bgImage && tenantsConPos.length > 0
 
   return (
@@ -135,12 +133,12 @@ export default async function HomePage() {
               loading="eager"
             />
             {tenantsConPos.map((t) => {
-              const pH = t.pos_h ?? 5   // fallback 5% si no vino pos_h
+              const pH = t.pos_h ?? 5
               return (
                 <Link
                   key={t.tenant_id}
                   href={`/carta/${t.tenant_id}`}
-                  className="portal-card group absolute z-10 flex items-center justify-between overflow-hidden rounded-md border backdrop-blur-sm transition-all active:scale-[0.97]"
+                  className="portal-card group absolute z-10 flex items-center justify-between overflow-hidden rounded-md border transition-all active:scale-[0.97]"
                   style={{
                     left:      `${t.pos_x}%`,
                     top:       `${t.pos_y}%`,
