@@ -42,10 +42,15 @@ export default async function HomePage() {
 
   return (
     <main
-      className="relative min-h-screen bg-background"
-      style={buildCssVars(rootConfig)}
+      className="relative min-h-screen"
+      // Sin imagen: usa color_fondo_dia via --background
+      // Con imagen: transparente para que se vea el fondo
+      style={{
+        ...buildCssVars(rootConfig),
+        backgroundColor: bgImage ? "transparent" : "var(--background, var(--color-bg))",
+      }}
     >
-      {/* Imagen de fondo del portal */}
+      {/* Imagen de fondo fija */}
       {bgImage && (
         <>
           <div
@@ -58,11 +63,13 @@ export default async function HomePage() {
               backgroundAttachment: "fixed",
             }}
           />
-          <div
-            aria-hidden
-            className="pointer-events-none fixed inset-0 -z-10"
-            style={{ backgroundColor: `oklch(0 0 0 / ${bgOverlay})` }}
-          />
+          {bgOverlay > 0 && (
+            <div
+              aria-hidden
+              className="pointer-events-none fixed inset-0 -z-10"
+              style={{ backgroundColor: `oklch(0 0 0 / ${bgOverlay})` }}
+            />
+          )}
         </>
       )}
 
@@ -80,7 +87,7 @@ export default async function HomePage() {
       <header
         className="border-b border-border/50 px-8 py-6"
         style={{
-          backgroundColor: bgImage ? "transparent" : "var(--portal-header-bg)",
+          backgroundColor: "var(--portal-header-bg, transparent)",
           color:           "var(--portal-header-color)",
         }}
       >
