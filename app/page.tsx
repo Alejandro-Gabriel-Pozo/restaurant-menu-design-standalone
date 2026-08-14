@@ -5,7 +5,7 @@ import { getMenu }    from "@/lib/get-menu"
 import { MenuClient } from "@/components/menu-client"
 import { buildCssVars } from "@/lib/utils"
 
-export const revalidate = 0   // DEBUG: sin cache
+export const revalidate = 3600
 
 function extractUrl(raw: string): string {
   if (!raw) return ""
@@ -51,22 +51,13 @@ export default async function HomePage() {
     ? `© ${new Date().getFullYear()} ${rootConfig.footer_texto_derechos}`
     : ""
 
-  // DEBUG — ver en Vercel logs
-  console.log("[portal] bgImage:", JSON.stringify(bgImage))
-  console.log("[portal] portal_bg_image_url raw:", JSON.stringify(rootConfig.portal_bg_image_url))
-  console.log("[portal] tenants pos sample:", JSON.stringify(
-    tenants.map(t => ({ id: t.tenant_id, pos_x: t.pos_x, pos_y: t.pos_y, pos_w: t.pos_w, pos_h: t.pos_h }))
-  ))
-
-  const hasCoords = tenants.every(
-    (t) =>
-      t.pos_x !== undefined &&
-      t.pos_y !== undefined &&
-      t.pos_w !== undefined &&
-      t.pos_h !== undefined
+  // Tenants con coordenadas (al menos pos_x/y/w). pos_h tiene fallback 5%.
+  const tenantsConPos = tenants.filter(
+    (t) => t.pos_x !== undefined && t.pos_y !== undefined && t.pos_w !== undefined
   )
 
-  console.log("[portal] hasCoords:", hasCoords, "bgImage truthy:", !!bgImage)
+  // Modo mapa: bgImage existe Y al menos un tenant tiene coordenadas
+  const useMapLayout = !!bgImage && tenantsConPos.length > 0
 
   return (
     <main
@@ -124,8 +115,8 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Mapa con cards — mismo layout mobile y desktop */}
-      {bgImage && hasCoords ? (
+      {/* ── MAPA ── */}
+      {useMapLayout ? (
         <section className="relative mx-auto w-full px-4 pb-10 pt-4" style={{ maxWidth: "600px" }}>
           <div className="relative w-full" style={{ aspectRatio: "1080/1533" }}>
             {bgOverlay > 0 && (
@@ -143,59 +134,63 @@ export default async function HomePage() {
               className="absolute inset-0 h-full w-full rounded-xl object-cover"
               loading="eager"
             />
-            {tenants.map((t) => (
-              <Link
-                key={t.tenant_id}
-                href={`/carta/${t.tenant_id}`}
-                className="portal-card group absolute z-10 flex items-center justify-between overflow-hidden rounded-md border backdrop-blur-sm transition-all active:scale-[0.97]"
-                style={{
-                  left:      `${t.pos_x}%`,
-                  top:       `${t.pos_y}%`,
-                  width:     `${t.pos_w}%`,
-                  height:    `${t.pos_h}%`,
-                  transform: "translate(-50%, -50%)",
-                  backgroundColor: "var(--portal-card-bg)",
-                  borderColor:     "var(--portal-card-border)",
-                  padding: "0 2% 0 3%",
-                }}
-              >
-                <div className="min-w-0 flex-1">
-                  <p
-                    className="portal-card-label truncate font-serif font-medium leading-tight transition-colors"
-                    style={{
-                      color:    "var(--portal-card-color)",
-                      fontSize: "clamp(0.6rem, 1.8vw, 0.95rem)",
-                    }}
-                  >
-                    {t.label}
-                  </p>
-                  {t.notas && (
+            {tenantsConPos.map((t) => {
+              const pH = t.pos_h ?? 5   // fallback 5% si no vino pos_h
+              return (
+                <Link
+                  key={t.tenant_id}
+                  href={`/carta/${t.tenant_id}`}
+                  className="portal-card group absolute z-10 flex items-center justify-between overflow-hidden rounded-md border backdrop-blur-sm transition-all active:scale-[0.97]"
+                  style={{
+                    left:      `${t.pos_x}%`,
+                    top:       `${t.pos_y}%`,
+                    width:     `${t.pos_w}%`,
+                    height:    `${pH}%`,
+                    transform: "translate(-50%, -50%)",
+                    backgroundColor: "var(--portal-card-bg)",
+                    borderColor:     "var(--portal-card-border)",
+                    padding: "0 2% 0 3%",
+                  }}
+                >
+                  <div className="min-w-0 flex-1">
                     <p
-                      className="truncate"
+                      className="portal-card-label truncate font-serif font-medium leading-tight transition-colors"
                       style={{
-                        color:    "var(--portal-card-notas-color, var(--muted-foreground))",
-                        fontSize: "clamp(0.5rem, 1.2vw, 0.75rem)",
+                        color:    "var(--portal-card-color)",
+                        fontSize: "clamp(0.6rem, 1.8vw, 0.95rem)",
                       }}
                     >
-                      {t.notas}
+                      {t.label}
                     </p>
-                  )}
-                </div>
-                <svg
-                  width="10" height="10" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="2"
-                  strokeLinecap="round" strokeLinejoin="round"
-                  className="shrink-0 transition-transform group-hover:translate-x-0.5"
-                  style={{ color: "var(--portal-card-flecha-color)", marginLeft: "2%" }}
-                  aria-hidden
-                >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </Link>
-            ))}
+                    {t.notas && (
+                      <p
+                        className="truncate"
+                        style={{
+                          color:    "var(--portal-card-notas-color, var(--muted-foreground))",
+                          fontSize: "clamp(0.5rem, 1.2vw, 0.75rem)",
+                        }}
+                      >
+                        {t.notas}
+                      </p>
+                    )}
+                  </div>
+                  <svg
+                    width="10" height="10" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth="2"
+                    strokeLinecap="round" strokeLinejoin="round"
+                    className="shrink-0 transition-transform group-hover:translate-x-0.5"
+                    style={{ color: "var(--portal-card-flecha-color)", marginLeft: "2%" }}
+                    aria-hidden
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              )
+            })}
           </div>
         </section>
       ) : (
+        /* ── FALLBACK GRID ── */
         <section className="mx-auto max-w-xl px-6 py-6">
           <ul className="grid gap-3" role="list">
             {tenants.map((t) => (
