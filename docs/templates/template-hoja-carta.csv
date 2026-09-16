@@ -4,10 +4,12 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # TAB: Menu
 # Fila 1 = encabezados. Columnas mínimas requeridas.
+# titulo_seccion / descripcion_seccion / imagen_seccion_url son por categoría:
+# repetí el mismo valor en todas las filas que comparten esa categoria.
 # ─────────────────────────────────────────────────────────────────────────────
-nombre,precio,descripcion,categoria,tags,disponible,destacado,imagen_url
-Empanadas de carne,1800,Rellenas con carne cortada a cuchillo,Entradas,"carne, horno",TRUE,FALSE,
-Especialidad del chef,3500,Descripción del plato estrella,Principales,"sin tacc",TRUE,TRUE,
+orden,categoria,titulo_seccion,descripcion_seccion,imagen_seccion_url,platillo,descripcion,precio,disponible,tags,especial
+1,Entradas,Entradas,,,Empanadas de carne,Rellenas con carne cortada a cuchillo,1800,TRUE,"carne, horno",FALSE
+2,Principales,Principales,,,Especialidad del chef,Descripción del plato estrella,3500,TRUE,"sin tacc",TRUE
 #
 # ─────────────────────────────────────────────────────────────────────────────
 # TAB: Config  (col A = clave, col B = valor)
