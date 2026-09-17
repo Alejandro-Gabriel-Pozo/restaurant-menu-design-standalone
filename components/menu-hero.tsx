@@ -1,5 +1,5 @@
 import type { SiteConfig } from "@/lib/get-config"
-import { resolvePosClasses, isTruthy } from "@/lib/hero-utils"
+import { resolvePosClasses } from "@/lib/hero-utils"
 import { LogoWithFallback } from "@/components/logo-with-fallback"
 
 interface MenuHeroProps {
@@ -9,8 +9,6 @@ interface MenuHeroProps {
 
 export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
   // ─── CÁLCULOS DE CONFIG ──────────────────────────────────────────────────────
-  const mostrarParteDe   = isTruthy(config.mostrar_pertenencia)
-  const tienePertenencia = config.hosteria_nombre || config.empresa_nombre
   const acento           = config.hero_color_fondo || "#E8B84B"
   const ctaHref          = firstCategoryId ? `#${firstCategoryId}` : "#entrada"
 
@@ -119,18 +117,6 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         ? <LogoWithFallback src={config.restaurante_logo_url} alt={config.restaurante_nombre} className="h-14 w-14 object-contain" fallback={logoFallback} />
         : logoFallback
       }
-      {mostrarParteDe && tienePertenencia && (
-        <p
-          className="uppercase tracking-[0.2em] leading-snug"
-          style={{ fontSize: "10px", color: "oklch(from var(--hero-ink) l c h / 0.55)" }}
-        >
-          Parte de{" "}
-          {config.hosteria_url ? <a href={config.hosteria_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.hosteria_nombre}</a> : config.hosteria_nombre}
-          {config.empresa_nombre && (
-            <>{" · "}{config.empresa_url ? <a href={config.empresa_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.empresa_nombre}</a> : config.empresa_nombre}</>
-          )}
-        </p>
-      )}
     </div>
   )
 
@@ -185,15 +171,6 @@ export function MenuHero({ config, firstCategoryId }: MenuHeroProps) {
         ? <LogoWithFallback src={config.restaurante_logo_url} alt={config.restaurante_nombre} className="h-16 w-16 object-contain" fallback={logoFallback} />
         : logoFallback
       }
-      {mostrarParteDe && tienePertenencia && (
-        <p className="font-sans text-xs uppercase tracking-[0.25em] text-center" style={{ color: "oklch(from var(--hero-ink) l c h / 0.55)" }}>
-          Parte de{" "}
-          {config.hosteria_url ? <a href={config.hosteria_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.hosteria_nombre}</a> : config.hosteria_nombre}
-          {config.empresa_nombre && (
-            <>{" · "}{config.empresa_url ? <a href={config.empresa_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{config.empresa_nombre}</a> : config.empresa_nombre}</>
-          )}
-        </p>
-      )}
     </div>
   )
 

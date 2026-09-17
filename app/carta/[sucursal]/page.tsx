@@ -4,9 +4,7 @@ import { getTenants }      from "@/lib/tenants"
 import { getMenu }         from "@/lib/get-menu"
 import { getConfig }       from "@/lib/get-config"
 import { CartaView }       from "@/components/carta-view"
-import { MenuFooter }      from "@/components/menu-footer"
 import { buildCssVars }    from "@/lib/utils"
-import { isTruthy }        from "@/lib/hero-utils"
 
 export const revalidate = 3600
 
@@ -38,7 +36,6 @@ export default async function CartaSucursalPage({ params }: Props) {
   return (
     <main className="min-h-screen bg-background" style={buildCssVars(config)}>
       <CartaView menu={menu} config={config} />
-      {isTruthy(config.mostrar_footer) && <MenuFooter config={config} />}
     </main>
   )
 }

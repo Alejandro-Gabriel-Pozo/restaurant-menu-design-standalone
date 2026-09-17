@@ -63,12 +63,7 @@ export type SiteConfig = {
   color_especial_item_descripcion:  string
   color_especial_item_tags:         string
   // Pertenencia
-  mostrar_pertenencia:          string
-  hosteria_nombre:              string
-  hosteria_url:                 string
-  hosteria_descripcion:         string
   empresa_nombre:               string
-  empresa_url:                  string
   empresa_logo_url:             string
   // Portal multisucursal
   portal_etiqueta:              string
@@ -90,20 +85,11 @@ export type SiteConfig = {
   topbar_back_label:            string
   topbar_back_size:             string
   topbar_back_color:            string
-  // Contacto / Footer
-  mostrar_footer:               string
-  restaurante_footer_direccion: string
+  // Contacto / redes (nav)
   restaurante_footer_maps_url:  string
-  restaurante_footer_telefono:  string
-  restaurante_footer_email:     string
-  restaurante_footer_horarios:  string
   restaurante_instagram:        string
   restaurante_facebook:         string
   restaurante_whatsapp:         string
-  // Colores footer
-  footer_bg:                    string
-  footer_color:                 string
-  footer_color_acento:          string
   // Precios
   precio_simbolo:               string
   precio_locale:                string
@@ -146,12 +132,7 @@ export type SiteConfig = {
   carta_texto_portada_separador:  string
   carta_texto_indice_etiqueta:    string
   carta_texto_indice_titulo:      string
-  // Textos footer
-  footer_texto_horarios:          string
-  footer_texto_contacto:          string
-  footer_texto_horarios_fallback: string
-  footer_texto_parte_de:          string
-  footer_texto_tipo:              string
+  // Texto footer (portal)
   footer_texto_derechos:          string
 }
 
@@ -205,12 +186,7 @@ const defaults: SiteConfig = {
   color_especial_item_precio:       "",
   color_especial_item_descripcion:  "",
   color_especial_item_tags:         "",
-  mostrar_pertenencia:          "",
-  hosteria_nombre:              "",
-  hosteria_url:                 "",
-  hosteria_descripcion:         "",
   empresa_nombre:               "",
-  empresa_url:                  "",
   empresa_logo_url:             "",
   portal_etiqueta:              "",
   portal_titulo:                "",
@@ -230,18 +206,10 @@ const defaults: SiteConfig = {
   topbar_back_label:            "← Menú",
   topbar_back_size:             "12px",
   topbar_back_color:            "",
-  mostrar_footer:               "",
-  restaurante_footer_direccion: "",
   restaurante_footer_maps_url:  "",
-  restaurante_footer_telefono:  "",
-  restaurante_footer_email:     "",
-  restaurante_footer_horarios:  "",
   restaurante_instagram:        "",
   restaurante_facebook:         "",
   restaurante_whatsapp:         "",
-  footer_bg:                    "",
-  footer_color:                 "",
-  footer_color_acento:          "",
   precio_simbolo:               "$",
   precio_locale:                "es-AR",
   precio_posicion:              "izquierda",
@@ -277,11 +245,6 @@ const defaults: SiteConfig = {
   carta_texto_portada_separador:  "",
   carta_texto_indice_etiqueta:    "",
   carta_texto_indice_titulo:      "",
-  footer_texto_horarios:          "",
-  footer_texto_contacto:          "",
-  footer_texto_horarios_fallback: "",
-  footer_texto_parte_de:          "",
-  footer_texto_tipo:              "",
   footer_texto_derechos:          "",
 }
 

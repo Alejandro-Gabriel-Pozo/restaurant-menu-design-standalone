@@ -5,7 +5,6 @@ import { MenuHero }     from "@/components/menu-hero"
 import { MenuNav }      from "@/components/menu-nav"
 import { MenuSection }  from "@/components/menu-section"
 import { SignatureDish } from "@/components/signature-dish"
-import { MenuFooter }   from "@/components/menu-footer"
 import { TagFilter }    from "@/components/tag-filter"
 import type { MenuCategory } from "@/lib/get-menu"
 import type { SiteConfig }   from "@/lib/get-config"
@@ -58,8 +57,6 @@ export function MenuClient({ menu, config }: { menu: MenuCategory[]; config: Sit
           ))}
         </div>
       )}
-
-      <MenuFooter config={config} />
     </>
   )
 }
