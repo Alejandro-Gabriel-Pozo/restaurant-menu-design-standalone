@@ -32,7 +32,7 @@ export async function getTenants(): Promise<Tenant[]> {
     const get   = colGetter(table)
 
     return table.rows
-      .map((row) => {
+      .map((row): Tenant | null => {
         if (!row.c) return null
         const tenantId = String(get(row, "tenant_id") ?? "").trim()
         const sheetId  = String(get(row, "sheet_id")  ?? "").trim()
@@ -65,7 +65,7 @@ export async function getTenants(): Promise<Tenant[]> {
           pos_y: parsePos("pos_y"),
           pos_w: parsePos("pos_w"),
           pos_h: parsePos("pos_h"),
-        } satisfies Tenant
+        }
       })
       .filter((t): t is Tenant => t !== null && t.activo)
   } catch (err) {
