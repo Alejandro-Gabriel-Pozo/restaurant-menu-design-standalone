@@ -65,6 +65,9 @@ export const CartaNav = forwardRef<HTMLElement, CartaNavProps>(function CartaNav
     !pages[current].startsWith("portada") &&
     !pages[current].startsWith("indice")
 
+  // Invita a deslizar: la flecha "siguiente" late mientras se está en portada/índice
+  const nudge = current < 2
+
   const flechaColor  = config.color_nav_flechas || null
   const iconoColor   = config.color_nav_iconos  || null
   const flechaStyle  = flechaColor ? { color: flechaColor } : undefined
@@ -78,16 +81,31 @@ export const CartaNav = forwardRef<HTMLElement, CartaNavProps>(function CartaNav
       className="absolute bottom-0 left-0 right-0 z-40 backdrop-blur-sm bg-background/90"
       style={{ borderTop: "1px solid oklch(from var(--border) l c h / 0.4)" }}
     >
+      <style>{`
+        @media (prefers-reduced-motion: no-preference) {
+          .carta-nudge:not(:disabled) { animation: carta-nudge 1.6s ease-in-out infinite; }
+          .carta-scroll-hint { animation: carta-bounce 1.4s ease-in-out infinite; }
+        }
+        @keyframes carta-nudge {
+          0%, 100% { transform: translateX(0); }
+          50%      { transform: translateX(6px); }
+        }
+        @keyframes carta-bounce {
+          0%, 100% { transform: translateY(0); }
+          50%      { transform: translateY(4px); }
+        }
+      `}</style>
+
       {/* Fila principal: prev / centro / next */}
-      <div className="flex h-14 items-center justify-between px-3">
+      <div className="flex h-16 items-center justify-between px-3">
         <button
           onClick={onPrev}
           disabled={current === 0}
           aria-label="Página anterior"
-          className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-primary/10 hover:text-foreground disabled:opacity-20"
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-primary/40 bg-primary/15 text-primary transition-colors hover:bg-primary/25 active:bg-primary/30 disabled:border-transparent disabled:bg-transparent disabled:opacity-20"
           style={flechaStyle}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
@@ -133,10 +151,10 @@ export const CartaNav = forwardRef<HTMLElement, CartaNavProps>(function CartaNav
           onClick={onNext}
           disabled={current === total - 1}
           aria-label="Página siguiente"
-          className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-primary/10 hover:text-foreground disabled:opacity-20"
+          className={`flex h-12 w-12 items-center justify-center rounded-full border border-primary/40 bg-primary/15 text-primary transition-colors hover:bg-primary/25 active:bg-primary/30 disabled:border-transparent disabled:bg-transparent disabled:opacity-20${nudge ? " carta-nudge" : ""}`}
           style={flechaStyle}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 18l6-6-6-6" />
           </svg>
         </button>

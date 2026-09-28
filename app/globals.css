@@ -99,6 +99,14 @@
   scroll-snap-stop: always;
 }
 
+/* La carta ocupa el viewport completo: sin scroll ni rebote del documento */
+html.carta-lock,
+html.carta-lock body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 /* Ocultar scrollbar del slider */
 .carta-slider::-webkit-scrollbar { display: none; }
 
