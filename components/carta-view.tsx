@@ -354,10 +354,10 @@ export function CartaView({ menu, config }: Props) {
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="flex-1">
-                    {cat.label && cat.label !== cat.titulo_seccion && (
+                    {cat.categoria && cat.categoria !== cat.titulo_seccion && (
                       <span className="block font-sans font-light uppercase tracking-widest text-muted-foreground"
                         style={{ fontSize: fIndiceCategoria }}>
-                        {cat.label}
+                        {cat.categoria}
                       </span>
                     )}
                     <span
@@ -410,7 +410,7 @@ export function CartaView({ menu, config }: Props) {
               {/* DESKTOP */}
               <div className="hidden sm:block">
                 <BandaContenido
-                  categoria={category.label ?? ""}
+                  categoria={category.categoria ?? ""}
                   titulo={category.titulo_seccion}
                   desc={category.description}
                   catIdx={catIdx}
@@ -422,7 +422,7 @@ export function CartaView({ menu, config }: Props) {
               {/* MOBILE */}
               <div className="sm:hidden">
                 <BandaContenido
-                  categoria={category.label ?? ""}
+                  categoria={category.categoria ?? ""}
                   titulo={category.titulo_seccion}
                   desc={category.description}
                   catIdx={catIdx}

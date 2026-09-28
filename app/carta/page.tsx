@@ -1,6 +1,7 @@
 import { getMenu }        from "@/lib/get-menu"
 import { getConfig }      from "@/lib/get-config"
 import { CartaView }      from "@/components/carta-view"
+import { MenuFooter }     from "@/components/menu-footer"
 
 // Revalida cada hora (ISR)
 export const revalidate = 3600
@@ -18,6 +19,7 @@ export default async function CartaDefaultPage() {
   return (
     <main className="min-h-screen bg-background">
       <CartaView menu={menu} config={config} />
+      <MenuFooter config={config} />
     </main>
   )
 }
