@@ -248,11 +248,13 @@ export function CartaView({ menu, config }: Props) {
     catIdx: number; totalCats: number; mobile: boolean
   }) {
     const px   = mobile ? "px-4" : "px-10"
-    const pb   = mobile ? "pb-2" : "pb-3"
-    const pt   = mobile ? "pt-2" : "pt-8"
+    // mobile: contenido abajo. desktop: centrado en vertical (pt-12 descuenta la topbar)
+    const pb   = mobile ? "pb-2" : "pb-4"
+    const pt   = mobile ? "pt-2" : "pt-12"
+    const just = mobile ? "justify-end" : "justify-center"
     return (
       <div
-        className={`absolute inset-0 flex flex-col justify-end overflow-hidden ${px} ${pb} ${pt}`}
+        className={`absolute inset-0 flex flex-col ${just} overflow-hidden ${px} ${pb} ${pt}`}
         style={{ zIndex: 10 }}
       >
         {/* etiqueta: sin shrink-0 → se comprime/oculta si no hay espacio */}
@@ -272,7 +274,7 @@ export function CartaView({ menu, config }: Props) {
         <h2
           className="shrink-0 overflow-hidden font-serif font-medium leading-tight tracking-tight text-foreground"
           style={{
-            fontSize: fBandaTitulo,
+            fontSize: mobile ? fBandaTitulo : `calc(${fBandaTitulo} * 1.5)`,
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
@@ -382,7 +384,10 @@ export function CartaView({ menu, config }: Props) {
             <div className="section-header-band relative shrink-0 overflow-hidden" style={{ height: bandaAltoMobile }}>
               <style>{`
                 @media (min-width: 640px) {
-                  .section-header-band { height: ${bandaAltoDesktop} !important; }
+                  .section-header-band {
+                    height: ${bandaAltoDesktop} !important;
+                    border-bottom: 1px solid oklch(from var(--border) l c h / 0.6);
+                  }
                 }
               `}</style>
 
