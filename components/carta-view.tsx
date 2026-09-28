@@ -339,14 +339,14 @@ export function CartaView({ menu, config }: Props) {
               </h1>
             )}
           </div>
-          <ol className="min-h-0 flex-1 overflow-y-auto"
-            style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", alignContent: "start", gap: "0" }}>
+          <div className="min-h-0 flex-1 overflow-y-auto">
+          <ol className="grid grid-cols-1 content-start gap-x-12 sm:grid-cols-2 lg:grid-cols-3">
             {menu.map((cat, i) => (
               <li key={cat.id}>
                 <button data-goto={cat.id}
-                  className="group flex w-full items-baseline gap-2.5 border-b border-dotted border-border/40 py-2 text-left transition-colors hover:bg-primary/5 active:bg-primary/10">
+                  className="group flex w-full items-baseline gap-3 border-b border-dotted border-border/60 px-1 py-3 text-left transition-colors hover:bg-primary/5 active:bg-primary/10">
                   <span
-                    className="w-5 shrink-0 font-sans font-light text-primary"
+                    className="w-7 shrink-0 font-sans font-light tabular-nums text-primary"
                     style={{
                       fontSize: fIndiceNumero,
                       ...(indiceNumColor ? { color: indiceNumColor } : {}),
@@ -375,6 +375,7 @@ export function CartaView({ menu, config }: Props) {
               </li>
             ))}
           </ol>
+          </div>
         </div>
       </div>
 
