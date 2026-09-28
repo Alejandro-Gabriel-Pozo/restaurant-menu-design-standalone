@@ -117,7 +117,8 @@ export function CartaView({ menu, config }: Props) {
 
   // ─── PORTADA DESKTOP ────────────────────────────────────────────────────
   const portadaDesktop = (
-    <div className="relative z-10 hidden h-full flex-col items-center justify-center gap-5 px-8 text-center sm:flex">
+    <div className="absolute z-10 hidden flex-col items-center gap-5 px-8 text-center sm:flex"
+      style={{ top: bloqueTop, left: "50%", transform: "translate(-50%, -50%)", width: "min(100%, 32rem)" }}>
       {logoUrl
         ? <LogoWithFallback src={logoUrl} alt={nombre} className="h-16 w-16 object-contain" fallback={logoFallback} />
         : logoFallback}
@@ -164,7 +165,7 @@ export function CartaView({ menu, config }: Props) {
   // ─── PORTADA MOBILE ─────────────────────────────────────────────────────
   const portadaMobile = (
     <>
-      <div aria-hidden className="absolute z-[8] sm:hidden"
+      <div aria-hidden className="absolute z-[8]"
         style={{
           top: bloqueTop, left: "50%",
           transform: "translate(-50%, -50%)",
