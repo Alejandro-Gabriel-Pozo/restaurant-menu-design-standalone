@@ -64,7 +64,6 @@ export function CartaView({ menu, config }: Props) {
   const fIndiceEtiqueta  = normFuente(config.carta_fuente_indice_etiqueta)
   const fIndiceTitulo    = normFuente(config.carta_fuente_indice_titulo)
   const fIndiceNumero    = normFuente(config.carta_fuente_indice_numero)
-  const fIndiceCategoria = normFuente(config.carta_fuente_indice_categoria)
   const fIndiceItem      = normFuente(config.carta_fuente_indice_item)
 
   // Textos editables
@@ -243,9 +242,9 @@ export function CartaView({ menu, config }: Props) {
   //   3. título siempre visible (shrink-0, line-clamp-1)
   //
   function BandaContenido({
-    categoria, titulo, desc, catIdx, totalCats, mobile,
+    titulo, desc, catIdx, totalCats, mobile,
   }: {
-    categoria: string; titulo: string; desc?: string
+    titulo: string; desc?: string
     catIdx: number; totalCats: number; mobile: boolean
   }) {
     const px   = mobile ? "px-4" : "px-10"
@@ -266,7 +265,6 @@ export function CartaView({ menu, config }: Props) {
             ...(bandaEtiquetaColor ? { color: bandaEtiquetaColor } : {}),
           }}
         >
-          {categoria ? `${categoria} · ` : ""}
           {String(catIdx + 1).padStart(2, "0")} / {String(totalCats).padStart(2, "0")}
         </p>
 
@@ -355,12 +353,6 @@ export function CartaView({ menu, config }: Props) {
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="flex-1">
-                    {cat.categoria && cat.categoria !== cat.titulo_seccion && (
-                      <span className="block font-sans font-light uppercase tracking-widest text-muted-foreground"
-                        style={{ fontSize: fIndiceCategoria }}>
-                        {cat.categoria}
-                      </span>
-                    )}
                     <span
                       className="block font-serif font-medium leading-snug text-foreground transition-colors group-hover:text-primary"
                       style={{
@@ -412,7 +404,6 @@ export function CartaView({ menu, config }: Props) {
               {/* DESKTOP */}
               <div className="hidden sm:block">
                 <BandaContenido
-                  categoria={category.categoria ?? ""}
                   titulo={category.titulo_seccion}
                   desc={category.description}
                   catIdx={catIdx}
@@ -424,7 +415,6 @@ export function CartaView({ menu, config }: Props) {
               {/* MOBILE */}
               <div className="sm:hidden">
                 <BandaContenido
-                  categoria={category.categoria ?? ""}
                   titulo={category.titulo_seccion}
                   desc={category.description}
                   catIdx={catIdx}
