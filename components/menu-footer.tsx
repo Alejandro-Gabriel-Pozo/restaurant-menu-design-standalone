@@ -1,5 +1,5 @@
 import type { SiteConfig } from "@/lib/get-config"
-import { sanitizeCssColor, isTruthy } from "@/lib/hero-utils"
+import { sanitizeCssColor } from "@/lib/hero-utils"
 import { LogoWithFallback } from "@/components/logo-with-fallback"
 
 interface MenuFooterProps {
@@ -42,7 +42,7 @@ function IconWhatsApp() {
 }
 
 export function MenuFooter({ config }: MenuFooterProps) {
-  const mostrarParteDe   = isTruthy(config.mostrar_pertenencia)
+  const mostrarParteDe   = config.mostrar_pertenencia === "true"
   const tienePertenencia = config.hosteria_nombre || config.empresa_nombre
   const horarios = config.restaurante_footer_horarios
     ? config.restaurante_footer_horarios.split("|").map((h) => h.trim())
