@@ -68,7 +68,7 @@ export default async function HomePage() {
         }
         .portal-card:hover {
           border-color: var(--portal-card-border-hover, var(--portal-card-border, transparent)) !important;
-          box-shadow: 0 6px 20px oklch(0 0 0 / 0.22) !important;
+          box-shadow: none !important;
         }
       `}</style>
 
